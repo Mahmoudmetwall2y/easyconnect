@@ -1,1 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+/* 🩵 Tailwind 4 configuration inside CSS */
+
+/* Theme customization */
+@theme {
+  --color-primary: #1E90FF;
+  --color-secondary: #F4F6F9;
+
+  --font-cairo: "Cairo", sans-serif;
+  --font-inter: "Inter", sans-serif;
+}
+
+/* Example global styles */
+body {
+  font-family: var(--font-cairo);
+  background-color: var(--color-secondary);
+  color: #333;
+}
