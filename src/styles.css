@@ -1,19 +1,9 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* 🩵 Tailwind 4 configuration inside CSS */
-
-/* Theme customization */
-@theme {
-  --color-primary: #1E90FF;
-  --color-secondary: #F4F6F9;
-
-  --font-cairo: "Cairo", sans-serif;
-  --font-inter: "Inter", sans-serif;
-}
-
-/* Example global styles */
 body {
-  font-family: var(--font-cairo);
-  background-color: var(--color-secondary);
+  font-family: 'Cairo', sans-serif;
+  background-color: #F4F6F9;
   color: #333;
 }

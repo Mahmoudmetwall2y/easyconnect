@@ -1,0 +1,39 @@
+:host {
+  overflow: hidden;
+}
+html, body {
+  overflow: hidden !important;
+}
+@keyframes float {
+  0% {
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    transform: translateY(-55%) translateX(1%);
+  }
+  100% {
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* لجعل الحواف ناعمة أكثر */
+button, input {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background-color: #f8f9fa;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+

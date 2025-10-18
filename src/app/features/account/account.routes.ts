@@ -1,8 +1,7 @@
 import { Routes } from '@angular/router';
-import { Account } from './account';
-
-
+import { RegisterComponent } from './register/register'; // ✅ المسار الصحيح
 
 export const ACCOUNT_ROUTES: Routes = [
-  { path: '', component: Account },
+  { path: 'register', component: RegisterComponent },
+  { path: '', redirectTo: 'register', pathMatch: 'full' }, // مؤقتًا نوجهها للتسجيل
 ];

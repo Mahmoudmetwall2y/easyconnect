@@ -28,7 +28,11 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@fortawesome/fontawesome-free": "^7.1.0",
     "@ngneat/tailwind": "^7.0.3",
+    "google-libphonenumber": "^3.2.43",
+    "ngx-intl-tel-input-app": "github:webcat12345/ngx-intl-tel-input",
+    "ngx-intl-tel-input-updated": "^0.0.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -46,7 +50,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.14",
+    "tailwindcss": "^3.4.14",
     "typescript": "~5.9.2"
   }
 }
