@@ -1,0 +1,37 @@
+<section class="relative flex justify-center w-full z-50">
+  <div class="flex bg-white rounded-t-xl shadow-md overflow-hidden border-b-4 border-[#0E74F0]">
+
+    <!-- زر طيران -->
+    <button
+      (click)="activeTab = 'flights'"
+      [ngClass]="activeTab === 'flights'
+        ? 'bg-[#0E74F0] text-white shadow-md'
+        : 'bg-white text-gray-700'"
+      class="flex items-center gap-2 px-8 py-3 font-semibold border border-gray-200 hover:bg-gray-50 transition rounded-tr-xl">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+        class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M10.5 6.75l5.25 5.25m0 0l-5.25 5.25m5.25-5.25H3" />
+      </svg>
+      <span class="text-[15px] font-semibold">طيران</span>
+    </button>
+
+    <!-- زر فنادق -->
+    <button
+      (click)="activeTab = 'hotels'"
+      [ngClass]="activeTab === 'hotels'
+        ? 'bg-[#0E74F0] text-white shadow-md'
+        : 'bg-white text-gray-700'"
+      class="flex items-center gap-2 px-8 py-3 font-semibold border border-gray-200 hover:bg-gray-50 transition rounded-tl-xl">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+        class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3 21v-6a9 9 0 0118 0v6M9 21V9a3 3 0 016 0v12" />
+      </svg>
+      <span class="text-[15px] font-semibold">فنادق</span>
+    </button>
+
+  </div>
+</section>

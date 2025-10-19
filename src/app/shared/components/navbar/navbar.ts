@@ -8,11 +8,22 @@ import { Component } from '@angular/core';
   styleUrl: './navbar.css'
 })
 export class Navbar {
-  isMenuOpen = false;
+isLoggedIn = false;
+  userName = 'Ahmed';
+  openCurrency = false;
+  openUser = false;
 
-  toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
+  toggleLang() {
+    // اربطها بالترجمة عندك (ngx-translate مثلاً)
   }
+  setCurrency(c: 'KWD'|'USD'|'EUR') {
+    // خزّن العملة المختارة
+  }
+  logout() {
+    this.isLoggedIn = false;
+  }
+
+ 
 }
 
 
