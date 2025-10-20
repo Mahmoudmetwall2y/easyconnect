@@ -23,9 +23,11 @@
               "src/favicon.ico"
             ],
             "styles": [
-              "src/styles.css",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
-            ],
+  "src/styles.css",
+  "node_modules/flatpickr/dist/flatpickr.min.css",
+  "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+],
+
             "scripts": [
               "node_modules/@fortawesome/fontawesome-free/js/all.min.js"
             ]
@@ -81,10 +83,12 @@
               "src/assets",
               "src/favicon.ico"
             ],
-            "styles": [
-              "src/styles.css",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
-            ],
+           "styles": [
+  "src/styles.css",
+  "node_modules/flatpickr/dist/flatpickr.min.css",
+  "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+],
+
             "scripts": [
               "node_modules/@fortawesome/fontawesome-free/js/all.min.js"
             ]

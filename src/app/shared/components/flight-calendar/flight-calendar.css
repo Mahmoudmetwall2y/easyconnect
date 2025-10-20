@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  direction: rtl;
+}
+
+/* الأيام */
+.day-normal {
+  background-color: transparent;
+  color: #1e293b;
+}
+
+.day-hover:hover {
+  background-color: #f1f5ff;
+  color: #0e74f0;
+}
+
+
+
+.day-start, .day-end, .day-range {
+  background: #1e293b;
+  color: #fff;
+}
+
+.day-hover:hover {
+  background: #475569;
+  color: #fff;
+}
+

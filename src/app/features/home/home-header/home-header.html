@@ -1,9 +1,248 @@
+<!-- 🌆 خلفية المدينة -->
 <section class="relative w-full h-[420px] overflow-hidden">
   <img
     src="assets/images/city-bg.jpg"
     alt="City Background"
     class="absolute inset-0 w-full h-full object-cover" />
-
-  <!-- تقدر تضيف هنا محتوى لاحقًا (زي البحث وغيره) -->
   <div class="absolute inset-0 bg-black/10"></div>
+
+<!-- ✅ أزرار طيران / فنادق -->
+<div
+  
+  class="absolute bottom-[60px] right-0 flex justify-end pr-[80px]  w-full z-[60]">
+
+  <div class="flex bg-gradient-to-l from-[#71acf3] to-[#4d8ad5] rounded-xl shadow-lg overflow-hidden p-[4px]">
+  
+    <!-- زر فنادق -->
+    <button
+      (click)="activeTab = 'hotels'"
+      [ngClass]="activeTab === 'hotels'
+        ? 'bg-white text-[#0E74F0] border-b-5 border-[#0E74F0]'
+        : 'bg-transparent text-white'"
+      class="flex items-center gap-2 px-8 py-3 font-semibold text-[15px] rounded-lg transition-all duration-200">
+      <i class="fa-solid fa-hotel text-[18px] "></i>
+      <span>فنادق</span>
+    </button>
+
+      <!-- زر طيران -->
+    <button
+      (click)="activeTab = 'flights'"
+      [ngClass]="activeTab === 'flights'
+        ? 'bg-white text-[#0E74F0] border-b-5 border-[#0E74F0]'
+        : 'bg-transparent text-white'"
+      class="flex items-center gap-2 px-8 py-3 font-semibold text-[15px] rounded-lg transition-all duration-200">
+      <i class="fa-solid fa-plane text-[18px] rotate-[-45deg]"></i>
+      <span>طيران</span>
+    </button>
+
+  </div>
+</div>
+
+
 </section>
+
+<!-- 🔍 سكشن البحث -->
+<section  class="relative right-0 flex justify-end pr-[80px] w-full -top-[50px] z-[40]">
+  <div
+    class="w-[95%] max-w-[1248px] bg-white rounded-xl shadow-xl px-6 py-5 flex flex-col gap-4 border-t border-gray-100">
+
+   
+<div dir="rtl" class="relative inline-block text-right">
+  <!-- الزر -->
+  <button 
+    (click)="openDropdown = !openDropdown"
+    class="flex items-center justify-between gap-2 bg-[#0E74F0] text-white text-[14px] font-semibold px-5 py-2.5 rounded-md shadow-sm w-[160px] transition">
+    <span>{{ selectedTripType }}</span>
+    <i class="fa-solid fa-chevron-down text-[12px]"></i>
+  </button>
+
+  <!-- القائمة -->
+  <div
+    *ngIf="openDropdown"
+    class="absolute right-0 mt-2 w-[160px] bg-white rounded-md shadow-lg border border-gray-100 z-50">
+    <ul class="py-1">
+      <li
+        (click)="selectTripType('ذهاب وعودة')"
+        class="px-4 py-2 hover:bg-blue-50 text-gray-700 cursor-pointer transition">
+        ذهاب وعودة
+      </li>
+      <li
+        (click)="selectTripType('ذهاب فقط')"
+        class="px-4 py-2 hover:bg-blue-50 text-gray-700 cursor-pointer transition">
+        ذهاب فقط
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+<div dir="rtl" class="flex flex-wrap items-center justify-between gap-3">
+
+  <!-- من -->
+  <div class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative">
+    <i class="fa-solid fa-plane-departure absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+    <div class="flex flex-col w-full pr-5">
+      <label class="text-[13px] text-gray-400">من</label>
+      <input type="text" placeholder="مدينه"
+        class="text-[12px] font-semibold focus:outline-none text-gray-800 placeholder:text-gray-400" />
+    </div>
+  </div>
+
+  <!-- إلى -->
+  <div class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative">
+    <i class="fa-solid fa-plane-arrival absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+    <div class="flex flex-col w-full pr-5">
+      <label class="text-[13px] text-gray-400">إلى</label>
+      <input type="text" placeholder="مدينة أخرى"
+        class="text-[12px] font-semibold focus:outline-none text-gray-800 placeholder:text-gray-400" />
+    </div>
+  </div>
+
+<!-- 🗓️ تواريخ الرحلة -->
+
+<div dir="rtl" class="flex items-center gap-3 relative">
+
+  <!-- المغادرة -->
+  <div class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer"
+       (click)="openDepartureCal()">
+    <i class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+    <div class="flex flex-col w-full pr-5">
+      <label class="text-[13px] text-gray-400">تاريخ المغادرة</label>
+      <input
+        type="text"
+        readonly
+        [value]="selectedDeparture || ''"
+        placeholder="اختر تاريخ المغادرة"
+        class="text-[12px] font-semibold focus:outline-none text-gray-800 placeholder:text-gray-400 cursor-pointer" />
+    </div>
+
+    <!-- 📅 كاليندر المغادرة -->
+  @if (showDepartureCal) {
+  <div class="absolute top-[110%] right-0 z-50 bg-white shadow-xl rounded-xl p-5">
+    <app-flight-calendar
+      [initialDeparture]="depDate"
+      [initialReturn]="retDate"
+      (datePicked)="onDeparturePicked($event)">
+    </app-flight-calendar>
+  </div>
+}
+
+  </div>
+
+  <!-- العودة -->
+  <div class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer"
+       (click)="openReturnCal()">
+    <i class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+    <div class="flex flex-col w-full pr-5">
+      <label class="text-[13px] text-gray-400">تاريخ العودة</label>
+      <input
+        type="text"
+        readonly
+        [value]="selectedReturn || ''"
+        placeholder="اختر تاريخ العودة"
+        class="text-[12px] font-semibold focus:outline-none text-gray-800 placeholder:text-gray-400 cursor-pointer" />
+    </div>
+
+    <!-- 📅 كاليندر العودة -->
+   @if (showReturnCal) {
+  <div class="absolute top-[110%] right-0 z-50 bg-white shadow-xl rounded-xl p-5">
+    <app-flight-calendar
+      [initialDeparture]="depDate"
+      [initialReturn]="retDate"
+      (datePicked)="onReturnPicked($event)">
+    </app-flight-calendar>
+  </div>
+}
+
+  </div>
+
+</div>
+
+
+<!-- 🧳 المسافر والدرجة -->
+<div class="relative">
+  <!-- الزر -->
+  <div 
+    class="flex items-center justify-center border rounded-lg px-3 py-4 w-[200px] cursor-pointer select-none"
+    (click)="togglePassengersDropdown()">
+    <label class="flex items-center gap-2 text-[14px] text-gray-400">
+      <i class="fa-solid fa-user text-gray-400 text-[15px]"></i>
+      المسافر | الدرجة
+    </label>
+  </div>
+
+  <!-- القائمة المنبثقة -->
+  <div 
+    *ngIf="showPassengersDropdown"
+    class="absolute top-[110%] right-0 w-[340px] bg-white border rounded-xl shadow-xl p-4 z-50">
+    
+    <!-- العنوان -->
+    <h3 class="text-[15px] font-semibold mb-2 text-[#0E74F0]">المسافرين</h3>
+
+  <!-- البالغين -->
+<div class="flex justify-between items-center py-1">
+  <span class="text-[14px] text-gray-600">بالغين (العمر +12)</span>
+  <div class="flex items-center gap-2">
+    <button (click)="decrement('adults')" class="border px-2 rounded">−</button>
+    <span class="w-6 text-center">{{ adults }}</span>
+    <button (click)="increment('adults')" class="border px-2 rounded">+</button>
+  </div>
+</div>
+
+<!-- الأطفال -->
+<div class="flex justify-between items-center py-1">
+  <span class="text-[14px] text-gray-600">أطفال (العمر 2–11)</span>
+  <div class="flex items-center gap-2">
+    <button (click)="decrement('children')" class="border px-2 rounded">−</button>
+    <span class="w-6 text-center">{{ children }}</span>
+    <button (click)="increment('children')" class="border px-2 rounded">+</button>
+  </div>
+</div>
+
+<!-- الرضع -->
+<div class="flex justify-between items-center py-1 border-b pb-2">
+  <span class="text-[14px] text-gray-600">رضّع (أقل من سنتين)</span>
+  <div class="flex items-center gap-2">
+    <button (click)="decrement('infants')" class="border px-2 rounded">−</button>
+    <span class="w-6 text-center">{{ infants }}</span>
+    <button (click)="increment('infants')" class="border px-2 rounded">+</button>
+  </div>
+</div>
+
+ 
+
+    <!-- درجة السفر -->
+    <h3 class="text-[15px] font-semibold mt-2 mb-1 text-[#0E74F0]">درجة السفر</h3>
+    <div class="flex flex-wrap gap-2 mb-3">
+      <button *ngFor="let c of classes"
+        (click)="selectedClass = c"
+        [ngClass]="selectedClass === c ? 'bg-[#0E74F0] text-white' : 'bg-gray-100 text-gray-600'"
+        class="px-3 py-1.5 rounded-md text-[13px] transition">
+        {{ c }}
+      </button>
+    </div>
+
+    <!-- زر تأكيد -->
+    <button 
+      (click)="confirmPassengers()" 
+      class="w-full bg-[#0E74F0] text-white py-2 rounded-md font-semibold hover:bg-blue-600 transition">
+      تأكيد
+    </button>
+  </div>
+</div>
+  <!-- زر البحث -->
+  <button
+    class="bg-[#0E74F0] text-white text-[15px] font-semibold px-6 py-3 rounded-lg hover:bg-blue-600 transition flex items-center gap-2">
+    <i class="fa-solid fa-magnifying-glass text-[15px]"></i>
+    البحث عن الرحلات
+  </button>
+
+</div>
+
+  </div>
+</section>
+
