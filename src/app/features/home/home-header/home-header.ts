@@ -63,8 +63,10 @@ onReturnPicked(date: Date) {
   this.retDate = date;
   this.selectedReturn = this.format(date);
 
-  // ✅ يقفل كاليندر العودة بعد الاختيار
-  this.showReturnCal = false;
+
+   setTimeout(() => {
+    this.showReturnCal = false;
+  }, 3000); // 30 ثانية
 }
 
 private format(d: Date) {
