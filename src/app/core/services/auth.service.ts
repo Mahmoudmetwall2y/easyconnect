@@ -2,6 +2,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface ApiResponse<T> {
   succeeded: boolean;
@@ -27,7 +28,7 @@ export interface UserResponseDto {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  private baseUrl = 'https://localhost:44380/api/Users';
+  private baseUrl = `${environment.apiBaseUrl}/Users`;
 
   register(dto: RegisterDto): Observable<ApiResponse<UserResponseDto>> {
     return this.http.post<ApiResponse<UserResponseDto>>(
