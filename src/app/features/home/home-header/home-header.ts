@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { COUNTRY_CODES } from '../../../shared/data/country-codes';
 import { LocationSelector, SelectedLocation } from "../../flight-search/location-selector/location-selector";
 import { HeaderBanner } from "../header-banner/header-banner";
-import { PassengerSelector } from "../passenger-selector/passenger-selector";
+
 import { FlightSearchBar } from "../flight-search-bar/flight-search-bar";
 
 @Component({
