@@ -1,0 +1,29 @@
+<section class="relative w-full h-[420px] overflow-hidden">
+  <img src="assets/images/city-bg.jpg" alt="City Background"
+       class="absolute inset-0 w-full h-full object-cover" />
+  <div class="absolute inset-0 bg-black/10"></div>
+
+  <div class="absolute bottom-[60px] right-0 flex justify-end pr-[80px] w-full z-[60]">
+    <div class="flex bg-gradient-to-l from-[#71acf3] to-[#4d8ad5] rounded-xl shadow-lg overflow-hidden p-[4px]">
+      <button
+        (click)="changeTab('hotels')"
+        [ngClass]="activeTab === 'hotels'
+          ? 'bg-white text-[#0E74F0]'
+          : 'bg-transparent text-white'"
+        class="flex items-center gap-2 px-8 py-3 font-semibold text-[15px] rounded-lg transition-all">
+        <i class="fa-solid fa-hotel text-[18px]"></i>
+        <span>فنادق</span>
+      </button>
+
+      <button
+        (click)="changeTab('flights')"
+        [ngClass]="activeTab === 'flights'
+          ? 'bg-white text-[#0E74F0]'
+          : 'bg-transparent text-white'"
+        class="flex items-center gap-2 px-8 py-3 font-semibold text-[15px] rounded-lg transition-all">
+        <i class="fa-solid fa-plane text-[18px] rotate-[-45deg]"></i>
+        <span>طيران</span>
+      </button>
+    </div>
+  </div>
+</section>

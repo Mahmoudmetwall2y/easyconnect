@@ -1,0 +1,2 @@
+/* خفيف جداً – استعملنا Tailwind لمعظم التنسيق */
+:host { display: inline-block; }

@@ -1,0 +1,58 @@
+<div class="relative">
+  <div 
+    class="flex items-center justify-center border rounded-lg px-3 py-4 w-[200px] cursor-pointer select-none"
+    (click)="toggle()">
+    <label class="flex items-center gap-2 text-[14px] text-gray-400">
+      <i class="fa-solid fa-user text-gray-400 text-[15px]"></i>
+      المسافر | الدرجة
+    </label>
+  </div>
+
+  <div *ngIf="showDropdown"
+       class="absolute top-[110%] right-0 w-[340px] bg-white border rounded-xl shadow-xl p-4 z-50">
+    
+    <h3 class="text-[15px] font-semibold mb-2 text-[#0E74F0]">المسافرين</h3>
+
+    <div class="flex justify-between items-center py-1">
+      <span class="text-[14px] text-gray-600">بالغين (العمر +12)</span>
+      <div class="flex items-center gap-2">
+        <button (click)="decrement('adults')" class="border px-2 rounded">−</button>
+        <span class="w-6 text-center">{{ adults }}</span>
+        <button (click)="increment('adults')" class="border px-2 rounded">+</button>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center py-1">
+      <span class="text-[14px] text-gray-600">أطفال (العمر 2–11)</span>
+      <div class="flex items-center gap-2">
+        <button (click)="decrement('children')" class="border px-2 rounded">−</button>
+        <span class="w-6 text-center">{{ children }}</span>
+        <button (click)="increment('children')" class="border px-2 rounded">+</button>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center py-1 border-b pb-2">
+      <span class="text-[14px] text-gray-600">رضّع (أقل من سنتين)</span>
+      <div class="flex items-center gap-2">
+        <button (click)="decrement('infants')" class="border px-2 rounded">−</button>
+        <span class="w-6 text-center">{{ infants }}</span>
+        <button (click)="increment('infants')" class="border px-2 rounded">+</button>
+      </div>
+    </div>
+
+    <h3 class="text-[15px] font-semibold mt-2 mb-1 text-[#0E74F0]">درجة السفر</h3>
+    <div class="flex flex-wrap gap-2 mb-3">
+      <button *ngFor="let c of classes"
+        (click)="selectedClass = c"
+        [ngClass]="selectedClass === c ? 'bg-[#0E74F0] text-white' : 'bg-gray-100 text-gray-600'"
+        class="px-3 py-1.5 rounded-md text-[13px] transition">
+        {{ c }}
+      </button>
+    </div>
+
+    <button (click)="confirm()"
+      class="w-full bg-[#0E74F0] text-white py-2 rounded-md font-semibold hover:bg-blue-600 transition">
+      تأكيد
+    </button>
+  </div>
+</div>

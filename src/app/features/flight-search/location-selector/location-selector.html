@@ -1,0 +1,64 @@
+<div class="relative w-[200px]" dir="rtl">
+  <div class="flex items-center border rounded-lg px-3 py-2 cursor-pointer bg-white">
+    <i class="fa-solid" [ngClass]="type === 'from' ? 'fa-plane-departure' : 'fa-plane-arrival'"
+       class="text-gray-400 mr-2"></i>
+
+    <!-- بعد الاختيار -->
+    <ng-container *ngIf="value; else emptyState">
+      <div class="flex flex-col leading-tight">
+        <span class="text-[13px] text-gray-800 font-semibold">{{ value?.city }}</span>
+        <span class="text-[12px] text-gray-500 -mt-[1px]">{{ value?.airportName }}</span>
+      </div>
+    </ng-container>
+
+    <!-- قبل الاختيار -->
+    <ng-template #emptyState>
+      <div class="flex flex-col w-full" (click)="$event.stopPropagation()">
+        <label class="text-[13px] text-gray-400">{{ type === 'from' ? 'من' : 'إلى' }}</label>
+       
+ <input
+  type="text"
+  [placeholder]="placeholder"
+  [(ngModel)]="text"
+  (click)="openDropdown($event)"
+  (focus)="openDropdown($event)"
+  (input)="onInput(text)"
+  class="text-[12px] font-semibold focus:outline-none text-gray-800 placeholder:text-gray-400"
+/>
+
+
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- تحذير -->
+  <div *ngIf="warning" class="text-[12px] text-red-500 mt-1">{{ warning }}</div>
+
+  <!-- القائمة -->
+  <div *ngIf="showDropdown" class="absolute top-[110%] right-0 w-full bg-white border rounded-xl shadow-xl max-h-[260px] overflow-auto z-50">
+    <div class="text-[12px] text-gray-500 px-3 py-2 border-b border-gray-100">
+      ✈️ لم تجد مدينتك؟ اكتب اسم المدينة أو المطار في الحقل أعلاه للبحث.
+    </div>
+
+    <!-- لا توجد نتائج -->
+    <div *ngIf="!options?.length" class="px-3 py-3 text-[12px] text-gray-500">
+      ❌ لا توجد نتائج مطابقة.
+    </div>
+
+    <div *ngFor="let item of options; let last = last"
+         (click)="choose(item)"
+         class="flex flex-col px-3 py-[10px] hover:bg-gray-50 cursor-pointer transition-all">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <img [src]="getFlag(item)" class="w-[20px] h-[14px] object-cover rounded-sm border border-gray-200" alt="flag" />
+          <span class="text-[14px] text-gray-800 font-semibold leading-none">{{ getCityName(item) }}</span>
+        </div>
+        <div class="border border-gray-300 rounded-md px-2 py-[2px] text-[12px] text-gray-700 font-semibold bg-gray-50">
+          {{ item.iataCode }}
+        </div>
+      </div>
+      <div class="text-[12px] text-gray-500 mt-[6px] ms-[22px] leading-tight">{{ getAirportName(item) }}</div>
+      <div *ngIf="!last" class="border-b border-gray-200 mt-2"></div>
+    </div>
+  </div>
+</div>

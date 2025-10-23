@@ -1,0 +1,80 @@
+<section dir="rtl" class="relative w-full flex justify-end pr-[80px] -top-[50px] z-[40]">
+  <div class="w-[95%] max-w-[1248px] bg-white rounded-xl shadow-xl px-6 py-5 flex flex-col gap-4 border-t border-gray-100">
+
+    <div class="relative inline-block text-right">
+      <button 
+        (click)="openDropdown = !openDropdown"
+        class="flex items-center justify-between gap-2 bg-[#0E74F0] text-white text-[14px] font-semibold px-5 py-2.5 rounded-md shadow-sm w-[160px] transition">
+        <span>{{ selectedTripType }}</span>
+        <i class="fa-solid fa-chevron-down text-[12px]"></i>
+      </button>
+
+      <div *ngIf="openDropdown" 
+           class="absolute right-0 mt-2 w-[160px] bg-white rounded-md shadow-lg border border-gray-100 z-50">
+        <ul class="py-1">
+          <li (click)="selectTripType('ذهاب وعودة')" class="px-4 py-2 hover:bg-blue-50 text-gray-700 cursor-pointer">
+            ذهاب وعودة
+          </li>
+          <li (click)="selectTripType('ذهاب فقط')" class="px-4 py-2 hover:bg-blue-50 text-gray-700 cursor-pointer">
+            ذهاب فقط
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-center gap-3 flex-wrap md:flex-nowrap w-full bg-white p-4 rounded-xl mx-auto">
+
+      <app-location-selector type="from" (locationSelected)="selectedFrom = $event"></app-location-selector>
+      <app-location-selector type="to" (locationSelected)="selectedTo = $event"></app-location-selector>
+
+      <div class="flex items-center gap-3 relative">
+        <div class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer" (click)="openDepartureCal()">
+          <i class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <div class="flex flex-col w-full pr-5">
+            <label class="text-[13px] text-gray-400">تاريخ المغادرة</label>
+            <input type="text" readonly [value]="selectedDeparture || ''" placeholder="اختر تاريخ المغادرة"
+                   class="text-[12px] font-semibold focus:outline-none text-gray-800 placeholder:text-gray-400 cursor-pointer" />
+          </div>
+
+          @if (showDepartureCal) {
+            <div class="absolute top-[110%] right-0 z-50 bg-white shadow-xl rounded-xl p-5">
+              <app-flight-calendar
+                [initialDeparture]="depDate"
+                [initialReturn]="retDate"
+                (datePicked)="onDeparturePicked($event)">
+              </app-flight-calendar>
+            </div>
+          }
+        </div>
+
+        <div class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer" (click)="openReturnCal()">
+          <i class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <div class="flex flex-col w-full pr-5">
+            <label class="text-[13px] text-gray-400">تاريخ العودة</label>
+            <input type="text" readonly [value]="selectedReturn || ''" placeholder="اختر تاريخ العودة"
+                   class="text-[12px] font-semibold focus:outline-none text-gray-800 placeholder:text-gray-400 cursor-pointer" />
+          </div>
+
+          @if (showReturnCal) {
+            <div class="absolute top-[110%] right-0 z-50 bg-white shadow-xl rounded-xl p-5">
+              <app-flight-calendar
+                [initialDeparture]="depDate"
+                [initialReturn]="retDate"
+                (datePicked)="onReturnPicked($event)">
+              </app-flight-calendar>
+            </div>
+          }
+        </div>
+      </div>
+
+      <app-passenger-selector (confirmed)="onPassengersConfirmed($event)"></app-passenger-selector>
+
+      <button (click)="searchFlights()"
+              class="bg-[#0E74F0] text-white text-[14px] font-semibold px-6 py-3 rounded-lg hover:bg-blue-600 transition flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-magnifying-glass text-[15px]"></i>
+        البحث عن الرحلات
+      </button>
+    </div>
+
+  </div>
+</section>
