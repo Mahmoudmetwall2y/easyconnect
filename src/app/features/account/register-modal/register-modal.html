@@ -1,0 +1,49 @@
+<div *ngIf="isOpen" class="fixed inset-0 bg-black/40 flex items-center justify-center z-[999]">
+  <div class="bg-gradient-to-b from-[#1e293b]/90 to-[#0f172a]/90 p-8 rounded-2xl shadow-2xl w-[90%] max-w-[380px] relative text-center text-white backdrop-blur-lg">
+
+    <!-- ❌ زر إغلاق -->
+    <button (click)="close.emit()" class="absolute top-4 right-4 text-gray-300 hover:text-white text-xl">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <!-- 🟢 الأيقونة -->
+    <div class="flex justify-center mb-5">
+      <i [class]="icon + ' text-[55px]'"></i>
+    </div>
+
+    <!-- 📝 العنوان -->
+    <h3 class="text-lg font-semibold mb-5">
+      {{ type === 'whatsapp' ? 'التسجيل عبر الواتساب' : 'التسجيل عبر الإيميل' }}
+    </h3>
+
+    <!-- 🧾 النموذج -->
+    <form (ngSubmit)="onSubmit()" class="space-y-4 text-right">
+      <div class="relative">
+        <input
+          type="text"
+          [(ngModel)]="name"
+          name="name"
+          placeholder="الاسم"
+          class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:border-[#0E74F0]" />
+        <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+      </div>
+
+      <div class="relative">
+        <input
+          [type]="type === 'email' ? 'email' : 'tel'"
+          [(ngModel)]="contact"
+          name="contact"
+          [placeholder]="placeholder"
+          class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:border-[#0E74F0]" />
+        <i [class]="type === 'whatsapp' ? 'fa-solid fa-phone' : 'fa-solid fa-envelope'"
+           class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+      </div>
+
+      <button
+        type="submit"
+        class="w-full bg-[#0E74F0] text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition">
+        الاشتراك
+      </button>
+    </form>
+  </div>
+</div>
