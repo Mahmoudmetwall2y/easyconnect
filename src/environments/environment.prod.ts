@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://api.easytravel.com/api' // ✨ بدّليه بالرابط الفعلي بعد النشر
+ apiBaseUrl: 'http://localhost:8080/api'
 };
