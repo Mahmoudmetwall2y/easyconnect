@@ -1,49 +1,125 @@
-<div *ngIf="isOpen" class="fixed inset-0 bg-black/40 flex items-center justify-center z-[999]">
-  <div class="bg-gradient-to-b from-[#1e293b]/90 to-[#0f172a]/90 p-8 rounded-2xl shadow-2xl w-[90%] max-w-[380px] relative text-center text-white backdrop-blur-lg">
+<!-- Overlay -->
+<div *ngIf="isOpen"
+     class="fixed inset-0 z-[999] flex items-center justify-center
+            bg-[radial-gradient(120%_160%_at_20%_0%,rgba(0,0,0,.25)_0%,rgba(0,0,0,.55)_55%,rgba(0,0,0,.7)_100%)]
+            backdrop-blur-[2px]">
 
-    <!-- ❌ زر إغلاق -->
-    <button (click)="close.emit()" class="absolute top-4 right-4 text-gray-300 hover:text-white text-xl">
+  <!-- Card -->
+  <div dir="rtl"
+       style="background: linear-gradient(90deg, #747e8a 0%, #5b6066 100%);"
+       class="relative w-[90%] max-w-[420px] min-h-[350px]
+              text-white text-center p-6
+              rounded-2xl ring-1 ring-white/10
+              shadow-[0_22px_60px_rgba(0,0,0,.35)]">
+
+    <!-- زر إغلاق -->
+    <button (click)="close.emit()" class="absolute top-4 left-4 text-white/80 hover:text-white text-xl">
       <i class="fa-solid fa-xmark"></i>
     </button>
 
-    <!-- 🟢 الأيقونة -->
-    <div class="flex justify-center mb-5">
-      <i [class]="icon + ' text-[55px]'"></i>
+    <!-- ✅ الأيقونة حسب النوع -->
+    <div class="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full 
+                bg-white flex items-center justify-center 
+                shadow-[0_6px_18px_rgba(0,0,0,0.25)] ring-8 ring-black/10">
+      <ng-container *ngIf="type === 'whatsapp'; else emailIcon">
+        <i class="fa-brands fa-whatsapp text-[#25D366] text-[34px]"></i>
+      </ng-container>
+<!-- ✅ أيقونة Gmail "شبه الأصلية" من Font Awesome -->
+<ng-template #emailIcon>
+  <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center 
+              shadow-[0_6px_18px_rgba(0,0,0,0.25)] ring-8 ring-black/10">
+    <i class="fa-solid fa-envelope text-[34px]" 
+       style="color: #EA4335;"></i>
+  </div>
+</ng-template>
+
+
     </div>
 
-    <!-- 📝 العنوان -->
+    <div class="mt-8"></div>
+
+    <!-- العنوان -->
     <h3 class="text-lg font-semibold mb-5">
       {{ type === 'whatsapp' ? 'التسجيل عبر الواتساب' : 'التسجيل عبر الإيميل' }}
     </h3>
 
-    <!-- 🧾 النموذج -->
-    <form (ngSubmit)="onSubmit()" class="space-y-4 text-right">
+    <!-- النموذج -->
+    <form (ngSubmit)="onSubmit()" class="space-y-3 text-right">
+
+      <!-- الاسم -->
       <div class="relative">
-        <input
-          type="text"
-          [(ngModel)]="name"
-          name="name"
-          placeholder="الاسم"
-          class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:border-[#0E74F0]" />
-        <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <input type="text" [(ngModel)]="name" name="name" placeholder="الاسم"
+               class="w-full h-[46px] pr-10 pl-3 text-right
+                      rounded-full bg-white text-gray-900 placeholder-gray-400
+                      border border-gray-200
+                      shadow-[0_6px_18px_rgba(16,24,40,0.06)]
+                      focus:outline-none focus:border-[#0E74F0] focus:ring-2 focus:ring-[#0E74F0]/30 transition" />
+        <i class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
       </div>
 
-      <div class="relative">
-        <input
-          [type]="type === 'email' ? 'email' : 'tel'"
-          [(ngModel)]="contact"
-          name="contact"
-          [placeholder]="placeholder"
-          class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:border-[#0E74F0]" />
-        <i [class]="type === 'whatsapp' ? 'fa-solid fa-phone' : 'fa-solid fa-envelope'"
-           class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-      </div>
+      <!-- لو واتساب -->
+      <ng-container *ngIf="type === 'whatsapp'; else emailBlock">
+        <div class="flex items-stretch h-[46px] relative">
+          <div class="flex-1 relative">
+            <input type="tel" [(ngModel)]="phoneLocal" name="phoneLocal" placeholder="50123456"
+                   class="w-full h-full rounded-r-full bg-white text-gray-900 px-3
+                          border border-r border-gray-300
+                          focus:outline-none focus:ring-2 focus:ring-[#0E74F0]/30" />
+            <i class="fa-solid fa-phone text-gray-500 absolute right-3 top-1/2 -translate-y-1/2"></i>
+          </div>
 
-      <button
-        type="submit"
-        class="w-full bg-[#0E74F0] text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition">
+          <button type="button" (click)="showDropdown = !showDropdown"
+                  class="flex items-center gap-2 bg-white text-gray-800 border border-gray-300
+                         rounded-l-full px-3 min-w-[110px]">
+            <img [src]="selectedCountry.flag" alt="flag" class="w-5 h-4 rounded-sm">
+            <span class="text-sm font-semibold">{{ selectedCountry.dial }}</span>
+            <i class="fa-solid fa-caret-down text-xs"></i>
+          </button>
+
+          <!-- القائمة -->
+          <ul *ngIf="showDropdown"
+              class="absolute right-0 top-[100%] mt-1 bg-white border border-gray-200 shadow-lg rounded-xl
+                     w-56 z-50 max-h-64 overflow-y-auto">
+            <li *ngFor="let c of countryCodes" (click)="selectCountry(c)"
+                class="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+              <i class="fa-solid fa-check text-[#0E74F0]" *ngIf="c.iso === selectedCountry.iso"></i>
+              <span class="text-sm font-semibold w-16 text-right">{{ c.dial }}</span>
+              <img [src]="c.flag" [alt]="c.name" class="w-5 h-4 rounded-sm">
+              <span class="text-xs text-gray-600 truncate">{{ c.name }}</span>
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+
+      <!-- لو إيميل -->
+      <ng-template #emailBlock>
+        <div class="relative">
+          <input type="email" [(ngModel)]="contact" name="contact" placeholder="البريد الإلكتروني"
+                 class="w-full h-[46px] pr-10 pl-3 text-right
+                        rounded-full bg-white text-gray-900 placeholder-gray-400
+                        border border-gray-200
+                        shadow-[0_6px_18px_rgba(16,24,40,0.06)]
+                        focus:outline-none focus:border-[#0E74F0] focus:ring-2 focus:ring-[#0E74F0]/30 transition" />
+          <i class="fa-solid fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+      </ng-template>
+
+      <!-- زر الاشتراك -->
+      <button type="submit"
+      style="background: linear-gradient(90deg, #71acf3 0%, #4d8ad5 100%);"
+              class="w-full h-[46px] rounded-full font-semibold text-white
+                     shadow-[inset_0_-2px_0_rgba(0,0,0,.12)]
+                     
+                     hover:brightness-110 transition">
         الاشتراك
       </button>
-    </form>
-  </div>
+
+      
+<!-- ✅ Toast Success Message -->
+<div *ngIf="showToast"
+     class="fixed top-8 right-1/2 translate-x-1/2 bg-green-500 text-white 
+            px-6 py-4 rounded-xl shadow-2xl text-base font-semibold
+            animate-fadeInOutBig z-[1000] flex items-center gap-3 min-w-[280px] justify-center">
+  <i class="fa-solid fa-circle-check text-white text-2xl"></i>
+  <span>تم التسجيل بنجاح </span>
 </div>

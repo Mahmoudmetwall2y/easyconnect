@@ -14,7 +14,7 @@ export interface ApiResponse<T> {
 export interface RegisterDto {
   fullName?: string | null;
   email?: string | null;
-  phone: string;        // بصيغة E.164 (+2010...)
+ phone?: string | null;      // بصيغة E.164 (+2010...)
   password: string;
 }
 
