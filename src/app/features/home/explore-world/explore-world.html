@@ -1,0 +1,19 @@
+<section class="py-16 bg-[#f8f9ff] text-center relative overflow-hidden">
+  <h2 class="text-3xl font-bold mb-12 text-black">استكشف العالم معنا</h2>
+
+  <div class="flex justify-center gap-8 flex-wrap md:flex-nowrap perspective">
+    <div
+      *ngFor="let img of images; let i = index"
+      class="destination-card"
+      [ngClass]="{
+        'left-card': i === 0,
+        'left-mid': i === 1,
+        'center-card': i === 2,
+        'right-mid': i === 3,
+        'right-card': i === 4
+      }"
+    >
+      <img [src]="img" alt="destination" />
+    </div>
+  </div>
+</section>

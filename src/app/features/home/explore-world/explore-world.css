@@ -1,0 +1,158 @@
+:host {
+  display: block;
+}
+
+swiper {
+  width: 100%;
+  height: 100%;
+}
+
+
+.perspective {
+  perspective: 1500px;
+  transform-style: preserve-3d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0; /* 🔹 أهم تعديل: لغينا الفجوة بين العناصر */
+}
+
+.destination-card {
+  position: relative;
+  width: 230px;
+  height: 380px;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.5s ease;
+  background: #fff;
+  margin: 0 0px; /* 🔹 تقارب الكروت */
+}
+
+.destination-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 22px;
+  transition: transform 0.6s ease;
+}
+
+/* ✅ التأثيرات ثلاثية الأبعاد مثل Figma */
+.left-card {
+  transform: rotateY(25deg) translateX(-40px) scale(0.9);
+  z-index: 2;
+}
+
+.left-mid {
+  transform: rotateY(12deg) translateX(-20px) scale(0.95);
+  z-index: 3;
+}
+
+.center-card {
+  transform: rotateY(0deg) scale(1.1);
+  z-index: 5;
+}
+
+.right-mid {
+  transform: rotateY(-12deg) translateX(20px) scale(0.95);
+  z-index: 3;
+}
+
+.right-card {
+  transform: rotateY(-25deg) translateX(40px) scale(0.9);
+  z-index: 2;
+}
+
+.destination-card:hover {
+  transform: scale(1.05) rotateY(0deg) translateY(-10px);
+  z-index: 10;
+}
+
+.destination-card:hover img {
+  transform: scale(1.1);
+}
+
+
+
+
+/* ✅ الأنيميشن */
+section {
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ تحسين الاستجابة حسب العرض */
+
+/* 🔸 الشاشات الكبيرة (أكتر من 1200px) */
+@media (min-width: 1200px) {
+  .destination-card {
+    width: 250px;
+    height: 400px;
+    margin: 0 0px;
+  }
+}
+
+/* 🔸 الشاشات المتوسطة (تابلت أفقي / لابتوب صغير) */
+@media (max-width: 1199px) and (min-width: 769px) {
+  .destination-card {
+    width: 200px;
+    height: 330px;
+    margin: 0 -15px;
+  }
+
+  .left-card {
+    transform: rotateY(20deg) translateX(-25px) scale(0.9);
+  }
+
+  .left-mid {
+    transform: rotateY(10deg) translateX(-10px) scale(0.95);
+  }
+
+  .right-mid {
+    transform: rotateY(-10deg) translateX(10px) scale(0.95);
+  }
+
+  .right-card {
+    transform: rotateY(-20deg) translateX(25px) scale(0.9);
+  }
+}
+
+/* 🔸 الشاشات الصغيرة (تابلت رأسي / موبايل كبير) */
+@media (max-width: 768px) {
+  .perspective {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .destination-card {
+    transform: none !important;
+    width: 80%;
+    max-width: 320px;
+    height: 380px;
+    margin: 0 auto 20px auto;
+  }
+
+  .destination-card img {
+    border-radius: 20px;
+  }
+}
+
+/* 🔸 الموبايل الصغير جدًا */
+@media (max-width: 480px) {
+  .destination-card {
+    width: 90%;
+    height: 320px;
+  }
+}
+
+

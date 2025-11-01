@@ -35,6 +35,7 @@
     "ngx-intl-tel-input-app": "github:webcat12345/ngx-intl-tel-input",
     "ngx-intl-tel-input-updated": "^0.0.4",
     "rxjs": "~7.8.0",
+    "swiper": "^12.0.3",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },

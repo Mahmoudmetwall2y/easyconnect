@@ -10,11 +10,12 @@ import { HeaderBanner } from "../header-banner/header-banner";
 
 import { FlightSearchBar } from "../flight-search-bar/flight-search-bar";
 import { RegisterOptions } from "../../account/register-options/register-options";
+import { ExploreWorld } from "../explore-world/explore-world";
 
 @Component({
   selector: 'app-home-header',
   standalone: true,
-  imports: [CommonModule, FlightCalendar, FormsModule, HeaderBanner, FlightSearchBar, RegisterOptions],
+  imports: [CommonModule,ExploreWorld, FormsModule, HeaderBanner, FlightSearchBar, RegisterOptions],
   templateUrl: './home-header.html',
   styleUrls: ['./home-header.css']
 })
