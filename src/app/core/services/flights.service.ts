@@ -35,4 +35,8 @@ export class FlightsService {
       `${this.baseUrl}/locations?keyword=${keyword}`
     );
 }
+getDeals(): Observable<{ data: any[] }> {
+  return this.http.get<{ data: any[] }>(`${this.baseUrl}/deals`);
+}
+
 }

@@ -11,11 +11,13 @@ import { HeaderBanner } from "../header-banner/header-banner";
 import { FlightSearchBar } from "../flight-search-bar/flight-search-bar";
 import { RegisterOptions } from "../../account/register-options/register-options";
 import { ExploreWorld } from "../explore-world/explore-world";
+import { WhyChooseUs } from "../why-choose-us/why-choose-us";
+import { DealsSection } from "../deals-section/deals-section";
 
 @Component({
   selector: 'app-home-header',
   standalone: true,
-  imports: [CommonModule,ExploreWorld, FormsModule, HeaderBanner, FlightSearchBar, RegisterOptions],
+  imports: [CommonModule, ExploreWorld, FormsModule, HeaderBanner, FlightSearchBar, RegisterOptions, WhyChooseUs, DealsSection],
   templateUrl: './home-header.html',
   styleUrls: ['./home-header.css']
 })

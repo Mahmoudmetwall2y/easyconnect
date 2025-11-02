@@ -6,7 +6,7 @@ import { register } from 'swiper/element/bundle';
 @Component({
   selector: 'app-explore-world',
    standalone: true,
-  imports: [CommonModule], // 👈 أضف دي
+  imports: [CommonModule], 
 templateUrl: './explore-world.html',
 styleUrls: ['./explore-world.css'],
 schemas: [CUSTOM_ELEMENTS_SCHEMA] 
