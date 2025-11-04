@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { FlightCalendar } from '../../../shared/components/flight-calendar/flight-calendar';
 import { LocationSelector, SelectedLocation } from '../../flight-search/location-selector/location-selector';
 import { PassengerSelector } from '../passenger-selector/passenger-selector';
+import { FlightsService } from '../../../core/services/flights.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-flight-search-bar',
@@ -24,12 +26,21 @@ export class FlightSearchBar {
   retDate: Date | null = null;
   selectedDeparture: string | null = null;
   selectedReturn: string | null = null;
-  passengersSummary: string = '1 مسافر | السياحية';
+ passengersSummary: string = '';
+adults = 1;
+children = 0;
+infants = 0;
+travelClass = 'السياحية';
+
 
   openDropdown = false;
   showDepartureCal = false;
   showReturnCal = false;
+openPassengerSelector = false;
 
+constructor(private flightService:FlightsService,private router:Router){
+
+}
   selectTripType(type: string) {
     this.selectedTripType = type;
     this.openDropdown = false;
@@ -61,18 +72,51 @@ export class FlightSearchBar {
     setTimeout(() => (this.showReturnCal = false), 2000);
   }
 
-  onPassengersConfirmed(summary: string) {
-    this.passengersSummary = summary;
-  }
+onPassengersConfirmed(data: any) {
+  this.passengersSummary = data.summary;
+  this.adults = data.adults;
+  this.children = data.children;
+  this.infants = data.infants;
+  this.travelClass = data.travelClass;
+  this.openPassengerSelector = false;
+}
 
-  searchFlights() {
-    console.log('بحث عن الرحلات:', {
-      from: this.selectedFrom,
-      to: this.selectedTo,
-      departure: this.selectedDeparture,
-      return: this.selectedReturn,
-      passengers: this.passengersSummary,
-    });
-  }
+
+
+ searchFlights() {
+  const req = {
+    origin: this.selectedFrom?.iataCode,
+    destination: this.selectedTo?.iataCode,
+    departure: this.formatDate(this.depDate),
+    return: this.formatDate(this.retDate),
+    adults: this.adults,
+    children: this.children,
+    infants: this.infants,
+    travelClass: this.travelClass,
+  };
+
+  console.log('🔍 بحث عن الرحلات:', req);
+
+ this.flightService.searchFlights(req).subscribe({
+    next: (res) => {
+      console.log('✅ النتائج:', res);
+
+      // نحفظ النتائج مؤقتًا ونفتح صفحة النتائج
+      this.router.navigate(['/search'], { state: { results: res.data } });
+    },
+    error: (err) => {
+      console.error('❌ خطأ في البحث:', err);
+      alert('حدث خطأ أثناء البحث عن الرحلات.');
+    },
+  });
+}
+private formatDate(date: Date | null): string {
+  if (!date) return '';
+  const d = new Date(date);
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const day = d.getDate().toString().padStart(2, '0');
+  const year = d.getFullYear();
+  return `${year}-${month}-${day}`; // ✅ النتيجة: 2025-11-03
+}
 }
 

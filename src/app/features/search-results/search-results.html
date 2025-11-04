@@ -1,1 +1,25 @@
-<p>search-results works!</p>
+<app-flight-search-bar></app-flight-search-bar>
+<section class="p-6 bg-gray-50 min-h-screen" dir="rtl">
+  <h2 class="text-2xl font-semibold mb-6 text-blue-700">نتائج البحث ✈️</h2>
+
+  <div *ngIf="flights.length === 0" class="text-gray-500 text-center">
+    لا توجد نتائج حالياً.
+  </div>
+
+  <div *ngFor="let f of flights" class="bg-white shadow-md rounded-lg p-4 mb-4">
+    <div class="flex justify-between items-center">
+      <div>
+        <p class="text-lg font-semibold text-gray-800">
+          {{ f.origin }} → {{ f.destination }}
+        </p>
+        <p class="text-sm text-gray-500">
+          {{ f.airline }} - {{ f.duration || 'مدة غير متاحة' }}
+        </p>
+      </div>
+      <div class="text-right">
+        <p class="text-lg font-bold text-blue-600">{{ f.price }} {{ f.currency }}</p>
+        <p class="text-sm text-gray-500">{{ f.stops }} توقف</p>
+      </div>
+    </div>
+  </div>
+</section>

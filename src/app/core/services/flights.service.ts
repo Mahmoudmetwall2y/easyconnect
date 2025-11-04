@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -25,6 +25,21 @@ export class FlightsService {
    private baseUrl = `${environment.apiBaseUrl}/flights`;
 
   constructor(private http: HttpClient) {}
+
+   searchFlights(req: any): Observable<any> {
+    let params = new HttpParams()
+      .set('origin', req.origin)
+      .set('destination', req.destination)
+      .set('date', req.departure)
+      .set('adults', req.adults)
+      .set('children', req.children)
+      .set('infants', req.infants)
+      .set('travelClass', req.travelClass)
+      .set('returnDate', req.return)
+      .set('currency', 'USD');
+
+    return this.http.get(`${this.baseUrl}/search`, { params });
+  }
 
   getPopularAirports(): Observable<{ data: PopularAirport[] }> {
     return this.http.get<{ data: PopularAirport[] }>(`${this.baseUrl}/popular`);

@@ -1,4 +1,3 @@
-
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -10,13 +9,21 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./passenger-selector.css']
 })
 export class PassengerSelector {
-  @Output() confirmed = new EventEmitter<string>();
+ @Output() confirmed = new EventEmitter<{
+  adults: number;
+  children: number;
+  infants: number;
+  travelClass: string;
+  summary: string;
+}>();
+
 
   adults = 1;
   children = 0;
   infants = 0;
   selectedClass = 'السياحية';
   showDropdown = false;
+  displayValue = '';
 
   classes = ['السياحية', 'السياحية المتميزة', 'درجة رجال الأعمال', 'الدرجة الأولى'];
 
@@ -32,10 +39,19 @@ export class PassengerSelector {
     if (this[type] > 0) this[type]--;
   }
 
-  confirm() {
-    this.showDropdown = false;
-    const total = this.adults + this.children + this.infants;
-    const display = `${total} مسافر | ${this.selectedClass}`;
-    this.confirmed.emit(display);
-  }
+confirm() {
+  const total = this.adults + this.children + this.infants;
+ this.displayValue = `${total} مسافر | ${this.selectedClass}`;
+ const summary = `${total} مسافر | ${this.selectedClass}`;
+  this.showDropdown = false;
+
+  this.confirmed.emit({
+    adults: this.adults,
+    children: this.children,
+    infants: this.infants,
+    travelClass: this.selectedClass,
+    summary
+  });
+}
+
 }
