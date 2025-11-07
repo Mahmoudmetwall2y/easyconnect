@@ -22,7 +22,8 @@ export interface LocationResult {
   providedIn: 'root'
 })
 export class FlightsService {
-   private baseUrl = `${environment.apiBaseUrl}/flights`;
+  private baseUrl = `${environment.apiBaseUrl}/Flights`;
+
 
   constructor(private http: HttpClient) {}
 

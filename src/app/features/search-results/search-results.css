@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  background-color: #f9fafb;
+}
+
+section {
+  padding-bottom: 4rem;
+}
+
+button {
+  transition: all 0.2s ease-in-out;
+}
+.ltr-time {
+  direction: rtl;
+  text-align: right;
+}
