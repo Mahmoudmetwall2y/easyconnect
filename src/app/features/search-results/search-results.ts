@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FlightSearchBar } from "../home/flight-search-bar/flight-search-bar";
 
@@ -10,8 +10,9 @@ import { FlightSearchBar } from "../home/flight-search-bar/flight-search-bar";
   templateUrl: './search-results.html',
   styleUrls: ['./search-results.css']
 })
-export class SearchResults {
+export class SearchResults  implements OnInit{
   flights: any[] = [];
+originalFlights: any[] = [];
 
   constructor(private router: Router) {
     const nav = this.router.getCurrentNavigation();
@@ -26,16 +27,45 @@ export class SearchResults {
     console.log('🟢 نتائج الرحلات:', this.flights);
   }
 
-  formatTime(dateString?: string): string {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '';
-    let hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const period = hours >= 12 ? 'مساءً' : 'صباحاً';
-    hours = hours % 12 || 12;
-    return `${hours}:${minutes} ${period}`;
+  ngOnInit() {
+    const nav = this.router.getCurrentNavigation();
+    const results = nav?.extras?.state?.['results'] || JSON.parse(sessionStorage.getItem('flights') || '[]');
+    this.flights = this.groupFlights(results);
   }
+
+  // ✅ تجميع الرحلات بنفس الخط / الوجهة
+  private groupFlights(flights: any[]) {
+    const grouped: Record<string, any> = {};
+    flights.forEach((f) => {
+      const key = `${f.airline}-${f.origin}-${f.destination}`;
+      if (!grouped[key]) {
+        grouped[key] = { ...f, variations: [f], isExpanded: false };
+      } else {
+        grouped[key].variations.push(f);
+      }
+    });
+    return Object.values(grouped);
+  }
+
+  // ✅ فتح أو غلق المواعيد البديلة
+  toggleOptions(f: any) {
+    f.isExpanded = !f.isExpanded;
+  }
+
+formatTime(dateString?: string): string {
+  if (!dateString) return '';
+  
+  const date = new Date(dateString);
+  // لو التوقيت راجع UTC نعدله لمنطقة المستخدم
+  const local = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+
+  let hours = local.getHours();
+  const minutes = local.getMinutes().toString().padStart(2, '0');
+  const period = hours >= 12 ? 'مساءً' : 'صباحاً';
+  hours = hours % 12 || 12;
+
+  return `${hours}:${minutes} ${period}`;
+}
 
  formatDuration(duration?: string): string {
   if (!duration) return '';
@@ -50,40 +80,180 @@ export class SearchResults {
 }
 
 
-  translateAirline(code?: string): string {
-    if (!code) return '';
-    const airlines: Record<string, string> = {
-      'KU': 'الخطوط الجوية الكويتية',
-      'SV': 'الخطوط السعودية',
-      'QR': 'الخطوط القطرية',
-      'EK': 'طيران الإمارات',
-    };
-    return airlines[code] || code;
-  }
-  translateAirport(code?: string): string {
+ translateAirline(code?: string): string {
   if (!code) return '';
+
+  const airlines: Record<string, string> = {
+    // 🇴🇲 الخليج العربي
+    'KU': 'الخطوط الجوية الكويتية',
+    'SV': 'الخطوط الجوية السعودية',
+    'EK': 'طيران الإمارات',
+    'QR': 'الخطوط الجوية القطرية',
+    'WY': 'الطيران العُماني',
+    'GF': 'طيران الخليج (البحرين)',
+    'EY': 'طيران الاتحاد (الإمارات)',
+    'G9': 'العربية للطيران',
+    'FZ': 'فلاي دبي',
+    'J9': 'طيران جازيرا',
+    'XY': 'طيران ناس',
+
+    // 🇪🇬 شمال أفريقيا
+    'MS': 'مصر للطيران',
+    'TU': 'الخطوط التونسية',
+    'AT': 'الخطوط الملكية المغربية',
+    'AH': 'الخطوط الجوية الجزائرية',
+    'LN': 'الخطوط الجوية الليبية',
+
+    // 🇹🇷 الشرق الأوسط وتركيا
+    'RJ': 'الملكية الأردنية',
+    'ME': 'طيران الشرق الأوسط (لبنان)',
+    'TK': 'الخطوط الجوية التركية',
+    'PC': 'طيران بيجاسوس التركي',
+
+    // 🇪🇺 أوروبا
+    'BA': 'الخطوط الجوية البريطانية',
+    'LH': 'لوفتهانزا (ألمانيا)',
+    'AF': 'الخطوط الجوية الفرنسية',
+    'KL': 'الخطوط الملكية الهولندية (KLM)',
+    'AZ': 'ITA Airways (إيطاليا)',
+    'LX': 'سويس إير (سويسرا)',
+    'OS': 'الخطوط النمساوية',
+    'AY': 'فين إير (فنلندا)',
+    'SK': 'ساس (الخطوط الإسكندنافية)',
+    'IB': 'إيبيريا (إسبانيا)',
+
+    // 🇺🇸 أمريكا
+    'AA': 'الخطوط الجوية الأمريكية',
+    'DL': 'دلتا إيرلاينز',
+    'UA': 'يونايتد إيرلاينز',
+
+    // 🌍 آسيا
+    'CX': 'كاثي باسيفيك (هونغ كونغ)',
+    'SQ': 'الخطوط الجوية السنغافورية',
+    'NH': 'الخطوط الجوية اليابانية ANA',
+    'JL': 'الخطوط الجوية اليابانية JAL',
+    'KE': 'الخطوط الكورية',
+    'CA': 'الخطوط الجوية الصينية',
+    'MH': 'الخطوط الماليزية',
+    'TG': 'الخطوط التايلاندية',
+
+    // 🦘 أوقيانوسيا
+    'QF': 'كانتاس (أستراليا)',
+    'NZ': 'الخطوط الجوية النيوزيلندية',
+  };
+
+  return airlines[code] || code;
+}
+
+translateAirport(code?: string): string {
+  if (!code) return '';
+
   const airports: Record<string, string> = {
+    // 🇰🇼 الخليج
     'KWI': 'الكويت',
-    'DXB': 'دبي',
-    'CAI': 'القاهرة',
-    'JED': 'جدة',
-    'RUH': 'الرياض',
     'DOH': 'الدوحة',
     'BAH': 'المنامة',
-    'AMM': 'عمّان',
-    'IST': 'إسطنبول',
+    'RUH': 'الرياض',
+    'JED': 'جدة',
+    'DMM': 'الدمام',
     'AUH': 'أبوظبي',
     'SHJ': 'الشارقة',
-    'LHR': 'لندن',
-    'CDG': 'باريس',
+    'DXB': 'دبي',
+    'MCT': 'مسقط',
+
+    // 🇪🇬 مصر وشمال إفريقيا
+    'CAI': 'القاهرة',
+    'HBE': 'برج العرب (الإسكندرية)',
+    'HRG': 'الغردقة',
+    'LXR': 'الأقصر',
+    'SSH': 'شرم الشيخ',
+    'ASW': 'أسوان',
+    'TUN': 'تونس',
+    'CMN': 'الدار البيضاء',
+    'ALG': 'الجزائر',
+    'TIP': 'طرابلس',
+
+    // 🇱🇧 وبلاد الشام
+    'BEY': 'بيروت',
+    'AMM': 'عمّان',
+    'DAM': 'دمشق',
+    'ALE': 'حلب',
+
+    // 🇹🇷 تركيا
+    'IST': 'إسطنبول',
+    'SAW': 'صبيحة كوكجن',
+    'ESB': 'أنقرة',
+    'ADB': 'إزمير',
+
+    // 🇪🇺 أوروبا
+    'LHR': 'لندن (هيثرو)',
+    'LGW': 'لندن (غاتويك)',
+    'CDG': 'باريس (شارل ديغول)',
+    'ORY': 'باريس (أورلي)',
+    'FRA': 'فرانكفورت',
+    'MUC': 'ميونخ',
+    'AMS': 'أمستردام',
+    'MAD': 'مدريد',
+    'BCN': 'برشلونة',
+    'VIE': 'فيينا',
+    'ZRH': 'زيورخ',
+    'FCO': 'روما (فيوميتشينو)',
+    'MXP': 'ميلانو (مالبينسا)',
+    'ATH': 'أثينا',
+    'BRU': 'بروكسل',
+    'CPH': 'كوبنهاغن',
+    'OSL': 'أوسلو',
+    'ARN': 'ستوكهولم',
+
+    // 🇺🇸 أمريكا
+    'JFK': 'نيويورك (جون كينيدي)',
+    'EWR': 'نيوجيرسي (نيوآرك)',
+    'ORD': 'شيكاغو',
+    'LAX': 'لوس أنجلوس',
+    'MIA': 'ميامي',
+    'BOS': 'بوسطن',
+    'DFW': 'دالاس',
+    'IAD': 'واشنطن',
+
+    // 🌍 آسيا
+    'BKK': 'بانكوك',
+    'KUL': 'كوالالمبور',
+    'SIN': 'سنغافورة',
+    'NRT': 'طوكيو (ناريتا)',
+    'HND': 'طوكيو (هانيدا)',
+    'ICN': 'سيول',
+    'HKG': 'هونغ كونغ',
+    'DEL': 'نيودلهي',
+    'BOM': 'مومباي',
+    'CGK': 'جاكرتا',
+    'PEK': 'بكين',
+    'PVG': 'شنغهاي',
+
+    // 🦘 أوقيانوسيا
+    'SYD': 'سيدني',
+    'MEL': 'ملبورن',
+    'AKL': 'أوكلاند',
+
+    // 🇿🇦 أفريقيا جنوب الصحراء
+    'JNB': 'جوهانسبرغ',
+    'CPT': 'كيب تاون',
+
+    // 🇷🇺 روسيا
+    'SVO': 'موسكو (شيريميتيفو)',
+    'DME': 'موسكو (دوموديدوفو)',
+    'LED': 'سانت بطرسبرغ',
   };
+
   return airports[code.toUpperCase()] || code;
 }
+
 onChangeDeparture(flight: any) {
-  console.log('✈️ تغيير موعد المغادرة للرحلة:', flight);
-  // هنا هتعملي مثلاً: فتح modal أو التنقل لصفحة تعديل المواعيد
-  // مثال:
-  // this.router.navigate(['/change-departure'], { state: { flight } });
+  flight.showDepartureOptions = !flight.showDepartureOptions;
 }
+
+onChangeReturn(flight: any) {
+  flight.showReturnOptions = !flight.showReturnOptions;
+}
+
 
 }

@@ -84,11 +84,11 @@ onPassengersConfirmed(data: any) {
 
 
  searchFlights() {
-  const req = {
+ const req = {
     origin: this.selectedFrom?.iataCode,
     destination: this.selectedTo?.iataCode,
     departure: this.formatDate(this.depDate),
-    return: this.formatDate(this.retDate),
+    returnDate: this.selectedTripType === 'ذهاب فقط' ? null : this.formatDate(this.retDate),
     adults: this.adults,
     children: this.children,
     infants: this.infants,
@@ -101,8 +101,11 @@ onPassengersConfirmed(data: any) {
     next: (res) => {
       console.log('✅ النتائج:', res);
 
-      // نحفظ النتائج مؤقتًا ونفتح صفحة النتائج
-      this.router.navigate(['/search'], { state: { results: res.data } });
+       // نجمع الرحلات المتكررة حسب رقم الرحلة والوجهة
+      const groupedFlights = this.groupFlights(res.data);
+
+      // نحفظ النتائج ونفتح صفحة النتائج
+      this.router.navigate(['/search'], { state: { results: groupedFlights } });
     },
     error: (err) => {
       console.error('❌ خطأ في البحث:', err);
@@ -118,5 +121,29 @@ private formatDate(date: Date | null): string {
   const year = d.getFullYear();
   return `${year}-${month}-${day}`; // ✅ النتيجة: 2025-11-03
 }
+private groupFlights(flights: any[]) {
+  const grouped: { [key: string]: any } = {};
+
+  flights.forEach((flight) => {
+    // مفتاح فريد حسب الرحلة
+    const key = `${flight.airlineCode}-${flight.flightNumber}-${flight.origin}-${flight.destination}`;
+
+    if (!grouped[key]) {
+      grouped[key] = {
+        ...flight,
+        availableDates: [flight.departureTime], // نخزن المواعيد المتاحة
+      };
+    } else {
+      // نضيف فقط التاريخ لو مش مكرر
+      if (!grouped[key].availableDates.includes(flight.departureTime)) {
+        grouped[key].availableDates.push(flight.departureTime);
+      }
+    }
+  });
+
+  // نحول الكائن لمصفوفة
+  return Object.values(grouped);
+}
+
 }
 
