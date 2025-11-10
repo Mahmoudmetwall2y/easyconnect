@@ -21,88 +21,62 @@ selectedTo: any;
 
 constructor(private router: Router) {
   const nav = this.router.getCurrentNavigation();
-  let results: any[] = [];
+  const departures = nav?.extras?.state?.['departures'] || JSON.parse(sessionStorage.getItem('departures') || '[]');
+  const returns = nav?.extras?.state?.['returns'] || JSON.parse(sessionStorage.getItem('returns') || '[]');
 
-  if (nav?.extras?.state?.['results']) {
-    results = nav.extras.state['results'];
-    sessionStorage.setItem('flights', JSON.stringify(results));
-  } else {
-    const saved = sessionStorage.getItem('flights');
-    results = saved ? JSON.parse(saved) : [];
-  }
+  this.selectedFrom = JSON.parse(sessionStorage.getItem('selectedFrom') || 'null');
+  this.selectedTo = JSON.parse(sessionStorage.getItem('selectedTo') || 'null');
 
-  // 🟩 استرجاع الاتجاهات من البحث السابق
-  const savedFrom = sessionStorage.getItem('selectedFrom');
-  const savedTo = sessionStorage.getItem('selectedTo');
-  this.selectedFrom = savedFrom ? JSON.parse(savedFrom) : null;
-  this.selectedTo = savedTo ? JSON.parse(savedTo) : null;
+  const grouped = this.groupFlights(departures, returns);
 
-  // 🟢 نعمل التجميع بعد استرجاع البيانات
-  this.flights = this.groupFlights(results);
+if (sessionStorage.getItem('selectedTripType') === 'ذهاب وعودة') {
+  this.flights = grouped.filter(f => f.returnDepartureAt && f.returnArrivalAt);
+} else {
+  this.flights = grouped;
+}
+
   console.log("✅ grouped flights:", this.flights);
 }
 
 
+
   ngOnInit() {}
 
- 
-     
-private groupFlights(flights: any[]) {
-  const grouped: Record<string, any> = {};
+private groupFlights(departures: any[], returns: any[]) {
+  if (!departures?.length) return [];
 
-  flights.forEach((f) => {
-    // ✅ نحدد إذا كانت الرحلة ذهاب أو عودة بناءً على الـ origin
-const isReturn = f.origin === this.selectedTo?.iataCode;
+  const groupedMap = new Map<string, any>();
 
-    // مفتاح التجميع حسب شركة الطيران والمسار الأساسي
-    const baseKey =
-      f.origin < f.destination
-        ? `${f.origin}-${f.destination}-${f.airline}`
-        : `${f.destination}-${f.origin}-${f.airline}`;
+  for (const dep of departures) {
+    const key = dep.airline;
 
-    if (!grouped[baseKey]) {
-      grouped[baseKey] = {
-        origin: f.origin < f.destination ? f.origin : f.destination,
-        destination: f.origin < f.destination ? f.destination : f.origin,
-        airline: f.airline,
-        price: f.price,
-        currency: f.currency,
-        variations: [],
-        returnVariations: [],
-        isDepartureExpanded: false,
-        isReturnExpanded: false,
-      };
+    if (groupedMap.has(key)) {
+      groupedMap.get(key).variations.push(dep);
+      continue;
     }
 
-    // ✈️ لو الرحلة ذهاب
-    if (!isReturn) {
-      grouped[baseKey].variations.push(f);
-    }
-    // 🔁 لو الرحلة عودة
-    else {
-      grouped[baseKey].returnVariations.push(f);
-    }
+    const matchingReturns = returns.filter(r => r.airline === dep.airline);
+    const bestReturn = matchingReturns.sort((a, b) => a.price - b.price)[0];
 
-    // ✅ نحدث أقل سعر
-    if (f.price < grouped[baseKey].price) {
-      grouped[baseKey].price = f.price;
-    }
-  });
+    groupedMap.set(key, {
+      ...dep,
+      price: dep.price + (bestReturn?.price || 0),
+      returnDepartureAt: bestReturn?.departureAt,
+      returnArrivalAt: bestReturn?.arrivalAt,
+      returnDuration: bestReturn?.duration,
+      returnStops: bestReturn?.stops,
+      returnOrigin: bestReturn?.origin,
+      returnDestination: bestReturn?.destination,
+      variations: departures.filter(d => d.airline === dep.airline),
+      returnVariations: matchingReturns,
+      isDepartureExpanded: false,
+      isReturnExpanded: false,
+    });
+  }
 
-  // ⏱️ ترتيب الرحلات حسب وقت المغادرة
-  Object.values(grouped).forEach((g: any) => {
-    g.variations.sort(
-      (a: any, b: any) =>
-        new Date(a.departureAt).getTime() - new Date(b.departureAt).getTime()
-    );
-    g.returnVariations.sort(
-      (a: any, b: any) =>
-        new Date(a.departureAt).getTime() - new Date(b.departureAt).getTime()
-    );
-  });
-
-  return Object.values(grouped);
+  return Array.from(groupedMap.values());
 }
+
 
 
 
@@ -130,18 +104,18 @@ const isReturn = f.origin === this.selectedTo?.iataCode;
 
 formatTime(dateString?: string): string {
   if (!dateString) return '';
-  
-  const date = new Date(dateString);
-  // لو التوقيت راجع UTC نعدله لمنطقة المستخدم
-  const local = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
 
-  let hours = local.getHours();
-  const minutes = local.getMinutes().toString().padStart(2, '0');
+  const date = new Date(dateString);
+
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
   const period = hours >= 12 ? 'مساءً' : 'صباحاً';
   hours = hours % 12 || 12;
 
   return `${hours}:${minutes} ${period}`;
 }
+
+
 
  formatDuration(duration?: string): string {
   if (!duration) return '';

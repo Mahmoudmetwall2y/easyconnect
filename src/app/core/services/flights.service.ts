@@ -27,24 +27,13 @@ export class FlightsService {
 
   constructor(private http: HttpClient) {}
 
-  searchFlights(req: any): Observable<any> {
-  let params = new HttpParams()
-    .set('origin', req.origin)
-    .set('destination', req.destination)
-    .set('date', req.departure)
-    .set('adults', req.adults)
-    .set('children', req.children)
-    .set('infants', req.infants)
-    .set('travelClass', req.travelClass)
-    .set('currency', 'USD');
-
-  // ✅ فقط أضف returnDate لو الرحلة ذهاب وعودة
-  if (req.returnDate) {
-    params = params.set('returnDate', req.returnDate);
-  }
-
-  return this.http.get(`${this.baseUrl}/search`, { params });
+ searchFlights(req: any): Observable<{ data: { departures: any[], returns: any[] } }> {
+  return this.http.post<{ data: { departures: any[], returns: any[] } }>(
+    `${this.baseUrl}/search`,
+    req
+  );
 }
+
 
   getPopularAirports(): Observable<{ data: PopularAirport[] }> {
     return this.http.get<{ data: PopularAirport[] }>(`${this.baseUrl}/popular`);

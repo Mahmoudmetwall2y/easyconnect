@@ -41,11 +41,12 @@ openPassengerSelector = false;
 constructor(private flightService:FlightsService,private router:Router){
 
 }
-  selectTripType(type: string) {
-    this.selectedTripType = type;
-    this.openDropdown = false;
-    this.tripTypeChanged.emit(type);
-  }
+ selectTripType(type: string) {
+  this.selectedTripType = type;
+  sessionStorage.setItem('selectedTripType', type); // ✅ نحفظها
+  this.openDropdown = false;
+  this.tripTypeChanged.emit(type);
+}
 
   openDepartureCal() {
     this.showReturnCal = false;
@@ -83,40 +84,42 @@ onPassengersConfirmed(data: any) {
 
 
 
- searchFlights() {
- const req = {
+searchFlights() {
+  const req = {
     origin: this.selectedFrom?.iataCode,
     destination: this.selectedTo?.iataCode,
-    departure: this.formatDate(this.depDate),
+    departureDate: this.formatDate(this.depDate),
     returnDate: this.selectedTripType === 'ذهاب فقط' ? null : this.formatDate(this.retDate),
     adults: this.adults,
     children: this.children,
     infants: this.infants,
     travelClass: this.travelClass,
+    currency: 'USD'
   };
 
   console.log('🔍 بحث عن الرحلات:', req);
 
 this.flightService.searchFlights(req).subscribe({
   next: (res) => {
-    console.log('✅ النتائج:', res);
+    // ✅ خُدهم من res.data
+    const departures = res?.data?.departures ?? [];
+    const returns    = res?.data?.returns ?? [];
 
-    // 🟦 نجمع الرحلات حسب الشركة والمسار
-    //const groupedFlights = this.groupFlights(res.data);
-sessionStorage.setItem('selectedFrom', JSON.stringify(this.selectedFrom));
-sessionStorage.setItem('selectedTo', JSON.stringify(this.selectedTo));
+    // ✅ خزّن دايمًا Array مش undefined
+    sessionStorage.setItem('departures', JSON.stringify(departures));
+    sessionStorage.setItem('returns', JSON.stringify(returns));
+    sessionStorage.setItem('selectedFrom', JSON.stringify(this.selectedFrom ?? null));
+    sessionStorage.setItem('selectedTo', JSON.stringify(this.selectedTo ?? null));
 
-this.router.navigate(['/search'], { state: { results: res.data } });
-
+    this.router.navigate(['/search'], { state: { departures, returns } });
   },
   error: (err) => {
     console.error('❌ خطأ في البحث:', err);
     alert('حدث خطأ أثناء البحث عن الرحلات.');
   },
 });
-
- 
 }
+
 private formatDate(date: Date | null): string {
   if (!date) return '';
   const d = new Date(date);
