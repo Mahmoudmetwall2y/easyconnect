@@ -97,21 +97,25 @@ onPassengersConfirmed(data: any) {
 
   console.log('🔍 بحث عن الرحلات:', req);
 
- this.flightService.searchFlights(req).subscribe({
-    next: (res) => {
-      console.log('✅ النتائج:', res);
+this.flightService.searchFlights(req).subscribe({
+  next: (res) => {
+    console.log('✅ النتائج:', res);
 
-       // نجمع الرحلات المتكررة حسب رقم الرحلة والوجهة
-      const groupedFlights = this.groupFlights(res.data);
+    // 🟦 نجمع الرحلات حسب الشركة والمسار
+    //const groupedFlights = this.groupFlights(res.data);
+sessionStorage.setItem('selectedFrom', JSON.stringify(this.selectedFrom));
+sessionStorage.setItem('selectedTo', JSON.stringify(this.selectedTo));
 
-      // نحفظ النتائج ونفتح صفحة النتائج
-      this.router.navigate(['/search'], { state: { results: groupedFlights } });
-    },
-    error: (err) => {
-      console.error('❌ خطأ في البحث:', err);
-      alert('حدث خطأ أثناء البحث عن الرحلات.');
-    },
-  });
+this.router.navigate(['/search'], { state: { results: res.data } });
+
+  },
+  error: (err) => {
+    console.error('❌ خطأ في البحث:', err);
+    alert('حدث خطأ أثناء البحث عن الرحلات.');
+  },
+});
+
+ 
 }
 private formatDate(date: Date | null): string {
   if (!date) return '';
@@ -121,29 +125,14 @@ private formatDate(date: Date | null): string {
   const year = d.getFullYear();
   return `${year}-${month}-${day}`; // ✅ النتيجة: 2025-11-03
 }
-private groupFlights(flights: any[]) {
-  const grouped: { [key: string]: any } = {};
 
-  flights.forEach((flight) => {
-    // مفتاح فريد حسب الرحلة
-    const key = `${flight.airlineCode}-${flight.flightNumber}-${flight.origin}-${flight.destination}`;
 
-    if (!grouped[key]) {
-      grouped[key] = {
-        ...flight,
-        availableDates: [flight.departureTime], // نخزن المواعيد المتاحة
-      };
-    } else {
-      // نضيف فقط التاريخ لو مش مكرر
-      if (!grouped[key].availableDates.includes(flight.departureTime)) {
-        grouped[key].availableDates.push(flight.departureTime);
-      }
-    }
-  });
 
-  // نحول الكائن لمصفوفة
-  return Object.values(grouped);
-}
+
+
+
+
+
 
 }
 

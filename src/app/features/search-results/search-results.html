@@ -6,10 +6,11 @@
     لا توجد نتائج حالياً.
   </div>
 
-  <div *ngFor="let f of flights" class="mb-8 border-2 border-blue-600 rounded-2xl overflow-hidden shadow-sm">
+  <div *ngFor="let f of flights" class="mb-8 border-2 border-blue-600 rounded-2xl  shadow-sm">
 
     <!-- 🔹 الكارت الأبيض الرئيسي -->
     <div class="bg-white flex items-stretch p-4">
+
       <!-- يسار السعر -->
       <div class="flex flex-col justify-between items-center w-[20%] pr-6">
         <div
@@ -42,20 +43,22 @@
 
       <!-- يمين التفاصيل -->
       <div class="flex-1 flex flex-col justify-between px-4">
+
         <!-- ✈️ المغادرة -->
         <div class="flex items-center justify-between pb-4 gap-x-4">
           <div class="flex flex-row-reverse items-center text-right gap-x-3">
+            <div class="flex flex-col items-end text-right">
+              <p class="text-lg font-bold text-gray-900">{{ formatTime(f.arrivalAt) }}</p>
+              <p class="text-sm text-gray-500 mt-1">
+                ({{ f.destination }}) {{ translateAirport(f.destination) }}
+              </p>
+            </div>
 
-              <div class="flex flex-col items-end text-right">
-            <p class="text-lg font-bold text-gray-900">{{ formatTime(f.arrivalAt) }}</p>
-            <p class="text-sm text-gray-500 mt-1">({{ f.destination }}) {{ translateAirport(f.destination) }}</p>
-          </div>
-           
             <button
               class="bg-yellow-400 hover:bg-yellow-500 text-blue-800 font-semibold text-sm rounded-md px-4 py-2 transition"
-              (click)="f.isExpanded = !f.isExpanded"
+              (click)="onChangeDeparture(f)"
             >
-              {{ f.isExpanded ? 'إغلاق المواعيد' : 'تغيير موعد المغادرة' }}
+              {{ f.isDepartureExpanded ? 'إغلاق المواعيد' : 'تغيير موعد المغادرة' }}
             </button>
           </div>
 
@@ -70,11 +73,11 @@
             <p class="text-xs text-gray-500 mt-2">{{ formatDuration(f.duration) }}</p>
           </div>
 
-        
- <div>
-              <p class="text-lg font-bold text-gray-900">{{ formatTime(f.departureAt) }}</p>
-              <p class="text-sm text-gray-500 mt-1">({{ f.origin }}) {{ translateAirport(f.origin) }}</p>
-            </div>
+          <div>
+            <p class="text-lg font-bold text-gray-900">{{ formatTime(f.departureAt) }}</p>
+            <p class="text-sm text-gray-500 mt-1">({{ f.origin }}) {{ translateAirport(f.origin) }}</p>
+          </div>
+
           <div class="flex flex-col items-end text-right px-1">
             <div class="flex items-center gap-2 mb-1">
               <p class="text-sm font-semibold text-gray-700">{{ translateAirline(f.airline) }}</p>
@@ -90,169 +93,211 @@
 
         <div class="border-t border-gray-200 my-3"></div>
 
-        <!-- العودة -->
-   <!-- العودة -->
-<div class="flex items-center justify-between pt-2">
- 
-  <div class="flex flex-row-reverse items-center text-right gap-x-4">
-    <div class="flex flex-col items-end text-right">
-            <p class="text-lg font-bold text-gray-900">{{ formatTime(f.returnArrivalAt) }}</p>
-            <p class="text-sm text-gray-500 mt-1">({{ f.origin }}) {{ translateAirport(f.origin) }}</p>
+        <!-- 🟨 العودة -->
+        <div class="flex items-center justify-between pt-2">
+          <div class="flex flex-row-reverse items-center text-right gap-x-4">
+            <div class="flex flex-col items-end text-right">
+              <p class="text-lg font-bold text-gray-900">{{ formatTime(f.returnArrivalAt) }}</p>
+              <p class="text-sm text-gray-500 mt-1">
+                ({{ f.origin }}) {{ translateAirport(f.origin) }}
+              </p>
+            </div>
+
+            <button
+              class="bg-yellow-400 hover:bg-yellow-500 text-blue-800 font-semibold text-sm rounded-md px-5 py-2 transition"
+              (click)="onChangeReturn(f)"
+            >
+              {{ f.isReturnExpanded ? 'إغلاق المواعيد' : 'تغيير موعد العودة' }}
+            </button>
           </div>
-    <button
-      class="bg-yellow-400 hover:bg-yellow-500 text-blue-800 font-semibold text-sm rounded-md px-5 py-2 transition"
-      (click)="onChangeReturn(f)"
-    >
-      تغيير موعد العودة
-    </button>
-  </div>
 
-  <!-- المسار -->
-  <div class="flex-1 flex flex-col items-center justify-center px-4 relative">
-    <p class="absolute -top-5 text-xs text-gray-600 font-medium">
-      {{ f.returnStops && f.returnStops > 0 ? f.returnStops + ' محطات توقف' : 'بدون توقف' }}
-    </p>
-    <div class="relative w-full flex items-center justify-center">
-      <div class="h-[1px] bg-gradient-to-r from-gray-300 via-blue-400 to-gray-300 w-full"></div>
-      <i class="fa-solid fa-plane absolute text-blue-500 text-lg bg-white px-2 rotate-180"></i>
-    </div>
-    <p class="text-xs text-gray-500 mt-2">
-      {{ formatDuration(f.returnDuration) }}
-    </p>
-  </div>
+          <!-- المسار -->
+          <div class="flex-1 flex flex-col items-center justify-center px-4 relative">
+            <p class="absolute -top-5 text-xs text-gray-600 font-medium">
+              {{ f.returnStops && f.returnStops > 0 ? f.returnStops + ' محطات توقف' : 'بدون توقف' }}
+            </p>
+            <div class="relative w-full flex items-center justify-center">
+              <div class="h-[1px] bg-gradient-to-r from-gray-300 via-blue-400 to-gray-300 w-full"></div>
+              <i class="fa-solid fa-plane absolute text-blue-500 text-lg bg-white px-2 rotate-180"></i>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">{{ formatDuration(f.returnDuration) }}</p>
+          </div>
 
-  <!-- الوصول (يسار) -->
- 
-    <div class="flex items-center gap-3 mb-1">
-      <div class="flex flex-row-reverse items-center text-right gap-x-4">
+          <!-- الوصول -->
+          <div class="flex items-center justify-between text-right gap-x-4 px-3">
             <div>
               <p class="text-lg font-bold text-gray-900">{{ formatTime(f.returnDepartureAt) }}</p>
-              <p class="text-sm text-gray-500 mt-1">({{ f.destination }}) {{ translateAirport(f.destination) }}</p>
+              <p class="text-sm text-gray-500 mt-1">
+                ({{ f.destination }}) {{ translateAirport(f.destination) }}
+              </p>
             </div>
-     
-    </div>
-   <div class="flex flex-col items-end text-right px-3">
-  <!-- ✈️ اسم الشركة والصورة في نفس السطر -->
-  <div class="flex items-center gap-2 mb-2">
-    <p class="text-sm font-semibold text-gray-700">
-      {{ translateAirline(f.airline) }}
-    </p>
-    <img
-      [src]="f.airlineLogo || 'assets/d2.jpg'"
-      alt="Airline"
-      class="w-10 h-10 rounded-lg border"
-    />
-  </div>
 
-  <!-- 🔹 زر التفاصيل -->
-  <button
-    class="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white rounded-md px-4 py-1 text-sm transition"
-  >
-    عرض تفاصيل الرحلة
-  </button>
-</div>
-
-</div>
-  </div>
+            <div class="flex flex-col items-end text-right">
+              <div class="flex items-center gap-2 mb-2">
+                <p class="text-sm font-semibold text-gray-700">{{ translateAirline(f.airline) }}</p>
+                <img
+                  [src]="f.airlineLogo || 'assets/d2.jpg'"
+                  alt="Airline"
+                  class="w-10 h-10 rounded-lg border"
+                />
+              </div>
+              <button
+                class="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white rounded-md px-4 py-1 text-sm transition"
+              >
+                عرض تفاصيل الرحلة
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-<!-- 🟦 البلوك الأزرق داخل الإطار الأزرق -->
-<div
-  *ngIf="f.isExpanded"
-  class="bg-blue-50 px-6 py-5 space-y-4 border-t border-blue-600 rounded-b-2xl"
+
+    <!-- 🟦 بلوك المواعيد المغادرة -->
+  <div
+  *ngIf="f.isDepartureExpanded"
+  class="bg-blue-50 px-6 py-5 space-y-4 border-t border-blue-600 rounded-b-2xl mt-[-2px]"
 >
 
- 
-
-  <!-- 🔹 كروت الرحلات -->
-  <div
-    *ngFor="let option of f.variations"
-    class="flex items-center justify-between bg-white border rounded-xl p-4 hover:shadow transition"
-  >
-    <!-- ✅ يسار السعر والزر -->
-    <div class="flex flex-col items-center justify-center w-[15%] text-center">
-      <p class="text-lg font-bold text-gray-900 mb-2">
-        +{{ option.price - f.price | number: '1.0-0' }} {{ option.currency }}
-      </p>
-      <button
-        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-md px-5 py-2"
+      <div
+        *ngFor="let option of f.variations"
+        class="flex items-center justify-between bg-white border rounded-xl p-4 hover:shadow transition"
       >
-        اختر الرحلة
-      </button>
-    </div>
-
-    <!-- ✅ الوسط: الوقت + الطيارة -->
-    <div class="flex-1 flex flex-col items-center justify-center text-center mx-8">
-      <div class="flex items-center justify-between w-full">
-        <!-- الوصول (يمين) -->
-        <div class="flex flex-col items-end">
-          <p class="text-lg font-bold text-gray-900">
-            {{ formatTime(option.arrivalAt) }}
+        <div class="flex flex-col items-center justify-center w-[15%] text-center">
+          <p class="text-lg font-bold text-gray-900 mb-2">
+            +{{ option.price - f.price | number: '1.0-0' }} {{ option.currency }}
           </p>
-          <p class="text-sm text-gray-500">
-            ({{ option.destination }}) {{ translateAirport(option.destination) }}
-          </p>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-md px-5 py-2">
+            اختر الرحلة
+          </button>
         </div>
 
-        <!-- ✈️ الخط والطائرة والمدة -->
-        <div class="flex flex-col items-center justify-center flex-1 mx-8 relative text-center">
-          <!-- 🟦 عدد التوقفات فوق الخط -->
-          <p class="text-xs text-gray-600 mb-2">
-            {{
-              option.stops === 0
-                ? 'بدون توقف'
-                : option.stops === 1
-                  ? 'محطة توقف واحدة'
-                  : option.stops + ' محطات توقف'
-            }}
-          </p>
+        <div class="flex-1 flex flex-col items-center justify-center text-center mx-8">
+          <div class="flex items-center justify-between w-full">
+            <div class="flex flex-col items-end">
+              <p class="text-lg font-bold text-gray-900">{{ formatTime(option.arrivalAt) }}</p>
+              <p class="text-sm text-gray-500">
+                ({{ option.destination }}) {{ translateAirport(option.destination) }}
+              </p>
+            </div>
 
-          <!-- 🟨 الخط الرمادي -->
-          <div class="relative w-full flex items-center justify-center">
-            <div class="h-[1px] bg-gray-300 w-full"></div>
-            <i class="fa-solid fa-plane text-black absolute bg-white px-2 text-base"></i>
+            <div class="flex flex-col items-center justify-center flex-1 mx-8 relative text-center">
+              <p class="text-xs text-gray-600 mb-2">
+                {{
+                  option.stops === 0
+                    ? 'بدون توقف'
+                    : option.stops === 1
+                      ? 'محطة توقف واحدة'
+                      : option.stops + ' محطات توقف'
+                }}
+              </p>
+              <div class="relative w-full flex items-center justify-center">
+                <div class="h-[1px] bg-gray-300 w-full"></div>
+                <i class="fa-solid fa-plane text-black absolute bg-white px-2 text-base"></i>
+              </div>
+              <p class="text-xs text-gray-600 mt-2">{{ formatDuration(option.duration) }}</p>
+            </div>
+
+            <div class="flex flex-col items-start">
+              <p class="text-lg font-bold text-gray-900">{{ formatTime(option.departureAt) }}</p>
+              <p class="text-sm text-gray-500">
+                ({{ option.origin }}) {{ translateAirport(option.origin) }}
+              </p>
+            </div>
           </div>
-
-          <!-- 🟩 المدة تحت الخط -->
-          <p class="text-xs text-gray-600 mt-2">
-            {{ formatDuration(option.duration) }}
-          </p>
         </div>
 
-        <!-- الإقلاع (يسار) -->
-        <div class="flex flex-col items-start">
-          <p class="text-lg font-bold text-gray-900">
-            {{ formatTime(option.departureAt) }}
-          </p>
-          <p class="text-sm text-gray-500">
-            ({{ option.origin }}) {{ translateAirport(option.origin) }}
-          </p>
+        <div class="flex flex-col items-end text-right w-[22%]">
+          <div class="flex items-center gap-2 mb-2">
+            <p class="text-sm font-semibold text-gray-800">
+              {{ translateAirline(option.airline) }}
+            </p>
+            <img
+              [src]="option.airlineLogo || 'assets/d2.jpg'"
+              alt="Airline"
+              class="w-10 h-10 rounded-md border"
+            />
+          </div>
+          <button
+            class="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-sm font-semibold rounded-md px-4 py-1 transition w-fit"
+          >
+            عرض تفاصيل الرحلة
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- ✅ يمين شركة الطيران -->
-    <div class="flex flex-col items-end text-right w-[22%]">
-      <div class="flex items-center gap-2 mb-2">
-        <p class="text-sm font-semibold text-gray-800">
-          {{ translateAirline(option.airline) }}
-        </p>
-        <img
-          [src]="option.airlineLogo || 'assets/d2.jpg'"
-          alt="Airline"
-          class="w-10 h-10 rounded-md border"
-        />
-      </div>
-      <button
-        class="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-sm font-semibold rounded-md px-4 py-1 transition w-fit"
+    <!-- 🟩 بلوك مواعيد العودة -->
+    <div
+      *ngIf="f.isReturnExpanded"
+      class="bg-blue-50 px-6 py-5 space-y-4 border-t border-blue-600 rounded-b-2xl"
+    >
+      <div
+        *ngFor="let option of f.returnVariations"
+        class="flex items-center justify-between bg-white border rounded-xl p-4 hover:shadow transition"
       >
-        عرض تفاصيل الرحلة
-      </button>
+        <div class="flex flex-col items-center justify-center w-[15%] text-center">
+          <p class="text-lg font-bold text-gray-900 mb-2">
+            +{{ option.price - f.price | number: '1.0-0' }} {{ option.currency }}
+          </p>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-md px-5 py-2">
+            اختر الرحلة
+          </button>
+        </div>
+
+        <div class="flex-1 flex flex-col items-center justify-center text-center mx-8">
+          <div class="flex items-center justify-between w-full">
+            <div class="flex flex-col items-end">
+              <p class="text-lg font-bold text-gray-900">{{ formatTime(option.arrivalAt) }}</p>
+              <p class="text-sm text-gray-500">
+                ({{ option.destination }}) {{ translateAirport(option.destination) }}
+              </p>
+            </div>
+
+            <div class="flex flex-col items-center justify-center flex-1 mx-8 relative text-center">
+              <p class="text-xs text-gray-600 mb-2">
+                {{
+                  option.stops === 0
+                    ? 'بدون توقف'
+                    : option.stops === 1
+                      ? 'محطة توقف واحدة'
+                      : option.stops + ' محطات توقف'
+                }}
+              </p>
+              <div class="relative w-full flex items-center justify-center">
+                <div class="h-[1px] bg-gray-300 w-full"></div>
+                <i class="fa-solid fa-plane text-black absolute bg-white px-2 text-base"></i>
+              </div>
+              <p class="text-xs text-gray-600 mt-2">{{ formatDuration(option.duration) }}</p>
+            </div>
+
+            <div class="flex flex-col items-start">
+              <p class="text-lg font-bold text-gray-900">{{ formatTime(option.departureAt) }}</p>
+              <p class="text-sm text-gray-500">
+                ({{ option.origin }}) {{ translateAirport(option.origin) }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-end text-right w-[22%]">
+          <div class="flex items-center gap-2 mb-2">
+            <p class="text-sm font-semibold text-gray-800">
+              {{ translateAirline(option.airline) }}
+            </p>
+            <img
+              [src]="option.airlineLogo || 'assets/d2.jpg'"
+              alt="Airline"
+              class="w-10 h-10 rounded-md border"
+            />
+          </div>
+          <button
+            class="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-sm font-semibold rounded-md px-4 py-1 transition w-fit"
+          >
+            عرض تفاصيل الرحلة
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
 
   </div>
- 
 </section>
