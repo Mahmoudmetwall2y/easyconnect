@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FlightCalendar } from '../../../shared/components/flight-calendar/flight-calendar';
@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
   templateUrl: './flight-search-bar.html',
   styleUrls: ['./flight-search-bar.css']
 })
-export class FlightSearchBar {
+export class FlightSearchBar implements OnInit {
   @Input() selectedTripType: string = 'ذهاب وعودة';
   @Output() tripTypeChanged = new EventEmitter<string>();
 
@@ -31,16 +31,55 @@ adults = 1;
 children = 0;
 infants = 0;
 travelClass = 'السياحية';
+@Input() initialFrom: any = null;
+@Input() initialTo: any = null;
 
+@Input() initialDepDate: string | null = null;
+@Input() initialRetDate: string | null = null;
+
+@Input() initialAdults: number = 1;
+@Input() initialChildren: number = 0;
+@Input() initialInfants: number = 0;
+@Input() initialTravelClass: string = 'السياحية';
 
   openDropdown = false;
   showDepartureCal = false;
   showReturnCal = false;
 openPassengerSelector = false;
 
-constructor(private flightService:FlightsService,private router:Router){
+constructor(private flightService: FlightsService, private router: Router) {
+    // ✅ عند أول تحميل: لو مفيش حاجة متخزنة، نخليها "ذهاب وعودة"
+    const savedType = sessionStorage.getItem('selectedTripType');
+    this.selectedTripType = savedType ? savedType : 'ذهاب وعودة';
+  }
+ngOnInit(): void {
 
+  // إصلاح الـ tripType
+  if (!this.selectedTripType || this.selectedTripType.trim() === '') {
+    this.selectedTripType = 'ذهاب وعودة';
+  }
+  if (this.initialFrom) this.selectedFrom = this.initialFrom;
+  if (this.initialTo) this.selectedTo = this.initialTo;
+
+  if (this.initialDepDate) {
+    this.depDate = new Date(this.initialDepDate);
+    this.selectedDeparture = this.depDate.toLocaleDateString('ar-EG');
+  }
+
+  if (this.initialRetDate) {
+    this.retDate = new Date(this.initialRetDate);
+    this.selectedReturn = this.retDate.toLocaleDateString('ar-EG');
+  }
+
+  this.adults = this.initialAdults;
+  this.children = this.initialChildren;
+  this.infants = this.initialInfants;
+  this.travelClass = this.initialTravelClass;
+
+  // passengersSummary!!
+  this.passengersSummary = `${this.adults + this.children + this.infants} مسافر | ${this.travelClass}`;
 }
+  
  selectTripType(type: string) {
   this.selectedTripType = type;
   sessionStorage.setItem('selectedTripType', type); // ✅ نحفظها
@@ -110,6 +149,14 @@ this.flightService.searchFlights(req).subscribe({
     sessionStorage.setItem('returns', JSON.stringify(returns));
     sessionStorage.setItem('selectedFrom', JSON.stringify(this.selectedFrom ?? null));
     sessionStorage.setItem('selectedTo', JSON.stringify(this.selectedTo ?? null));
+    sessionStorage.setItem('depDate', this.formatDate(this.depDate));
+sessionStorage.setItem('retDate', this.formatDate(this.retDate));
+
+sessionStorage.setItem('adults', this.adults.toString());
+sessionStorage.setItem('children', this.children.toString());
+sessionStorage.setItem('infants', this.infants.toString());
+sessionStorage.setItem('travelClass', this.travelClass);
+
 
     this.router.navigate(['/search'], { state: { departures, returns } });
   },

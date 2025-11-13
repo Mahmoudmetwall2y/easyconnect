@@ -14,10 +14,21 @@ export class SearchResults  implements OnInit{
 
 
 
- flights: any[] = [];
+  flights: any[] = [];
   originalFlights: any[] = [];
-selectedFrom: any;
-selectedTo: any;
+
+  selectedFrom: any = null;
+  selectedTo: any = null;
+
+  selectedDepartureDate: string | null = null;
+  selectedReturnDate: string | null = null;
+
+  adults: number = 1;
+  children: number = 0;
+  infants: number = 0;
+  travelClass: string = 'السياحية';
+
+  groupedFlights: any[] = [];
 
 constructor(private router: Router) {
   const nav = this.router.getCurrentNavigation();
@@ -29,13 +40,24 @@ constructor(private router: Router) {
 
   const grouped = this.groupFlights(departures, returns);
 
-if (sessionStorage.getItem('selectedTripType') === 'ذهاب وعودة') {
-  this.flights = grouped.filter(f => f.returnDepartureAt && f.returnArrivalAt);
-} else {
-  this.flights = grouped;
-}
+this.groupedFlights = this.groupByAirline(grouped);
 
-  console.log("✅ grouped flights:", this.flights);
+// لو ذهاب وعودة
+if (sessionStorage.getItem('selectedTripType') === 'ذهاب وعودة') {
+  this.groupedFlights = this.groupedFlights.filter(f => f.returnDepartureAt && f.returnArrivalAt);
+}
+this.selectedFrom = JSON.parse(sessionStorage.getItem('selectedFrom') || 'null');
+this.selectedTo = JSON.parse(sessionStorage.getItem('selectedTo') || 'null');
+
+this.selectedDepartureDate = sessionStorage.getItem('depDate');
+this.selectedReturnDate = sessionStorage.getItem('retDate');
+
+this.adults = Number(sessionStorage.getItem('adults') || 1);
+this.children = Number(sessionStorage.getItem('children') || 0);
+this.infants = Number(sessionStorage.getItem('infants') || 0);
+this.travelClass = sessionStorage.getItem('travelClass') || 'السياحية';
+
+  console.log("✅ grouped flights:", this.groupedFlights);
 }
 
 
@@ -45,42 +67,47 @@ if (sessionStorage.getItem('selectedTripType') === 'ذهاب وعودة') {
 private groupFlights(departures: any[], returns: any[]) {
   if (!departures?.length) return [];
 
-  const groupedMap = new Map<string, any>();
+  const results: any[] = [];
 
   for (const dep of departures) {
-    const key = dep.airline;
+    // نجيب كل رحلات العودة المطابقة
+    const matchingReturns = returns.filter(r =>
+      r.airline === dep.airline &&
+      new Date(r.departureAt) > new Date(dep.arrivalAt) &&
+      r.origin === dep.destination &&
+      r.destination === dep.origin
+    );
 
-    if (groupedMap.has(key)) {
-      groupedMap.get(key).variations.push(dep);
-      continue;
-    }
+    // ❌ لو الرحلة مفيش ليها أي Return → تجاهلها
+    if (matchingReturns.length === 0) continue;
 
-    const matchingReturns = returns.filter(r => r.airline === dep.airline);
+    // أفضل عودة
     const bestReturn = matchingReturns.sort((a, b) => a.price - b.price)[0];
 
-    groupedMap.set(key, {
+    results.push({
       ...dep,
-      price: dep.price + (bestReturn?.price || 0),
-      returnDepartureAt: bestReturn?.departureAt,
-      returnArrivalAt: bestReturn?.arrivalAt,
-      returnDuration: bestReturn?.duration,
-      returnStops: bestReturn?.stops,
-      returnOrigin: bestReturn?.origin,
-      returnDestination: bestReturn?.destination,
+      // السعر الإجمالي
+      price: dep.price + bestReturn.price,
+
+      // بيانات العودة
+      returnDepartureAt: bestReturn.departureAt,
+      returnArrivalAt: bestReturn.arrivalAt,
+      returnDuration: bestReturn.duration,
+      returnStops: bestReturn.stops,
+      returnOrigin: bestReturn.origin,
+      returnDestination: bestReturn.destination,
+
+      // Variations
       variations: departures.filter(d => d.airline === dep.airline),
       returnVariations: matchingReturns,
+
       isDepartureExpanded: false,
-      isReturnExpanded: false,
+      isReturnExpanded: false
     });
   }
 
-  return Array.from(groupedMap.values());
+  return results;
 }
-
-
-
-
-
 
   onChangeDeparture(selected: any) {
     this.flights.forEach(f => {
@@ -146,6 +173,7 @@ formatTime(dateString?: string): string {
     'FZ': 'فلاي دبي',
     'J9': 'طيران جازيرا',
     'XY': 'طيران ناس',
+    'NP': 'الطيران الوطنية', // ⭐ تمت الإضافة هنا
 
     // 🇪🇬 شمال أفريقيا
     'MS': 'مصر للطيران',
@@ -299,6 +327,56 @@ translateAirport(code?: string): string {
 
 
 
+private groupByAirline(flights: any[]) {
+  const grouped = flights.reduce((acc: any, f: any) => {
+    const code = f.airline;
+
+    if (!acc[code]) {
+      acc[code] = {
+        airline: f.airline,
+        airlineLogo: f.airlineLogo,
+        price: f.price,
+        bestDeparture: f,
+        variations: [],
+        returnVariations: [],
+        // نحتاج كل بيانات display في HTML
+        ...f
+      };
+    } else {
+      // أرخص سعر لهذه الشركة
+      if (f.price < acc[code].price) {
+        acc[code].price = f.price;
+        acc[code].bestDeparture = f;
+
+        // نحدّث البيانات الأساسية
+        Object.assign(acc[code], f);
+      }
+    }
+
+    // ضيف الـ variation
+    acc[code].variations.push(f);
+
+    // ضيف return بظروفها
+    if (f.returnDepartureAt) {
+      acc[code].returnVariations.push({
+        departureAt: f.returnDepartureAt,
+        arrivalAt: f.returnArrivalAt,
+        duration: f.returnDuration,
+        price: f.price,
+        currency: f.currency,
+        airline: f.airline,
+        origin: f.returnOrigin,
+        destination: f.returnDestination,
+        stops: f.returnStops,
+        airlineLogo: f.airlineLogo
+      });
+    }
+
+    return acc;
+  }, {});
+
+  return Object.values(grouped);
+}
 
 
 }

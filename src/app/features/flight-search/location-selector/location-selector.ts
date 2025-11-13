@@ -33,6 +33,7 @@ export class LocationSelector implements OnInit, OnDestroy {
   @Input() placeholder = 'مدينة أو مطار';
   /** قيمة مختارة لعرضها بشكل read-only بعد الاختيار */
   @Input() value: SelectedLocation | null = null;
+@Input() initialValue: SelectedLocation | null = null;
 
   /** عند اختيار مدينة/مطار */
   @Output() locationSelected = new EventEmitter<SelectedLocation>();
@@ -50,6 +51,11 @@ export class LocationSelector implements OnInit, OnDestroy {
   constructor(private flights: FlightsService) {}
 
   ngOnInit(): void {
+
+     if (this.initialValue) {
+    this.value = this.initialValue;
+  }
+
     // stream البحث
     this.sub = this.search$
       .pipe(

@@ -1,12 +1,39 @@
-<app-flight-search-bar class="pt-32"></app-flight-search-bar>
+<div class="
+  mt-[160px]
+  sm:mt-[180px]
+  md:mt-[200px]
+  lg:mt-[220px]
+  xl:mt-[230px]
+">
 
-<section class="bg-gray-50 min-h-screen pt-10 px-10 pb-20">
+<app-flight-search-bar 
+    class="block"
+    [initialFrom]="selectedFrom"
+    [initialTo]="selectedTo"
+    [initialDepDate]="selectedDepartureDate"
+    [initialRetDate]="selectedReturnDate"
+    [initialAdults]="adults"
+    [initialChildren]="children"
+    [initialInfants]="infants"
+    [initialTravelClass]="travelClass"
+></app-flight-search-bar>
 
-  <div *ngIf="flights.length === 0" class="text-gray-500 text-center py-8">
-    لا توجد نتائج حالياً.
-  </div>
 
-  <div *ngFor="let f of flights" class="mb-8 border-2 border-blue-600 rounded-2xl  shadow-sm">
+  <section 
+    class="
+      bg-gray-50 
+      min-h-screen 
+      px-4 
+      sm:px-6 
+      md:px-10 
+      pb-20
+    ">
+
+
+
+
+  <div *ngFor="let f of groupedFlights"
+ class="mb-8 border-2 border-blue-600 rounded-2xl  shadow-sm">
 
     <!-- 🔹 الكارت الأبيض الرئيسي -->
     <div class="bg-white flex items-stretch p-4">
@@ -100,7 +127,7 @@
             <div class="flex flex-col items-end text-right">
               <p class="text-lg font-bold text-gray-900">{{ formatTime(f.returnArrivalAt) }}</p>
               <p class="text-sm text-gray-500 mt-1">
-({{ f.returnOrigin }}) {{ translateAirport(f.returnOrigin) }}
+  ({{ f.returnDestination }}) {{ translateAirport(f.returnDestination) }}
               </p>
             </div>
 
@@ -302,3 +329,4 @@
 
   </div>
 </section>
+</div>

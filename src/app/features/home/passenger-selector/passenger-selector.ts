@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output ,Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,7 +8,9 @@ import { CommonModule } from '@angular/common';
   templateUrl: './passenger-selector.html',
   styleUrls: ['./passenger-selector.css']
 })
-export class PassengerSelector {
+export class PassengerSelector implements OnInit {
+
+  
  @Output() confirmed = new EventEmitter<{
   adults: number;
   children: number;
@@ -17,6 +19,11 @@ export class PassengerSelector {
   summary: string;
 }>();
 
+@Input() initialAdults: number = 1;
+@Input() initialChildren: number = 0;
+@Input() initialInfants: number = 0;
+@Input() initialClass: string = 'السياحية';
+@Input() initialSummary: string = '';
 
   adults = 1;
   children = 0;
@@ -26,6 +33,14 @@ export class PassengerSelector {
   displayValue = '';
 
   classes = ['السياحية', 'السياحية المتميزة', 'درجة رجال الأعمال', 'الدرجة الأولى'];
+
+ngOnInit() {
+  this.adults = this.initialAdults;
+  this.children = this.initialChildren;
+  this.infants = this.initialInfants;
+  this.selectedClass = this.initialClass;
+  this.displayValue = this.initialSummary;
+}
 
   toggle() {
     this.showDropdown = !this.showDropdown;
