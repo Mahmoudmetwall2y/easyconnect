@@ -70,6 +70,18 @@
 
       <!-- يمين التفاصيل -->
       <div class="flex-1 flex flex-col justify-between px-4">
+<!-- 🟦 عنوان المغادرة (مطابق للفيجما) -->
+
+  <!-- التاريخ والدرجة -->
+  <div class="flex items-center gap-3 text-gray-700 text-[15px] font-semibold px-4 py-3" dir="rtl">
+    <span class="text-[18px] font-bold text-gray-900 ">المغادرة</span>
+   
+{{ selectedDepartureDate | date:'EEEE d MMMM':'':'ar-EG' }}
+ <span> {{ travelClass }}</span>
+  </div>
+
+
+
 
         <!-- ✈️ المغادرة -->
         <div class="flex items-center justify-between pb-4 gap-x-4">
@@ -120,6 +132,21 @@
         </div>
 
         <div class="border-t border-gray-200 my-3"></div>
+<!-- 🟦 عنوان العودة (مطابق للفيجما) -->
+
+
+  <div class="flex items-center gap-3 text-gray-700 text-[15px] font-semibold px-4 py-3" dir="rtl">
+   
+    <span class="text-[18px] font-bold text-gray-900 ">العودة</span>
+
+    <span>{{ selectedReturnDate | date:'EEEE d MMMM':'':  'ar-EG' }}</span>
+     <span>{{ travelClass }}</span>
+  </div>
+
+
+
+
+
 
         <!-- 🟨 العودة -->
         <div class="flex items-center justify-between pt-2">

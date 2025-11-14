@@ -34,8 +34,9 @@ travelClass = 'السياحية';
 @Input() initialFrom: any = null;
 @Input() initialTo: any = null;
 
-@Input() initialDepDate: string | null = null;
-@Input() initialRetDate: string | null = null;
+@Input() initialDepDate: string | Date | null = null;
+@Input() initialRetDate: string | Date | null = null;
+
 
 @Input() initialAdults: number = 1;
 @Input() initialChildren: number = 0;
