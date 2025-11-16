@@ -7,6 +7,7 @@ import { LocationSelector, SelectedLocation } from '../../flight-search/location
 import { PassengerSelector } from '../passenger-selector/passenger-selector';
 import { FlightsService } from '../../../core/services/flights.service';
 import { Router } from '@angular/router';
+import { CurrencyService } from '../../../core/services/currency-service';
 
 @Component({
   selector: 'app-flight-search-bar',
@@ -47,14 +48,26 @@ travelClass = 'السياحية';
   showDepartureCal = false;
   showReturnCal = false;
 openPassengerSelector = false;
+currencyIso: string = 'USD';
 
-constructor(private flightService: FlightsService, private router: Router) {
+
+constructor(private flightService: FlightsService, private router: Router,  private currencyService: CurrencyService
+) {
     // ✅ عند أول تحميل: لو مفيش حاجة متخزنة، نخليها "ذهاب وعودة"
     const savedType = sessionStorage.getItem('selectedTripType');
     this.selectedTripType = savedType ? savedType : 'ذهاب وعودة';
   }
 ngOnInit(): void {
 
+
+   const selected = this.currencyService.getCurrency();
+  if (selected) {
+    this.currencyIso = selected.iso;
+  }
+
+  this.currencyService.currency$.subscribe((c) => {
+    if (c) this.currencyIso = c.iso;
+  }); 
   // إصلاح الـ tripType
   if (!this.selectedTripType || this.selectedTripType.trim() === '') {
     this.selectedTripType = 'ذهاب وعودة';
@@ -134,7 +147,8 @@ searchFlights() {
     children: this.children,
     infants: this.infants,
     travelClass: this.travelClass,
-    currency: 'USD'
+currency: this.currencyService.currencyByCountry[this.currencyIso]
+
   };
 
   console.log('🔍 بحث عن الرحلات:', req);
