@@ -8,11 +8,12 @@ import { PassengerSelector } from '../passenger-selector/passenger-selector';
 import { FlightsService } from '../../../core/services/flights.service';
 import { Router } from '@angular/router';
 import { CurrencyService } from '../../../core/services/currency-service';
+import { LoadingScreen } from '../../../shared/loading-screen/loading-screen';
 
 @Component({
   selector: 'app-flight-search-bar',
   standalone: true,
-  imports: [CommonModule, FormsModule, FlightCalendar, LocationSelector, PassengerSelector],
+  imports: [CommonModule, FormsModule, FlightCalendar, LocationSelector, PassengerSelector,LoadingScreen],
   templateUrl: './flight-search-bar.html',
   styleUrls: ['./flight-search-bar.css']
 })
@@ -27,7 +28,7 @@ export class FlightSearchBar implements OnInit {
   retDate: Date | null = null;
   selectedDeparture: string | null = null;
   selectedReturn: string | null = null;
- passengersSummary: string = '';
+ passengersSummary: string =  '';
 adults = 1;
 children = 0;
 infants = 0;
@@ -49,6 +50,9 @@ travelClass = 'السياحية';
   showReturnCal = false;
 openPassengerSelector = false;
 currencyIso: string = 'USD';
+loading = false;
+
+
 
 
 constructor(private flightService: FlightsService, private router: Router,  private currencyService: CurrencyService
@@ -92,6 +96,7 @@ ngOnInit(): void {
 
   // passengersSummary!!
   this.passengersSummary = `${this.adults + this.children + this.infants} مسافر | ${this.travelClass}`;
+ // this.passengersSummary =  'اختر عدد المسافرين';
 }
   
  selectTripType(type: string) {
@@ -138,6 +143,13 @@ onPassengersConfirmed(data: any) {
 
 
 searchFlights() {
+   this.loading = true;
+
+  setTimeout(() => {
+    this.loading = false;
+  }, 6000);
+
+ 
   const req = {
     origin: this.selectedFrom?.iataCode,
     destination: this.selectedTo?.iataCode,
@@ -172,7 +184,10 @@ sessionStorage.setItem('children', this.children.toString());
 sessionStorage.setItem('infants', this.infants.toString());
 sessionStorage.setItem('travelClass', this.travelClass);
 
-
+   setTimeout(() => {   // علشان يلحق يشوف الأنيميشن
+        this.loading = false;
+        this.router.navigate(['/search'], { state: { departures, returns } });
+      }, 6000);
     this.router.navigate(['/search'], { state: { departures, returns } });
   },
   error: (err) => {

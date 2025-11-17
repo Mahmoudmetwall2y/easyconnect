@@ -419,6 +419,25 @@ translateAirport(code?: string): string {
   return airports[code.toUpperCase()] || code;
 }
 
+applyNewDeparture(f: any, option: any) {
+    f.selectedDeparture = option;   // ← حطيه هنا
+
+  f.price = option.price + (f.returnPrice || 0);  // تحديث السعر النهائي
+  f.departureAt = option.departureAt;
+  f.arrivalAt = option.arrivalAt;
+  f.duration = option.duration;
+  f.stops = option.stops;
+}
+applyNewReturn(f: any, option: any) {
+    f.selectedReturn = option;   // ← نفس الفكرة هنا
+
+  f.price = (f.price - f.returnPrice) + option.price;
+  f.returnPrice = option.price;
+  f.returnDepartureAt = option.departureAt;
+  f.returnArrivalAt = option.arrivalAt;
+  f.returnDuration = option.duration;
+  f.returnStops = option.stops;
+}
 
 
 

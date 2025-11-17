@@ -25,6 +25,7 @@ export class PassengerSelector implements OnInit {
 @Input() initialClass: string = 'السياحية';
 @Input() initialSummary: string = '';
 
+
   adults = 1;
   children = 0;
   infants = 0;

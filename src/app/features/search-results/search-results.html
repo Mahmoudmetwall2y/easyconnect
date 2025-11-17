@@ -210,17 +210,28 @@
   class="bg-blue-50 px-6 py-5 space-y-4 border-t border-blue-600 rounded-b-2xl mt-[-2px]"
 >
 
-      <div
-        *ngFor="let option of f.variations"
-        class="flex items-center justify-between bg-white border rounded-xl p-4 hover:shadow transition"
-      >
+    <div 
+  *ngFor="let option of f.variations"
+  [class.border-blue-600]="option === f.selectedDeparture"
+  class="border rounded-xl p-4"
+>
+
         <div class="flex flex-col items-center justify-center w-[15%] text-center">
-          <p class="text-lg font-bold text-gray-900 mb-2">
-{{ option.price | number: '1.0-0' }} {{ option.currency }}
-          </p>
-          <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-md px-5 py-2">
-            اختر الرحلة
-          </button>
+        <p class="text-lg font-bold"
+   [ngClass]="{
+     'text-blue-600': option.price > f.price,
+     'text-green-600': option.price < f.price
+   }"
+>
+  + {{ (option.price - f.price) | number:'1.0-0' }} {{ option.currency }}
+</p>
+<button 
+  class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-md px-5 py-2"
+  (click)="applyNewDeparture(f, option)"
+>
+  اختر الرحلة
+</button>
+
         </div>
 
         <div class="flex-1 flex flex-col items-center justify-center text-center ">
@@ -288,12 +299,22 @@
         class="flex items-center justify-between bg-white border rounded-xl p-4 hover:shadow transition"
       >
         <div class="flex flex-col items-center justify-center w-[15%] text-center">
-          <p class="text-lg font-bold text-gray-900 mb-2">
-{{ option.price | number: '1.0-0' }} {{ option.currency }}
-          </p>
-          <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-md px-5 py-2">
-            اختر الرحلة
-          </button>
+        <p class="text-lg font-bold"
+   [ngClass]="{
+     'text-blue-600': option.price > f.price,
+     'text-green-600': option.price < f.price
+   }"
+>
+  + {{ (option.price - f.price) | number:'1.0-0' }} {{ option.currency }}
+</p>
+
+         <button 
+  class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-md px-5 py-2"
+  (click)="applyNewReturn(f, option)"
+>
+  اختر الرحلة
+</button>
+
         </div>
 
         <div class="flex-1 flex flex-col items-center justify-center text-center">

@@ -24,6 +24,8 @@ export class FlightCalendar implements OnInit {
 
   currentMonthDays: any[] = [];
   nextMonthDays: any[] = [];
+  selectedDate: Date | null = null;
+
 
   ngOnInit() {
     this.renderMonths();
@@ -33,39 +35,44 @@ export class FlightCalendar implements OnInit {
     this.currentMonthDays = this.generateDays(this.currentYear, this.currentMonth);
     this.nextMonthDays = this.generateDays(this.nextYear, this.nextMonth);
   }
+generateDays(year: number, month: number) {
+  const days: any[] = [];
+  const date = new Date(year, month, 1);
 
-  generateDays(year: number, month: number) {
-    const days: any[] = [];
-    const date = new Date(year, month, 1);
-    while (date.getMonth() === month) {
-      days.push({ day: date.getDate(), fullDate: new Date(date), icon: null });
-      date.setDate(date.getDate() + 1);
-    }
-    return days;
+  while (date.getMonth() === month) {
+    const full = new Date(date);
+
+    days.push({
+      day: full.getDate(),
+      fullDate: full,
+      icon: null,
+
+      isDeparture: this.isDeparture(full),
+      isReturn: this.isReturn(full),
+      inRange: this.isInRange(full)
+    });
+
+    date.setDate(date.getDate() + 1);
   }
+  return days;
+}
 
   // ✅ كل ضغطة تبعت يوم واحد فقط
-  selectDate(date: Date) {
-    this.datePicked.emit(date);
-  }
 
-  getDayClass(day: any) {
-    const d = day.fullDate;
-    let className = 'day-normal day-hover';
-    day.icon = null;
+getDayClass(day: any) {
+  return {
+    'day-departure': day.isDeparture,
+    'day-return': day.isReturn,
 
-    if (this.initialDeparture && d.getTime() === this.initialDeparture.getTime()) {
-      className = 'day-start';
-      day.icon = 'fa-solid fa-plane-departure';
-    } else if (this.initialReturn && d.getTime() === this.initialReturn.getTime()) {
-      className = 'day-end';
-      day.icon = 'fa-solid fa-plane-arrival';
-    } else if (this.initialDeparture && this.initialReturn && d > this.initialDeparture && d < this.initialReturn) {
-      className = 'day-range';
-    }
+    // مهم جدًا: لو departure أو return → ما تنفّذش in-range
+    'day-in-range': !day.isDeparture && !day.isReturn && day.inRange,
 
-    return className;
-  }
+    'day-selected': day.isSelected,
+    'day-normal': true
+  };
+}
+
+
 
   prevMonth() {
     this.currentMonth--;
@@ -88,4 +95,50 @@ export class FlightCalendar implements OnInit {
     this.nextYear = this.currentMonth === 11 ? this.currentYear + 1 : this.currentYear;
     this.renderMonths();
   }
+selectDate(date: Date) {
+
+  // لو مفيش مغادرة → خليه departure
+  if (!this.initialDeparture) {
+    this.initialDeparture = date;
+    this.datePicked.emit(date);
+  }
+
+  // لو في مغادرة ومفيش عودة → خليه return
+  else if (!this.initialReturn) {
+    this.initialReturn = date;
+    this.datePicked.emit(date);
+  }
+
+  // لو الاتنين موجودين → يختار من الأول
+  else {
+    this.initialDeparture = date;
+    this.initialReturn = null;
+    this.datePicked.emit(date);
+  }
+
+  // 🚀 أهم حاجة: إعادة رسم الكاليندر
+  setTimeout(() => this.renderMonths());
+}
+
+
+isDeparture(date: Date) {
+  return this.initialDeparture &&
+    new Date(date).toDateString() === new Date(this.initialDeparture).toDateString();
+}
+
+isReturn(date: Date) {
+  return this.initialReturn &&
+    new Date(date).toDateString() === new Date(this.initialReturn).toDateString();
+}
+
+isInRange(date: Date) {
+  if (!this.initialDeparture || !this.initialReturn) return false;
+
+  const d = new Date(date);
+  const dep = new Date(this.initialDeparture);
+  const ret = new Date(this.initialReturn);
+
+  return d > dep && d < ret;
+}
+
 }

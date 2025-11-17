@@ -1,3 +1,7 @@
+
+<app-loading-screen *ngIf="loading"></app-loading-screen>
+<div *ngIf="!loading">
+
 <section
   dir="rtl"
   class="
@@ -9,7 +13,7 @@
     sm:pr-6                 /* شاشات صغيرة */
     md:pr-10                /* تابلت */
     lg:pr-14                /* لابتوب متوسط */
-    xl:pr-[80px]            /* الشاشات الكبيرة جداً بس */
+    xl:pr-[0px]            /* الشاشات الكبيرة جداً بس */
     -top-[50px]
     z-[40]
   "
@@ -130,3 +134,4 @@
 
   </div>
 </section>
+</div>

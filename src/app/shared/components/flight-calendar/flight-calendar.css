@@ -1,28 +1,105 @@
-:host {
-  display: block;
-  direction: rtl;
-}
-
-/* الأيام */
+/* =========================================================
+   الأيام العادية
+========================================================= */
+.day-box,
 .day-normal {
-  background-color: transparent;
-  color: #1e293b;
+  width: 42px !important;
+  height: 42px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: .15s;
+  color: #202020;
+  font-weight: 600;
 }
 
-.day-hover:hover {
-  background-color: #f1f5ff;
-  color: #0e74f0;
+.day-box:hover,
+.day-normal:hover {
+  background: #e4e7ea;
 }
 
 
-
-.day-start, .day-end, .day-range {
-  background: #1e293b;
-  color: #fff;
+/* =========================================================
+   Departure & Return
+========================================================= */
+.day-departure,
+.day-return {
+  background: #1f2937 !important;
+  color: #fff !important;
+  border-radius: 14px !important;
+  font-weight: 700 !important;
+  position: relative;
+  z-index: 20;
 }
 
-.day-hover:hover {
-  background: #475569;
-  color: #fff;
+
+/* =========================================================
+   Labels تحت الأيام
+========================================================= */
+.departure-label,
+.return-label {
+  position: absolute;
+  bottom: -24px;
+  right: 50%;
+  transform: translateX(50%);
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  color: white;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  z-index: 10;
 }
 
+/* المغادرة */
+.departure-label {
+  background: #4ade80;
+}
+
+/* العودة */
+.return-label {
+  background: #22c55e !important;
+}
+
+
+/* =========================================================
+   Range بين الذهاب والعودة
+========================================================= */
+.day-in-range {
+  color: #2c2c2c !important;
+  border-radius: 14px;
+}
+
+
+/* =========================================================
+   اليوم المختار (لو عندك استخدام تاني ليه)
+========================================================= */
+.day-selected {
+  background: #1f2937 !important;
+  color: white !important;
+  border-radius: 14px;
+}
+
+
+/* =========================================================
+   تنسيق يوم الجمعة
+========================================================= */
+.weekend-friday {
+  color: #e11d48 !important;
+  font-weight: 700;
+}
+
+.weekend-friday::after {
+  content: "";
+  width: 28px;
+  height: 4px;
+  background: #e11d48;
+  display: block;
+  margin: 3px auto 0;
+  border-radius: 4px;
+}
