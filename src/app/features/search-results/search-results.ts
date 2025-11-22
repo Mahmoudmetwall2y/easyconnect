@@ -27,10 +27,13 @@ export class SearchResults  implements OnInit{
   children: number = 0;
   infants: number = 0;
   travelClass: string = 'السياحية';
+  tripType: string = 'ذهاب وعودة';
+
 
   groupedFlights: any[] = [];
 
   constructor(private router: Router) {
+this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعودة';
 
     const nav = this.router.getCurrentNavigation();
 
@@ -46,7 +49,9 @@ export class SearchResults  implements OnInit{
     this.selectedTo = JSON.parse(sessionStorage.getItem('selectedTo') || 'null');
 
     this.selectedDepartureDate = new Date(sessionStorage.getItem('depDate')!);
-    this.selectedReturnDate = new Date(sessionStorage.getItem('retDate')!);
+    this.selectedReturnDate =this.tripType === 'ذهاب فقط'
+    ? null
+    : new Date(sessionStorage.getItem('retDate')!);
 
     this.adults = Number(sessionStorage.getItem('adults') || 1);
     this.children = Number(sessionStorage.getItem('children') || 0);
@@ -75,6 +80,45 @@ export class SearchResults  implements OnInit{
   // ---------------------------------------------------------------------
   private groupFlights(departures: any[], returns: any[]) {
     if (!departures?.length) return [];
+ const tripType = sessionStorage.getItem('selectedTripType');
+
+  // -----------------------------------------------------------
+  // ⭐ لو الرحلة "ذهاب فقط" → رجّع رحلات الذهاب كما هي
+  // -----------------------------------------------------------
+  if (tripType === 'ذهاب فقط') {
+    return departures.map(d => ({
+      airline: d.airline,
+      airlineLogo: d.airlineLogo,
+
+      origin: d.origin,
+      destination: d.destination,
+
+      departureAt: d.departureAt,
+      arrivalAt: d.arrivalAt,
+      duration: d.duration,
+      stops: d.stops,
+      currency: d.currency,
+      price: d.price,
+
+      // مفيش عودة
+      returnDepartureAt: null,
+      returnArrivalAt: null,
+      returnDuration: null,
+      returnStops: null,
+
+      baseDeparturePrice: d.price,
+      baseReturnPrice: 0,
+
+      variations: departures
+        .filter(xx => xx.airline === d.airline)
+        .map(v => ({ ...v })),
+
+      returnVariations: [],
+
+      isDepartureExpanded: false,
+      isReturnExpanded: false
+    }));
+  }
 
     const depDay = new Date(sessionStorage.getItem('depDate')!).toDateString();
     const retDay = new Date(sessionStorage.getItem('retDate')!).toDateString();
@@ -117,6 +161,8 @@ export class SearchResults  implements OnInit{
         stops: dep.stops,
         currency: dep.currency,
         price: dep.price + bestReturn.price,
+          baseDeparturePrice: dep.price,
+        baseReturnPrice: bestReturn.price,
 
         // ----------- RETURN DISPLAY DATA ---------
         returnDepartureAt: bestReturn.departureAt,
@@ -420,24 +466,21 @@ translateAirport(code?: string): string {
 }
 
 applyNewDeparture(f: any, option: any) {
-    f.selectedDeparture = option;   // ← حطيه هنا
+  f.selectedDeparture = option;
 
-  f.price = option.price + (f.returnPrice || 0);  // تحديث السعر النهائي
-  f.departureAt = option.departureAt;
-  f.arrivalAt = option.arrivalAt;
-  f.duration = option.duration;
-  f.stops = option.stops;
+  f.baseDeparturePrice = option.price;
+
+  f.price = f.baseDeparturePrice + f.baseReturnPrice;
 }
+
 applyNewReturn(f: any, option: any) {
-    f.selectedReturn = option;   // ← نفس الفكرة هنا
+  f.selectedReturn = option;
 
-  f.price = (f.price - f.returnPrice) + option.price;
-  f.returnPrice = option.price;
-  f.returnDepartureAt = option.departureAt;
-  f.returnArrivalAt = option.arrivalAt;
-  f.returnDuration = option.duration;
-  f.returnStops = option.stops;
+  f.baseReturnPrice = option.price;
+
+  f.price = f.baseDeparturePrice + f.baseReturnPrice;
 }
+
 
 
 

@@ -38,7 +38,7 @@
       </button>
 
       <div *ngIf="openDropdown" 
-           class="absolute right-0 mt-2 w-[160px] bg-white rounded-md shadow-lg border border-gray-100 z-9999">
+           class="absolute right-0 mt-2 w-[160px] bg-white rounded-md shadow-lg border border-gray-100 z-9999 n">
         <ul class="py-1">
           <li (click)="selectTripType('ذهاب وعودة')" class="px-4 py-2 hover:bg-blue-50 text-gray-700 cursor-pointer">
             ذهاب وعودة
@@ -76,7 +76,8 @@
 </app-location-selector>
 
       <div class="flex items-center gap-3 relative">
-        <div class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer" (click)="openDepartureCal()">
+        <div   
+         class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer" (click)="openDepartureCal()">
           <i class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
           <div class="flex flex-col w-full pr-5">
             <label class="text-[13px] text-gray-400">تاريخ المغادرة</label>
@@ -87,6 +88,7 @@
           @if (showDepartureCal) {
             <div class="absolute top-[110%] right-0 z-50 bg-white shadow-xl rounded-xl p-5">
               <app-flight-calendar
+                [tripType]="selectedTripType"
                 [initialDeparture]="depDate"
                 [initialReturn]="retDate"
                 (datePicked)="onDeparturePicked($event)">
@@ -95,7 +97,8 @@
           }
         </div>
 
-        <div class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer" (click)="openReturnCal()">
+        <div *ngIf="selectedTripType === 'ذهاب وعودة'"
+        class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer" (click)="openReturnCal()">
           <i class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
           <div class="flex flex-col w-full pr-5">
             <label class="text-[13px] text-gray-400">تاريخ العودة</label>
@@ -106,6 +109,7 @@
           @if (showReturnCal) {
             <div class="absolute top-[110%] right-0 z-50 bg-white shadow-xl rounded-xl p-5">
               <app-flight-calendar
+                [tripType]="selectedTripType"
                 [initialDeparture]="depDate"
                 [initialReturn]="retDate"
                 (datePicked)="onReturnPicked($event)">

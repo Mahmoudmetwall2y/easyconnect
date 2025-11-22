@@ -12,6 +12,8 @@ export class FlightCalendar implements OnInit {
   @Input() initialDeparture?: Date | null;
   @Input() initialReturn?: Date | null;
   @Output() datePicked = new EventEmitter<Date>(); // ✅ خليها دي بس
+  @Input() tripType: string = 'ذهاب وعودة';
+
 
   months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
   weekDays = ['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
@@ -97,6 +99,14 @@ getDayClass(day: any) {
   }
 selectDate(date: Date) {
 
+    // ⭐ لو الرحلة ذهاب فقط → اختار يوم واحد فقط
+  if (this.tripType === 'ذهاب فقط') {
+    this.initialDeparture = date;
+    this.initialReturn = null;
+    this.datePicked.emit(date);
+    this.renderMonths();
+    return;
+  }
   // لو مفيش مغادرة → خليه departure
   if (!this.initialDeparture) {
     this.initialDeparture = date;
