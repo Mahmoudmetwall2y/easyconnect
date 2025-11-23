@@ -2,11 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FlightSearchBar } from "../home/flight-search-bar/flight-search-bar";
+import { FlightDetailsModal } from '../flight-search/flight-details-modal/flight-details-modal';
+import { TranslationService } from '../../shared/data/translation.service';
 
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [CommonModule, FlightSearchBar],
+  imports: [CommonModule, FlightSearchBar,FlightDetailsModal],
   templateUrl: './search-results.html',
   styleUrls: ['./search-results.css'],
 })
@@ -19,7 +21,7 @@ export class SearchResults  implements OnInit{
 
   selectedFrom: any = null;
   selectedTo: any = null;
-
+includeBaggage:boolean=false;
   selectedDepartureDate:string | Date | null = null;
   selectedReturnDate: string | Date | null= null;
 
@@ -31,8 +33,12 @@ export class SearchResults  implements OnInit{
 
 
   groupedFlights: any[] = [];
+  detailsOpen = false;
+detailsFlight: any = null;
+detailsSegment: 'dep' | 'ret' = 'dep';
 
-  constructor(private router: Router) {
+
+  constructor(private router: Router,public t: TranslationService) {
 this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعودة';
 
     const nav = this.router.getCurrentNavigation();
@@ -57,6 +63,8 @@ this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعود
     this.children = Number(sessionStorage.getItem('children') || 0);
     this.infants = Number(sessionStorage.getItem('infants') || 0);
     this.travelClass = sessionStorage.getItem('travelClass') || 'السياحية';
+    this.includeBaggage = sessionStorage.getItem('includeBaggage') === '1';
+
 
     const grouped = this.groupFlights(departures, returns);
 
@@ -297,173 +305,6 @@ formatTime(dateString?: string): string {
 }
 
 
- translateAirline(code?: string): string {
-  if (!code) return '';
-
-  const airlines: Record<string, string> = {
-    // 🇴🇲 الخليج العربي
-    'KU': 'الخطوط الجوية الكويتية',
-    'SV': 'الخطوط الجوية السعودية',
-    'EK': 'طيران الإمارات',
-    'QR': 'الخطوط الجوية القطرية',
-    'WY': 'الطيران العُماني',
-    'GF': 'طيران الخليج (البحرين)',
-    'EY': 'طيران الاتحاد (الإمارات)',
-    'G9': 'العربية للطيران',
-    'FZ': 'فلاي دبي',
-    'J9': 'طيران جازيرا',
-    'XY': 'طيران ناس',
-    'NP': 'الطيران الوطنية', // ⭐ تمت الإضافة هنا
-
-    // 🇪🇬 شمال أفريقيا
-    'MS': 'مصر للطيران',
-    'TU': 'الخطوط التونسية',
-    'AT': 'الخطوط الملكية المغربية',
-    'AH': 'الخطوط الجوية الجزائرية',
-    'LN': 'الخطوط الجوية الليبية',
-
-    // 🇹🇷 الشرق الأوسط وتركيا
-    'RJ': 'الملكية الأردنية',
-    'ME': 'طيران الشرق الأوسط (لبنان)',
-    'TK': 'الخطوط الجوية التركية',
-    'PC': 'طيران بيجاسوس التركي',
-
-    // 🇪🇺 أوروبا
-    'BA': 'الخطوط الجوية البريطانية',
-    'LH': 'لوفتهانزا (ألمانيا)',
-    'AF': 'الخطوط الجوية الفرنسية',
-    'KL': 'الخطوط الملكية الهولندية (KLM)',
-    'AZ': 'ITA Airways (إيطاليا)',
-    'LX': 'سويس إير (سويسرا)',
-    'OS': 'الخطوط النمساوية',
-    'AY': 'فين إير (فنلندا)',
-    'SK': 'ساس (الخطوط الإسكندنافية)',
-    'IB': 'إيبيريا (إسبانيا)',
-
-    // 🇺🇸 أمريكا
-    'AA': 'الخطوط الجوية الأمريكية',
-    'DL': 'دلتا إيرلاينز',
-    'UA': 'يونايتد إيرلاينز',
-
-    // 🌍 آسيا
-    'CX': 'كاثي باسيفيك (هونغ كونغ)',
-    'SQ': 'الخطوط الجوية السنغافورية',
-    'NH': 'الخطوط الجوية اليابانية ANA',
-    'JL': 'الخطوط الجوية اليابانية JAL',
-    'KE': 'الخطوط الكورية',
-    'CA': 'الخطوط الجوية الصينية',
-    'MH': 'الخطوط الماليزية',
-    'TG': 'الخطوط التايلاندية',
-
-    // 🦘 أوقيانوسيا
-    'QF': 'كانتاس (أستراليا)',
-    'NZ': 'الخطوط الجوية النيوزيلندية',
-  };
-
-  return airlines[code] || code;
-}
-
-translateAirport(code?: string): string {
-  if (!code) return '';
-
-  const airports: Record<string, string> = {
-    // 🇰🇼 الخليج
-    'KWI': 'الكويت',
-    'DOH': 'الدوحة',
-    'BAH': 'المنامة',
-    'RUH': 'الرياض',
-    'JED': 'جدة',
-    'DMM': 'الدمام',
-    'AUH': 'أبوظبي',
-    'SHJ': 'الشارقة',
-    'DXB': 'دبي',
-    'MCT': 'مسقط',
-
-    // 🇪🇬 مصر وشمال إفريقيا
-    'CAI': 'القاهرة',
-    'HBE': 'برج العرب (الإسكندرية)',
-    'HRG': 'الغردقة',
-    'LXR': 'الأقصر',
-    'SSH': 'شرم الشيخ',
-    'ASW': 'أسوان',
-    'TUN': 'تونس',
-    'CMN': 'الدار البيضاء',
-    'ALG': 'الجزائر',
-    'TIP': 'طرابلس',
-
-    // 🇱🇧 وبلاد الشام
-    'BEY': 'بيروت',
-    'AMM': 'عمّان',
-    'DAM': 'دمشق',
-    'ALE': 'حلب',
-
-    // 🇹🇷 تركيا
-    'IST': 'إسطنبول',
-    'SAW': 'صبيحة كوكجن',
-    'ESB': 'أنقرة',
-    'ADB': 'إزمير',
-
-    // 🇪🇺 أوروبا
-    'LHR': 'لندن (هيثرو)',
-    'LGW': 'لندن (غاتويك)',
-    'CDG': 'باريس (شارل ديغول)',
-    'ORY': 'باريس (أورلي)',
-    'FRA': 'فرانكفورت',
-    'MUC': 'ميونخ',
-    'AMS': 'أمستردام',
-    'MAD': 'مدريد',
-    'BCN': 'برشلونة',
-    'VIE': 'فيينا',
-    'ZRH': 'زيورخ',
-    'FCO': 'روما (فيوميتشينو)',
-    'MXP': 'ميلانو (مالبينسا)',
-    'ATH': 'أثينا',
-    'BRU': 'بروكسل',
-    'CPH': 'كوبنهاغن',
-    'OSL': 'أوسلو',
-    'ARN': 'ستوكهولم',
-
-    // 🇺🇸 أمريكا
-    'JFK': 'نيويورك (جون كينيدي)',
-    'EWR': 'نيوجيرسي (نيوآرك)',
-    'ORD': 'شيكاغو',
-    'LAX': 'لوس أنجلوس',
-    'MIA': 'ميامي',
-    'BOS': 'بوسطن',
-    'DFW': 'دالاس',
-    'IAD': 'واشنطن',
-
-    // 🌍 آسيا
-    'BKK': 'بانكوك',
-    'KUL': 'كوالالمبور',
-    'SIN': 'سنغافورة',
-    'NRT': 'طوكيو (ناريتا)',
-    'HND': 'طوكيو (هانيدا)',
-    'ICN': 'سيول',
-    'HKG': 'هونغ كونغ',
-    'DEL': 'نيودلهي',
-    'BOM': 'مومباي',
-    'CGK': 'جاكرتا',
-    'PEK': 'بكين',
-    'PVG': 'شنغهاي',
-
-    // 🦘 أوقيانوسيا
-    'SYD': 'سيدني',
-    'MEL': 'ملبورن',
-    'AKL': 'أوكلاند',
-
-    // 🇿🇦 أفريقيا جنوب الصحراء
-    'JNB': 'جوهانسبرغ',
-    'CPT': 'كيب تاون',
-
-    // 🇷🇺 روسيا
-    'SVO': 'موسكو (شيريميتيفو)',
-    'DME': 'موسكو (دوموديدوفو)',
-    'LED': 'سانت بطرسبرغ',
-  };
-
-  return airports[code.toUpperCase()] || code;
-}
 
 applyNewDeparture(f: any, option: any) {
   f.selectedDeparture = option;
@@ -482,6 +323,17 @@ applyNewReturn(f: any, option: any) {
 }
 
 
+openDetails(f: any, seg: 'dep' | 'ret') {
+  this.detailsFlight = f;
+  this.detailsSegment = seg;
+  this.detailsOpen = true;
+  console.log("huhu")
+}
+
+closeDetails() {
+  this.detailsOpen = false;
+  this.detailsFlight = null;
+}
 
 
 

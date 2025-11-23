@@ -23,6 +23,8 @@ export class FlightSearchBar implements OnInit {
 
   selectedFrom: SelectedLocation | null = null;
   selectedTo: SelectedLocation | null = null;
+@Input() directOnly: boolean = false;
+@Input() includeBaggage: boolean = false;
 
   depDate: Date | null = null;
   retDate: Date | null = null;
@@ -68,6 +70,9 @@ ngOnInit(): void {
   if (selected) {
     this.currencyIso = selected.iso;
   }
+if (this.includeBaggage) {
+  this.includeBaggage = true;
+}
 
   this.currencyService.currency$.subscribe((c) => {
     if (c) this.currencyIso = c.iso;
@@ -101,7 +106,7 @@ ngOnInit(): void {
   
  selectTripType(type: string) {
   this.selectedTripType = type;
-  sessionStorage.setItem('selectedTripType', type); // ✅ نحفظها
+  sessionStorage.setItem('selectedTripType', type); //  نحفظها
   this.openDropdown = false;
   this.tripTypeChanged.emit(type);
 }
@@ -159,6 +164,9 @@ searchFlights() {
     children: this.children,
     infants: this.infants,
     travelClass: this.travelClass,
+    includeBaggage: this.includeBaggage,
+//directOnly: this.directOnly,
+
 currency: this.currencyService.currencyByCountry[this.currencyIso]
 
   };
@@ -167,11 +175,9 @@ currency: this.currencyService.currencyByCountry[this.currencyIso]
 
 this.flightService.searchFlights(req).subscribe({
   next: (res) => {
-    // ✅ خُدهم من res.data
     const departures = res?.data?.departures ?? [];
     const returns    = res?.data?.returns ?? [];
 
-    // ✅ خزّن دايمًا Array مش undefined
     sessionStorage.setItem('departures', JSON.stringify(departures));
     sessionStorage.setItem('returns', JSON.stringify(returns));
     sessionStorage.setItem('selectedFrom', JSON.stringify(this.selectedFrom ?? null));
@@ -183,6 +189,7 @@ sessionStorage.setItem('adults', this.adults.toString());
 sessionStorage.setItem('children', this.children.toString());
 sessionStorage.setItem('infants', this.infants.toString());
 sessionStorage.setItem('travelClass', this.travelClass);
+sessionStorage.setItem('includeBaggage',this.includeBaggage?'1':'0');
 
    setTimeout(() => {   // علشان يلحق يشوف الأنيميشن
         this.loading = false;

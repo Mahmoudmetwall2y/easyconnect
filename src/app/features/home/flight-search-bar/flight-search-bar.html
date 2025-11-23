@@ -1,4 +1,3 @@
-
 <app-loading-screen *ngIf="loading"></app-loading-screen>
 <div *ngIf="!loading">
 
@@ -8,27 +7,30 @@
     relative
     w-full
     flex
-    justify-center          /* بدلاً من justify-content-center */
-    pr-4                    /* موبايل */
-    sm:pr-6                 /* شاشات صغيرة */
-    md:pr-10                /* تابلت */
-    lg:pr-14                /* لابتوب متوسط */
-    xl:pr-[0px]            /* الشاشات الكبيرة جداً بس */
+    justify-center
+    pr-4
+    sm:pr-6
+    md:pr-10
+    lg:pr-14
+    xl:pr-[0px]
     -top-[50px]
     z-[40]
   "
 > 
-<div
-  class="
-    w-[95%]
-    max-w-[1248px]
-    lg:max-w-[1248px]
-    md:max-w-[900px]
-    sm:max-w-[600px]
-    max-w-[100%]
-    bg-white rounded-xl shadow-xl px-6 py-5 flex flex-col gap-4 border-t border-gray-100
-  ">
 
+  <div
+    class="
+      w-[95%]
+      max-w-[1248px]
+      lg:max-w-[1248px]
+      md:max-w-[900px]
+      sm:max-w-[600px]
+      bg-white rounded-xl shadow-xl px-6 py-5
+      flex flex-col gap-4 border-t border-gray-100
+    "
+  >
+
+    <!-- 🔵 Trip Type Dropdown -->
     <div class="relative inline-block text-right">
       <button 
         (click)="openDropdown = !openDropdown"
@@ -38,7 +40,7 @@
       </button>
 
       <div *ngIf="openDropdown" 
-           class="absolute right-0 mt-2 w-[160px] bg-white rounded-md shadow-lg border border-gray-100 z-9999 n">
+           class="absolute right-0 mt-2 w-[160px] bg-white rounded-md shadow-lg border border-gray-100 z-9999">
         <ul class="py-1">
           <li (click)="selectTripType('ذهاب وعودة')" class="px-4 py-2 hover:bg-blue-50 text-gray-700 cursor-pointer">
             ذهاب وعودة
@@ -50,35 +52,43 @@
       </div>
     </div>
 
-<div class="
-  flex 
-  flex-wrap 
-  lg:flex-nowrap 
-  items-center 
-  justify-center 
-  gap-3 
-  w-full 
-  bg-white 
-  p-4 
-  rounded-xl 
-  mx-auto
-">
-<app-location-selector 
-    type="from"
-    [initialValue]="selectedFrom"
-    (locationSelected)="selectedFrom = $event">
-</app-location-selector>
+    <!-- 🔵 Search Inputs (FROM - TO - DATES - PASSENGERS) -->
+    <div
+      class="
+        flex 
+        flex-wrap 
+        lg:flex-nowrap 
+        items-center 
+        justify-center 
+        gap-3 
+        w-full 
+        bg-white 
+        p-4 
+        rounded-xl 
+        mx-auto
+      "
+    >
 
-<app-location-selector 
-    type="to"
-    [initialValue]="selectedTo"
-    (locationSelected)="selectedTo = $event">
-</app-location-selector>
+      <app-location-selector 
+          type="from"
+          [initialValue]="selectedFrom"
+          (locationSelected)="selectedFrom = $event">
+      </app-location-selector>
 
+      <app-location-selector 
+          type="to"
+          [initialValue]="selectedTo"
+          (locationSelected)="selectedTo = $event">
+      </app-location-selector>
+
+      <!-- التاريخ -->
       <div class="flex items-center gap-3 relative">
-        <div   
-         class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer" (click)="openDepartureCal()">
+        
+        <!-- تاريخ المغادرة -->
+        <div class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer" 
+             (click)="openDepartureCal()">
           <i class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+
           <div class="flex flex-col w-full pr-5">
             <label class="text-[13px] text-gray-400">تاريخ المغادرة</label>
             <input type="text" readonly [value]="selectedDeparture || ''" placeholder="اختر تاريخ المغادرة"
@@ -97,9 +107,13 @@
           }
         </div>
 
+        <!-- تاريخ العودة -->
         <div *ngIf="selectedTripType === 'ذهاب وعودة'"
-        class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer" (click)="openReturnCal()">
+             class="flex items-center border rounded-lg px-3 py-2 w-[200px] relative cursor-pointer" 
+             (click)="openReturnCal()">
+
           <i class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+
           <div class="flex flex-col w-full pr-5">
             <label class="text-[13px] text-gray-400">تاريخ العودة</label>
             <input type="text" readonly [value]="selectedReturn || ''" placeholder="اختر تاريخ العودة"
@@ -117,25 +131,55 @@
             </div>
           }
         </div>
+
       </div>
 
-<app-passenger-selector
-    [initialAdults]="adults"
-    [initialChildren]="children"
-    [initialInfants]="infants"
-    [initialClass]="travelClass"
-    [initialSummary]="passengersSummary"
-    (confirmed)="onPassengersConfirmed($event)">
-</app-passenger-selector>
+      <!-- المسافرين -->
+      <app-passenger-selector
+          [initialAdults]="adults"
+          [initialChildren]="children"
+          [initialInfants]="infants"
+          [initialClass]="travelClass"
+          [initialSummary]="passengersSummary"
+          (confirmed)="onPassengersConfirmed($event)">
+      </app-passenger-selector>
+
+    <button (click)="searchFlights()"
+            class="bg-[#0E74F0] text-white text-[14px] font-semibold px-6 py-3 rounded-lg hover:bg-blue-600 transition flex items-center gap-2 whitespace-nowrap">
+      <i class="fa-solid fa-magnifying-glass text-[15px]"></i>
+      البحث عن الرحلات
+    </button>
 
 
-      <button (click)="searchFlights()"
-              class="bg-[#0E74F0] text-white text-[14px] font-semibold px-6 py-3 rounded-lg hover:bg-blue-600 transition flex items-center gap-2 whitespace-nowrap">
-        <i class="fa-solid fa-magnifying-glass text-[15px]"></i>
-        البحث عن الرحلات
-      </button>
+    </div> <!-- END Search Inputs -->
+
+    <div class="w-full flex items-center gap-10 px-2 mt-1">
+
+      <!-- رحلات مباشرة -->
+      <label class="flex items-center gap-2 cursor-pointer select-none">
+        <input 
+          type="checkbox" 
+          [(ngModel)]="directOnly"
+          class="w-4 h-4 rounded border-gray-300 cursor-pointer"
+        />
+        <span class="text-[14px] text-gray-700 font-medium">رحلات مباشرة فقط</span>
+      </label>
+
+      <!-- امتعة السفر -->
+      <label class="flex items-center gap-2 cursor-pointer select-none">
+        <input 
+          type="checkbox" 
+          [(ngModel)]="includeBaggage"
+          class="w-4 h-4 rounded border-gray-300 cursor-pointer"
+        />
+        <span class="text-[14px] text-gray-700 font-medium">شاملة امتعة السفر</span>
+      </label>
+
     </div>
 
+  
   </div>
+
 </section>
+
 </div>

@@ -1,0 +1,79 @@
+<div class="fixed inset-0 z-[9999] bg-black/40 flex items-center justify-center p-4">
+  <div class="details-modal-box">
+
+  <div class="modal-header">
+
+  <!-- العنوان الأول -->
+  <div class="title-box">
+    <h2 class="modal-title">
+      الرحلة من {{ t.translateAirport(data?.origin) }}
+      إلى {{ t.translateAirport(data?.destination) }}
+            <i class="fa-solid fa-plane ms-2"></i>
+
+    </h2>
+  </div>
+
+  <!-- زر الرجوع في الطرف -->
+  <button (click)="close()" class="btn-back">رجوع</button>
+
+</div>
+
+
+    <!-- CONTENT -->
+   <!-- TRIP BOX EXACT LIKE THE LOWER DESIGN -->
+<div class="trip-box" dir="rtl">
+
+  <!-- LEFT SIDE — TIMES & DATE & CITY -->
+  <div class="trip-left">
+
+    <div class="time-block">
+      <div class="big-time">{{ formatTime(data?.departureAt) }}</div>
+      <div class="trip-date">{{ formatFullDate(data?.departureAt) }}</div>
+      <div class="trip-city">{{ t.translateAirport(data?.origin) }} ({{ data?.origin }})</div>
+      <div class="trip-terminal">1 صالة</div>
+    </div>
+
+    <div class="time-block">
+      <div class="big-time">{{ formatTime(data?.arrivalAt) }}</div>
+      <div class="trip-date">{{ formatFullDate(data?.arrivalAt) }}</div>
+      <div class="trip-city">{{ t.translateAirport(data?.destination) }} ({{ data?.destination }})</div>
+      <div class="trip-terminal">1 صالة</div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDE — AIRLINE INFO -->
+  <div class="trip-right">
+    <img  src='assets/d2.jpg'
+    class="trip-airline-logo">
+    <div class="trip-airline-name">{{ t.translateAirline(data?.airline) }}</div>
+    <div class="trip-airline-type">Flight 211 Aircraft 320</div>
+  </div>
+
+</div>
+
+    <!-- FOOTER ICONS -->
+    <div class="modal-footer">
+      <div class="icon-row">
+        <i class="fa-solid fa-wifi text-blue-600"></i>
+        <span>واي فاي</span>
+      </div>
+
+      <div class="icon-row">
+        <i class="fa-solid fa-chair text-green-600"></i>
+        <span>2A مقعد</span>
+      </div>
+
+      <div class="icon-row">
+        <i class="fa-solid fa-suitcase-rolling text-green-600"></i>
+        <span>حقيبة يد (7 كجم)</span>
+      </div>
+
+      <div class="icon-row">
+        <i class="fa-solid fa-suitcase text-green-600"></i>
+        <span>شحن (23 كجم)</span>
+      </div>
+    </div>
+
+  </div>
+</div>

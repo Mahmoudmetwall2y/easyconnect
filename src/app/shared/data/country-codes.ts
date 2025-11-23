@@ -25,3 +25,4 @@ export const COUNTRY_CODES: CountryCode[] = [
   { iso: 'GB', name: 'United Kingdom', flag: '/assets/flags/gb.png', dial: '+44' },
   { iso: 'DE', name: 'Germany', flag: '/assets/flags/de.png', dial: '+49' },
 ];
+
