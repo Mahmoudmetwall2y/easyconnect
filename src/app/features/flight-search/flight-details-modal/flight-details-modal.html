@@ -18,62 +18,133 @@
 
 </div>
 
+<div class="trip-header" >
 
-    <!-- CONTENT -->
-   <!-- TRIP BOX EXACT LIKE THE LOWER DESIGN -->
-<div class="trip-box" dir="rtl">
+  <!-- LEFT PART — CLASS NAME -->
+  <div class="trip-class">{{ travelClass }}</div>
 
-  <!-- LEFT SIDE — TIMES & DATE & CITY -->
-  <div class="trip-left">
+  <!-- RIGHT PART — AIRLINE INFO -->
+  <div class="trip-airline">
+    <div class="airline-text">
+      <div class="airline-name">
+        {{ t.translateAirline(data?.airline) }}
+      </div>
+<div class="airline-type">
+  Flight {{ data?.flightNumber }}
+  Aircraft {{ data?.aircraft }}
+</div>
 
-    <div class="time-block">
-      <div class="big-time">{{ formatTime(data?.departureAt) }}</div>
-      <div class="trip-date">{{ formatFullDate(data?.departureAt) }}</div>
-      <div class="trip-city">{{ t.translateAirport(data?.origin) }} ({{ data?.origin }})</div>
-      <div class="trip-terminal">1 صالة</div>
+
     </div>
 
-    <div class="time-block">
-      <div class="big-time">{{ formatTime(data?.arrivalAt) }}</div>
-      <div class="trip-date">{{ formatFullDate(data?.arrivalAt) }}</div>
-      <div class="trip-city">{{ t.translateAirport(data?.destination) }} ({{ data?.destination }})</div>
-      <div class="trip-terminal">1 صالة</div>
-    </div>
-
-  </div>
-
-  <!-- RIGHT SIDE — AIRLINE INFO -->
-  <div class="trip-right">
-    <img  src='assets/d2.jpg'
-    class="trip-airline-logo">
-    <div class="trip-airline-name">{{ t.translateAirline(data?.airline) }}</div>
-    <div class="trip-airline-type">Flight 211 Aircraft 320</div>
+    <img 
+      [src]="data?.airlineLogo || 'assets/d2.jpg'" 
+      class="trip-airline-logo"
+    />
   </div>
 
 </div>
+
+<!-- WRAPPER WITH ONE VERTICAL LINE -->
+<div class="trip-wrapper">
+
+  <!-- DEPARTURE -->
+  <div class="trip-section">
+
+    <div class="trip-left">
+      <div class="trip-time" dir="rtl">{{ t.formatTime(data?.departureAt) }}</div>
+      <div class="trip-date">{{ formatFullDate(data?.departureAt) }}</div>
+    </div>
+
+    <div class="trip-right2">
+      <div class="trip-city">
+        {{ t.translateAirport(data?.origin) }} ({{ data?.origin }})
+      </div>
+<div class="trip-terminal">
+  {{ data?.departureTerminal || 'صالة 1' }}
+</div>
+
+
+    </div>
+
+  </div>
+
+  <!-- ARRIVAL -->
+  <div class="trip-section">
+
+    <div class="trip-left">
+      <div class="trip-time" dir="rtl">{{ t.formatTime(data?.arrivalAt) }}</div>
+      <div class="trip-date">{{ formatFullDate(data?.arrivalAt) }}</div>
+    </div>
+
+    <div class="trip-right2">
+      <div class="trip-city">
+        {{ t.translateAirport(data?.destination) }} ({{ data?.destination }})
+      </div>
+<div class="trip-terminal">
+  {{ data?.arrivalTerminal || 'صالة 1' }}
+</div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="trip-duration">
+      <span class="duration-value" dir="rtl">{{ t.formatDuration(data?.duration) }}</span>
+
+  <span class="duration-title">المده الكاملة للرحله</span>
+</div>
+
+
+
+
+
+
 
     <!-- FOOTER ICONS -->
-    <div class="modal-footer">
-      <div class="icon-row">
-        <i class="fa-solid fa-wifi text-blue-600"></i>
-        <span>واي فاي</span>
-      </div>
+<div class="footer-icons" >
 
-      <div class="icon-row">
-        <i class="fa-solid fa-chair text-green-600"></i>
-        <span>2A مقعد</span>
-      </div>
+  <!-- Meals -->
+  <div class="icon-item" *ngIf="true">
+  
+    <span>وجبة مجانية</span>
+      <img src="assets/meal.png" class="icon-img" />
+  </div>
 
-      <div class="icon-row">
-        <i class="fa-solid fa-suitcase-rolling text-green-600"></i>
-        <span>حقيبة يد (7 كجم)</span>
-      </div>
+  <!-- WiFi (ICON not image) -->
+  <div class="icon-item" *ngIf="true">
+       <span>واي فاي</span>
+    <i class="fa-solid fa-wifi wifi-icon"></i>
+ 
+  </div>
 
-      <div class="icon-row">
-        <i class="fa-solid fa-suitcase text-green-600"></i>
-        <span>شحن (23 كجم)</span>
-      </div>
-    </div>
+  <!-- Seat -->
+  <div class="icon-item" *ngIf="true">
+   
+    <span dir="rtl">{{ seatLabel }}</span>
+     <img src="assets/chair.png" class="icon-img" />
+  </div>
+
+  <!-- Checked Bag -->
+  <div class="icon-item" *ngIf="data?.includedBags > 0">
+      <span>شامل حقيبة شحن واحدة (23 كجم)</span>
+    <img src="assets/bag1.png" class="icon-img" />
+  
+  </div>
+
+  <!-- Hand Bag -->
+  <div class="icon-item" *ngIf="true">
+      <span>شامل حقيبة يد مجانية (7 كجم)</span>
+    <img src="assets/bag2.png" class="icon-img" />
+  
+  </div>
+
+</div>
+
+
+</div>
+
 
   </div>
-</div>

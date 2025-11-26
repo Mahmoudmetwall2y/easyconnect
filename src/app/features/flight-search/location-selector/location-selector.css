@@ -1,2 +1,5 @@
-/* خفيف جداً – استعملنا Tailwind لمعظم التنسيق */
 :host { display: inline-block; }
+.dropdown-large {
+  max-height: 300px;
+  width: 100%;
+}

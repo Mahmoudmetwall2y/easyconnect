@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FlightSearchBar } from "../home/flight-search-bar/flight-search-bar";
 import { FlightDetailsModal } from '../flight-search/flight-details-modal/flight-details-modal';
@@ -107,6 +107,8 @@ this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعود
       stops: d.stops,
       currency: d.currency,
       price: d.price,
+      includedBags: d.includedBags ?? 0,
+
 
       // مفيش عودة
       returnDepartureAt: null,
@@ -124,7 +126,8 @@ this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعود
       returnVariations: [],
 
       isDepartureExpanded: false,
-      isReturnExpanded: false
+      isReturnExpanded: false,
+      
     }));
   }
 
@@ -171,7 +174,7 @@ this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعود
         price: dep.price + bestReturn.price,
           baseDeparturePrice: dep.price,
         baseReturnPrice: bestReturn.price,
-
+ departureBags: dep.includedBags ?? 0,
         // ----------- RETURN DISPLAY DATA ---------
         returnDepartureAt: bestReturn.departureAt,
         returnArrivalAt: bestReturn.arrivalAt,
@@ -179,6 +182,7 @@ this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعود
         returnStops: bestReturn.stops,
         returnOrigin: bestReturn.origin,
         returnDestination: bestReturn.destination,
+         returnBags: bestReturn.includedBags ?? 0,
 
         // ----------- DEPARTURE VARIATIONS (Only Dep) -----------
         variations: depSameDay
@@ -277,32 +281,6 @@ onChangeReturn(selected: any) {
   selected.isDepartureExpanded = false;
 }
 
-formatTime(dateString?: string): string {
-  if (!dateString) return '';
-
-  const date = new Date(dateString);
-
-  let hours = date.getHours();
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  const period = hours >= 12 ? 'مساءً' : 'صباحاً';
-  hours = hours % 12 || 12;
-
-  return `${hours}:${minutes} ${period}`;
-}
-
-
-
- formatDuration(duration?: string): string {
-  if (!duration) return '';
-  const match = duration.match(/PT(\d+H)?(\d+M)?/);
-  const hours = match?.[1] ? match[1].replace('H', '') : '';
-  const minutes = match?.[2] ? match[2].replace('M', '') : '';
-
-  if (!hours && !minutes) return '';
-
-  // ✅ English formatting
-  return `${hours ? hours + ' hr' : ''}${minutes ? (hours ? ' ' : '') + minutes + ' min' : ''}`.trim();
-}
 
 
 

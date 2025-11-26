@@ -152,7 +152,7 @@ searchFlights() {
 
   setTimeout(() => {
     this.loading = false;
-  }, 6000);
+  }, 8000);
 
  
   const req = {
@@ -194,12 +194,11 @@ sessionStorage.setItem('includeBaggage',this.includeBaggage?'1':'0');
    setTimeout(() => {   // علشان يلحق يشوف الأنيميشن
         this.loading = false;
         this.router.navigate(['/search'], { state: { departures, returns } });
-      }, 6000);
+      }, 8000);
     this.router.navigate(['/search'], { state: { departures, returns } });
   },
   error: (err) => {
-    console.error('❌ خطأ في البحث:', err);
-    alert('حدث خطأ أثناء البحث عن الرحلات.');
+   
   },
 });
 }

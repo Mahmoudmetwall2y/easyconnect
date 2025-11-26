@@ -126,7 +126,6 @@
 }
 
 .modal-footer {
-  border-top: 1px solid #eee;
   padding: 18px 30px;
   display: flex;
   gap: 35px;
@@ -145,7 +144,7 @@
   align-items: center;
   flex-direction: row-reverse;     /* هنا السر */
   padding: 18px 20px;
-  border-bottom: 1px solid #eee;
+ 
 }
 
 
@@ -218,7 +217,7 @@
 
 .trip-right {
   text-align: center;
-  border-left: 2px solid #eee;
+ 
   padding-left: 25px;
   display: flex;
   flex-direction: column;
@@ -226,8 +225,8 @@
 }
 
 .trip-airline-logo {
-  width: 80px;
-  height: 80px;
+  width: 40px;
+  height: 40px;
   border-radius: 15px;
   margin: 0 auto 10px;
 }
@@ -243,3 +242,169 @@
   font-size: 17px;
   color: #737373;
 }
+/* ---------------------------------------------- */
+/* TOP TRIP HEADER (MATCHES FIGMA EXACTLY)        */
+/* ---------------------------------------------- */
+
+.trip-header {
+  
+ padding: 0 30px;
+   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+               
+}
+
+.trip-class {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0E74F0;
+}
+
+.trip-airline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.trip-airline-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+.airline-text {
+  text-align: right;
+}
+
+.airline-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+
+.airline-type {
+  font-size: 14px;
+  color: #777;
+  margin-top: 4px;
+}
+.trip-wrapper {
+  position: relative;
+  padding: 0 40px;
+}
+
+/* الخط الطويل في النص */
+.trip-wrapper::before {
+  content: "";
+  position: absolute;
+  left:97%;       /* يتحرك يمين/شمال حسب اللي تحتاجه */
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: #d9d9d9;
+}
+
+.trip-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 0;
+}
+
+.trip-left {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.trip-right2 {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-right: 20px;
+}
+
+.trip-time {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.trip-date {
+  font-size: 16px;
+  color: #777;
+}
+
+.trip-city {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.trip-terminal {
+  font-size: 16px;
+  color: #666;
+}
+.trip-duration {
+  margin-top: 20px;
+  padding: 15px 40px;
+  color: #333;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.duration-title {
+  color: #111; /* رمادي غامق */
+}
+
+.duration-value {
+  color: #6b7280; /* رمادي متوسط */
+   font-size: 17px;
+}
+
+.footer-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 25px;
+  border-radius: 0 0 22px 22px;
+  margin-top: 10px;
+  gap: 40px;
+}
+
+.icon-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.icon-img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.wifi-icon {
+  font-size: 30px;
+  color: #0E74F0;
+}
+
+
+
+
+
+
+
+
+
+
+
+

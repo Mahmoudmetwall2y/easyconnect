@@ -13,12 +13,19 @@ export class FlightDetailsModal {
 @Input() flight: any = null;
 @Input() segment: 'dep' | 'ret' = 'dep'; 
 @Input() travelClass: string = 'السياحية';
-
+  @Input() adults: number = 1; 
 @Output() closed = new EventEmitter<void>();
 
 constructor(public t:TranslationService){
 
 }
+get seatLabel() {
+  if (this.adults > 1)
+    return `${this.adults} مقاعد`;
+
+  return `مقعد 1`;
+}
+
   close() {
     this.closed.emit();
   }
@@ -39,6 +46,11 @@ constructor(public t:TranslationService){
         stops: d.stops,
         airline: d.airline,
         airlineLogo: d.airlineLogo,
+         includedBags: d.departureBags ?? 0,
+          departureTerminal: d.departureTerminal,
+  arrivalTerminal: d.arrivalTerminal,
+    flightNumber: d.flightNumber || '—',
+      aircraft: d.aircraft || '—',
       };
     } else {
       const r = this.flight.selectedReturn || {
@@ -50,6 +62,12 @@ constructor(public t:TranslationService){
         stops: this.flight.returnStops,
         airline: this.flight.airline,
         airlineLogo: this.flight.airlineLogo,
+        includedBags: this.flight.returnBags ?? 0,
+          departureTerminal: this.flight.departureTerminal,
+  arrivalTerminal: this.flight.arrivalTerminal,
+    flightNumber: this.flight.flightNumber || '—',
+      aircraft: this.flight.aircraft || '—',
+
       };
       return {
         title: `العودة من ${r.origin} إلى ${r.destination}`,
@@ -61,27 +79,17 @@ constructor(public t:TranslationService){
         stops: r.stops,
         airline: r.airline,
         airlineLogo: r.airlineLogo,
+         includedBags: r.returnBags ?? 0,
+           departureTerminal: r.departureTerminal,
+  arrivalTerminal: r.arrivalTerminal,
+  
+      flightNumber: r.flightNumber || '—',
+      aircraft: r.aircraft || '—',
       };
     }
   }
 
-  formatTime(dateString?: string): string {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    let hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const period = hours >= 12 ? 'م' : 'ص';
-    hours = hours % 12 || 12;
-    return `${hours}:${minutes} ${period}`;
-  }
 
-  formatDuration(duration?: string): string {
-    if (!duration) return '';
-    const match = duration.match(/PT(\d+H)?(\d+M)?/);
-    const h = match?.[1] ? match[1].replace('H','') : '';
-    const m = match?.[2] ? match[2].replace('M','') : '';
-    return `${h ? h + ' س ' : ''}${m ? m + ' د' : ''}`.trim();
-  }
   formatFullDate(dateString: string) {
   const d = new Date(dateString);
   return d.toLocaleDateString('ar-EG', {

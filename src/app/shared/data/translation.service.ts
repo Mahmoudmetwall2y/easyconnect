@@ -151,4 +151,31 @@ export class TranslationService {
   translateAirport(code?: string): string {
     return code ? this.airports[code.toUpperCase()] || code : '';
   }
+
+  formatTime(dateString?: string): string {
+  if (!dateString) return '';
+
+  const date = new Date(dateString);
+
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const period = hours >= 12 ? 'مساءً' : 'صباحاً';
+  hours = hours % 12 || 12;
+
+  return `${hours}:${minutes} ${period}`;
+}
+
+
+
+ formatDuration(duration?: string): string {
+  if (!duration) return '';
+  const match = duration.match(/PT(\d+H)?(\d+M)?/);
+  const hours = match?.[1] ? match[1].replace('H', '') : '';
+  const minutes = match?.[2] ? match[2].replace('M', '') : '';
+
+  if (!hours && !minutes) return '';
+
+  return `${hours ? hours + ' س' : ''}${minutes ? (hours ? ' ' : '') + minutes + ' د' : ''}`.trim();
+}
+
 }
