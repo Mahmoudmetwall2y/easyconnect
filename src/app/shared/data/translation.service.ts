@@ -166,16 +166,27 @@ export class TranslationService {
 }
 
 
-
- formatDuration(duration?: string): string {
+formatDuration(duration?: string): string {
   if (!duration) return '';
-  const match = duration.match(/PT(\d+H)?(\d+M)?/);
-  const hours = match?.[1] ? match[1].replace('H', '') : '';
-  const minutes = match?.[2] ? match[2].replace('M', '') : '';
 
-  if (!hours && !minutes) return '';
+  // نحول PT3H10M → مدة حقيقية
+  const iso = duration.replace('PT', '');
+  const hoursMatch = iso.match(/(\d+)H/);
+  const minutesMatch = iso.match(/(\d+)M/);
 
-  return `${hours ? hours + ' س' : ''}${minutes ? (hours ? ' ' : '') + minutes + ' د' : ''}`.trim();
+  const hours = hoursMatch ? Number(hoursMatch[1]) : 0;
+  const minutes = minutesMatch ? Number(minutesMatch[1]) : 0;
+
+  let result = '';
+
+  if (hours > 0) result += `${hours} س`;
+  if (minutes > 0) result += (hours > 0 ? ' ' : '') + `${minutes} د`;
+
+  return result;
 }
+
+
+
+
 
 }

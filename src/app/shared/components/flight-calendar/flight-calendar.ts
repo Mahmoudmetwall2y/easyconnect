@@ -70,7 +70,7 @@ getDayClass(day: any) {
     'day-in-range': !day.isDeparture && !day.isReturn && day.inRange,
 
     'day-selected': day.isSelected,
-    'day-normal': true
+'day-normal': !day.isDeparture && !day.isReturn && !day.inRange
   };
 }
 

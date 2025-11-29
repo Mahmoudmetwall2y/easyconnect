@@ -25,7 +25,8 @@
   *ngFor="let day of currentMonthDays"
   (click)="selectDate(day.fullDate)"
   [ngClass]="getDayClass(day)"
-class="relative flex items-center justify-center text-[13px] font-semibold rounded-lg cursor-pointer transition-all duration-150 day-box">
+class="relative flex items-center justify-center text-[13px] font-semibold cursor-pointer transition-all duration-150"
+>
 
   <span>{{ day.day }}</span>
 

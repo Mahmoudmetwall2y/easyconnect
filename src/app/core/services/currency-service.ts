@@ -11,6 +11,7 @@ export class CurrencyService {
   setCurrency(c: CountryCode) {
     this.currencySubject.next(c);
     localStorage.setItem('currency', JSON.stringify(c));
+    console.log(c);
   }
 
   getCurrency(): CountryCode | null {
