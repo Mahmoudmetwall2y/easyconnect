@@ -231,11 +231,14 @@ sessionStorage.setItem('travelClass', this.travelClass);
 sessionStorage.setItem('includeBaggage',this.includeBaggage?'1':'0');
 
     this.loading = false;
+
     this.router.navigate(['/search'], { state: { departures, returns } });
   },
   error: (err) => {
      this.loading = false;
-      this.router.navigate(['/no-results']);
+
+  this.router.navigate(['/error']);
+
   },
 });
 }

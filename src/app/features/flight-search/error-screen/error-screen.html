@@ -1,0 +1,44 @@
+<section dir="rtl" class="w-full flex flex-col items-center justify-center py-16 px-4">
+  <app-flight-search-bar ></app-flight-search-bar>
+
+  <!-- Icon -->
+  <div class="bg-blue-50 rounded-full p-6 mb-6">
+    <i class="fa-solid fa-circle-info text-blue-600 text-6xl"></i>
+  </div>
+
+  <!-- Title -->
+  <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">
+    حدث شيء خاطئ
+  </h2>
+
+  <!-- Subtitle -->
+  <p class="text-gray-500 text-lg mb-8">
+    يرجى إعادة المحاولة
+  </p>
+
+  <!-- Buttons -->
+  <div class="flex flex-col gap-4 w-full max-w-[360px]">
+
+    <button
+      (click)="retry()"
+      class="bg-[#0E74F0] text-white py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition">
+      إعادة المحاولة
+    </button>
+
+    <button
+      (click)="goHome()"
+      class="border border-blue-600 text-blue-600 py-3 rounded-xl text-lg font-semibold hover:bg-blue-50 transition">
+      العودة للصفحة الرئيسية
+    </button>
+
+  </div>
+
+  <!-- WhatsApp -->
+  <a href="https://wa.me/201234567890"
+     class="mt-8 flex items-center gap-2 text-green-600 text-xl">
+    
+    إذا استمرت المشكلة لا تتردد في التواصل معنا
+    <i class="fa-brands fa-whatsapp text-2xl"></i>
+  </a>
+
+</section>

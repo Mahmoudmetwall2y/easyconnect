@@ -2,10 +2,13 @@
             mt-24 sm:mt-32 md:mt-40 lg:mt-48
             px-4">
 
-  <app-flight-search-bar ></app-flight-search-bar>
+  <!-- Search bar -->
+  <app-flight-search-bar></app-flight-search-bar>
 
-<div class="mt-12 mb-20 sm:mb-32 md:mb-40 flex flex-col items-center justify-center text-center max-w-2xl">
+  <!-- Centered Block -->
+  <div class="mt-12 mb-20 sm:mb-32 md:mb-40 flex flex-col items-center justify-center text-center max-w-2xl">
 
+    <!-- Icon -->
     <i class="fa-solid fa-magnifying-glass text-blue-600 text-6xl sm:text-7xl mb-6"></i>
 
     <!-- Title -->
@@ -19,38 +22,31 @@
     </p>
 
     <!-- Button -->
-  <button
-  class="bg-[#1A73E8] hover:bg-[#1666cf] text-white
-         w-[260px] sm:w-[300px]
-         h-[62px] sm:h-[70px]
-         rounded-[32px]
-         text-xl sm:text-2xl font-semibold
-         shadow-[0_8px_20px_rgba(26,115,232,0.35)]
-         transition duration-200"
-  (click)="editSearch()">
-  تعديل البحث
-</button>
+    <button
+      class="bg-[#1A73E8] hover:bg-[#1666cf] text-white
+             w-[200px] sm:w-[300px]
+             h-[62px] sm:h-[70px]
+             rounded-[32px]
+             text-xl sm:text-2xl font-semibold
+             shadow-[0_8px_20px_rgba(26,115,232,0.35)]
+             transition duration-200"
+      (click)="editSearch()">
+      تعديل البحث
+    </button>
 
-
+    <!-- WhatsApp + Text -->
     <div class="flex items-center justify-center gap-4 sm:gap-6 md:gap-10 mt-6">
 
-      <!-- WhatsApp -->
       <a href="https://wa.me/201234567890"
          class="flex items-center gap-2 text-green-600
                 text-lg sm:text-xl font-semibold">
         <i class="fa-brands fa-whatsapp text-2xl"></i>
       </a>
 
-      <!-- Message -->
       <p class="text-gray-600 text-sm sm:text-base">
         إذا استمرت المشكلة لا تتردد في التواصل معنا
       </p>
 
-    </div>   
-
- 
-
+    </div>
   </div>
-
 </div>
-

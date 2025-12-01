@@ -59,6 +59,8 @@ export class TranslationService {
     'NZ': 'Air New Zealand',
      'EW': 'Eurowings (يورَو وينجز)',
   'EI': 'Aer Lingus (إير لينجوس)',
+   'A3': 'الخطوط الجوية اليونانية',
+  'ET': ' الخطوط الجوية الإثيوبية',
   };
 
   private airports: Record<string, string> = {
