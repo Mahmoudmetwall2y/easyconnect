@@ -33,7 +33,8 @@ export class TranslationService {
     'BA': 'الخطوط البريطانية',
     'LH': 'لوفتهانزا',
     'AF': 'الخطوط الفرنسية',
-    'KL': 'KLM',
+    'KL': 'KLM Royal Dutch Airlines (الخطوط الملكية الهولندية)',
+
     'AZ': 'ITA Airways',
     'LX': 'سويس إير',
     'OS': 'النمساوية',
@@ -56,6 +57,8 @@ export class TranslationService {
 
     'QF': 'Qantas',
     'NZ': 'Air New Zealand',
+     'EW': 'Eurowings (يورَو وينجز)',
+  'EI': 'Aer Lingus (إير لينجوس)',
   };
 
   private airports: Record<string, string> = {

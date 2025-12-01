@@ -85,16 +85,18 @@ export class LocationSelector implements OnInit, OnDestroy {
 
   // فتح/غلق الدروب داون
 toggle() {
-  this.showDropdown = !this.showDropdown;
+  if (this.value) {
+    this.value = null;
+    this.text = '';
+  }
 
-  if (this.showDropdown) {
-    if (this.options.length === 0) {
-      this.flights.getPopularAirports().subscribe(r => {
-        this.options = r.data;
-      });
-    }
+  this.showDropdown = true;
+
+  if (this.options.length === 0) {
+    this.flights.getPopularAirports().subscribe(r => this.options = r.data);
   }
 }
+
 
 openDropdown(event?: MouseEvent | FocusEvent) {
   event?.stopPropagation?.();

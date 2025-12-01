@@ -39,21 +39,33 @@
 >
 
  <div class="flex flex-col md:flex-row items-center gap-3 w-full md:w-[48%] lg:w-auto">
+<div class="flex flex-col w-full md:w-[200px]">
+  <app-location-selector
+    class="flex items-center rounded-lg w-full cursor-pointer"
+    type="from"
+    [initialValue]="selectedFrom"
+    (locationSelected)="selectedFrom = $event">
+  </app-location-selector>
 
-<app-location-selector
-  class="flex items-center  rounded-lg 
-              w-full md:w-[200px]  cursor-pointer"
-  type="from"
-  [initialValue]="selectedFrom"
-  (locationSelected)="selectedFrom = $event">
-</app-location-selector>
+  <p *ngIf="errorFrom" class="text-red-500 text-xs mt-1">
+    من فضلك اختر بلد المغادرة
+  </p>
+</div>
 
-<app-location-selector
-  class="w-full md:w-[200px] lg:w-auto"
-  type="to"
-  [initialValue]="selectedTo"
-  (locationSelected)="selectedTo = $event">
-</app-location-selector>
+
+
+<div class="flex flex-col w-full md:w-[200px]">
+  <app-location-selector
+    class="flex items-center rounded-lg w-full cursor-pointer"
+    type="to"
+    [initialValue]="selectedTo"
+    (locationSelected)="selectedTo = $event">
+  </app-location-selector>
+
+  <p *ngIf="errorTo" class="text-red-500 text-xs mt-1">
+    من فضلك اختر بلد الوصول
+  </p>
+</div>
 
 
      </div>
@@ -74,6 +86,8 @@
       <input type="text" readonly [value]="selectedDeparture || ''"
              placeholder="اختر تاريخ المغادرة"
              class="text-[12px] font-semibold focus:outline-none text-gray-800"/>
+             <p *ngIf="errorDep" class="text-red-500 text-xs mt-1">من فضلك اختر تاريخ المغادرة</p>
+
     </div>
 
     @if(showDepartureCal){
@@ -101,6 +115,8 @@
       <input type="text" readonly [value]="selectedReturn || ''"
              placeholder="اختر تاريخ العودة"
              class="text-[12px] font-semibold focus:outline-none text-gray-800"/>
+             <p *ngIf="errorRet" class="text-red-500 text-xs mt-1">من فضلك اختر تاريخ العودة</p>
+
     </div>
 
     @if(showReturnCal){

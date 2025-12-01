@@ -4,26 +4,25 @@ import { Router } from '@angular/router';
 import { FlightSearchBar } from "../home/flight-search-bar/flight-search-bar";
 import { FlightDetailsModal } from '../flight-search/flight-details-modal/flight-details-modal';
 import { TranslationService } from '../../shared/data/translation.service';
+import { LocationSelector } from '../flight-search/location-selector/location-selector';
+import { PassengerSelector } from '../home/passenger-selector/passenger-selector';
 
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [CommonModule, FlightSearchBar,FlightDetailsModal],
+  imports: [CommonModule, FlightSearchBar, FlightDetailsModal],
   templateUrl: './search-results.html',
   styleUrls: ['./search-results.css'],
 })
-export class SearchResults  implements OnInit{
-
-
+export class SearchResults implements OnInit {
 
   flights: any[] = [];
   originalFlights: any[] = [];
-
   selectedFrom: any = null;
   selectedTo: any = null;
-includeBaggage:boolean=false;
-  selectedDepartureDate:string | Date | null = null;
-  selectedReturnDate: string | Date | null= null;
+  includeBaggage: boolean = false;
+  selectedDepartureDate: string | Date | null = null;
+  selectedReturnDate: string | Date | null = null;
 
   adults: number = 1;
   children: number = 0;
@@ -34,12 +33,12 @@ includeBaggage:boolean=false;
 
   groupedFlights: any[] = [];
   detailsOpen = false;
-detailsFlight: any = null;
-detailsSegment: 'dep' | 'ret' = 'dep';
+  detailsFlight: any = null;
+  detailsSegment: 'dep' | 'ret' = 'dep';
 
 
-  constructor(private router: Router,public t: TranslationService) {
-this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعودة';
+  constructor(private router: Router, public t: TranslationService) {
+    this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعودة';
 
     const nav = this.router.getCurrentNavigation();
 
@@ -50,14 +49,15 @@ this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعود
     const returns =
       nav?.extras?.state?.['returns'] ||
       JSON.parse(sessionStorage.getItem('returns') || '[]');
+     
 
     this.selectedFrom = JSON.parse(sessionStorage.getItem('selectedFrom') || 'null');
     this.selectedTo = JSON.parse(sessionStorage.getItem('selectedTo') || 'null');
 
     this.selectedDepartureDate = new Date(sessionStorage.getItem('depDate')!);
-    this.selectedReturnDate =this.tripType === 'ذهاب فقط'
-    ? null
-    : new Date(sessionStorage.getItem('retDate')!);
+    this.selectedReturnDate = this.tripType === 'ذهاب فقط'
+      ? null
+      : new Date(sessionStorage.getItem('retDate')!);
 
     this.adults = Number(sessionStorage.getItem('adults') || 1);
     this.children = Number(sessionStorage.getItem('children') || 0);
@@ -76,10 +76,11 @@ this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعود
       this.groupedFlights = this.groupedFlights.filter(f => f.returnDepartureAt);
     }
 
-    console.log("✅ Clean grouped flights:", this.groupedFlights);
+    console.log(" Clean grouped flights:", this.groupedFlights);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
 
 
@@ -88,48 +89,48 @@ this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعود
   // ---------------------------------------------------------------------
   private groupFlights(departures: any[], returns: any[]) {
     if (!departures?.length) return [];
- const tripType = sessionStorage.getItem('selectedTripType');
+    const tripType = sessionStorage.getItem('selectedTripType');
 
-  // -----------------------------------------------------------
-  // ⭐ لو الرحلة "ذهاب فقط" → رجّع رحلات الذهاب كما هي
-  // -----------------------------------------------------------
-  if (tripType === 'ذهاب فقط') {
-    return departures.map(d => ({
-      airline: d.airline,
-      airlineLogo: d.airlineLogo,
+    // -----------------------------------------------------------
+    // ⭐ لو الرحلة "ذهاب فقط" → رجّع رحلات الذهاب كما هي
+    // -----------------------------------------------------------
+    if (tripType === 'ذهاب فقط') {
+      return departures.map(d => ({
+        airline: d.airline,
+        airlineLogo: d.airlineLogo,
 
-      origin: d.origin,
-      destination: d.destination,
+        origin: d.origin,
+        destination: d.destination,
 
-      departureAt: d.departureAt,
-      arrivalAt: d.arrivalAt,
-      duration: d.duration,
-      stops: d.stops,
-      currency: d.currency,
-      price: d.price,
-      includedBags: d.includedBags ?? 0,
+        departureAt: d.departureAt,
+        arrivalAt: d.arrivalAt,
+        duration: d.duration,
+        stops: d.stops,
+        currency: d.currency,
+        price: d.price,
+        includedBags: d.includedBags ?? 0,
 
 
-      // مفيش عودة
-      returnDepartureAt: null,
-      returnArrivalAt: null,
-      returnDuration: null,
-      returnStops: null,
+        // مفيش عودة
+        returnDepartureAt: null,
+        returnArrivalAt: null,
+        returnDuration: null,
+        returnStops: null,
 
-      baseDeparturePrice: d.price,
-      baseReturnPrice: 0,
+        baseDeparturePrice: d.price,
+        baseReturnPrice: 0,
 
-      variations: departures
-        .filter(xx => xx.airline === d.airline)
-        .map(v => ({ ...v })),
+        variations: departures
+          .filter(xx => xx.airline === d.airline)
+          .map(v => ({ ...v })),
 
-      returnVariations: [],
+        returnVariations: [],
 
-      isDepartureExpanded: false,
-      isReturnExpanded: false,
-      
-    }));
-  }
+        isDepartureExpanded: false,
+        isReturnExpanded: false,
+
+      }));
+    }
 
     const depDay = new Date(sessionStorage.getItem('depDate')!).toDateString();
     const retDay = new Date(sessionStorage.getItem('retDate')!).toDateString();
@@ -172,9 +173,9 @@ this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعود
         stops: dep.stops,
         currency: dep.currency,
         price: dep.price + bestReturn.price,
-          baseDeparturePrice: dep.price,
+        baseDeparturePrice: dep.price,
         baseReturnPrice: bestReturn.price,
- departureBags: dep.includedBags ?? 0,
+        departureBags: dep.includedBags ?? 0,
         // ----------- RETURN DISPLAY DATA ---------
         returnDepartureAt: bestReturn.departureAt,
         returnArrivalAt: bestReturn.arrivalAt,
@@ -182,23 +183,23 @@ this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعود
         returnStops: bestReturn.stops,
         returnOrigin: bestReturn.origin,
         returnDestination: bestReturn.destination,
-         returnBags: bestReturn.includedBags ?? 0,
+        returnBags: bestReturn.includedBags ?? 0,
 
         // ----------- DEPARTURE VARIATIONS (Only Dep) -----------
         variations: depSameDay
           .filter(xx => xx.airline === dep.airline)
-        .map(d => ({
-          departureAt: d.departureAt,
-          arrivalAt: d.arrivalAt,
-          duration: d.duration,
-          stops: d.stops,
-          origin: d.origin,
-          destination: d.destination,
-          airline: d.airline,
-          airlineLogo: d.airlineLogo,
-          currency: d.currency,
-          price: d.price
-        })),
+          .map(d => ({
+            departureAt: d.departureAt,
+            arrivalAt: d.arrivalAt,
+            duration: d.duration,
+            stops: d.stops,
+            origin: d.origin,
+            destination: d.destination,
+            airline: d.airline,
+            airlineLogo: d.airlineLogo,
+            currency: d.currency,
+            price: d.price
+          })),
 
         // ----------- RETURN VARIATIONS (Only Return) -----------
         returnVariations: matchingReturns.map(r => ({
@@ -262,56 +263,56 @@ this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعود
   // UI ACTIONS
   // ---------------------------------------------------------------------
 
-onChangeDeparture(selected: any) {
-  this.groupedFlights.forEach(f => {
-    if (f !== selected) f.isDepartureExpanded = false;
-  });
+  onChangeDeparture(selected: any) {
+    this.groupedFlights.forEach(f => {
+      if (f !== selected) f.isDepartureExpanded = false;
+    });
 
-  selected.isDepartureExpanded = !selected.isDepartureExpanded;
-  selected.isReturnExpanded = false;
-}
-
-
-onChangeReturn(selected: any) {
-  this.groupedFlights.forEach(f => {
-    if (f !== selected) f.isReturnExpanded = false;
-  });
-
-  selected.isReturnExpanded = !selected.isReturnExpanded;
-  selected.isDepartureExpanded = false;
-}
+    selected.isDepartureExpanded = !selected.isDepartureExpanded;
+    selected.isReturnExpanded = false;
+  }
 
 
+  onChangeReturn(selected: any) {
+    this.groupedFlights.forEach(f => {
+      if (f !== selected) f.isReturnExpanded = false;
+    });
+
+    selected.isReturnExpanded = !selected.isReturnExpanded;
+    selected.isDepartureExpanded = false;
+  }
 
 
-applyNewDeparture(f: any, option: any) {
-  f.selectedDeparture = option;
-
-  f.baseDeparturePrice = option.price;
-
-  f.price = f.baseDeparturePrice + f.baseReturnPrice;
-}
-
-applyNewReturn(f: any, option: any) {
-  f.selectedReturn = option;
-
-  f.baseReturnPrice = option.price;
-
-  f.price = f.baseDeparturePrice + f.baseReturnPrice;
-}
 
 
-openDetails(f: any, seg: 'dep' | 'ret') {
-  this.detailsFlight = f;
-  this.detailsSegment = seg;
-  this.detailsOpen = true;
-  console.log("huhu")
-}
+  applyNewDeparture(f: any, option: any) {
+    f.selectedDeparture = option;
 
-closeDetails() {
-  this.detailsOpen = false;
-  this.detailsFlight = null;
-}
+    f.baseDeparturePrice = option.price;
+
+    f.price = f.baseDeparturePrice + f.baseReturnPrice;
+  }
+
+  applyNewReturn(f: any, option: any) {
+    f.selectedReturn = option;
+
+    f.baseReturnPrice = option.price;
+
+    f.price = f.baseDeparturePrice + f.baseReturnPrice;
+  }
+
+
+  openDetails(f: any, seg: 'dep' | 'ret') {
+    this.detailsFlight = f;
+    this.detailsSegment = seg;
+    this.detailsOpen = true;
+    console.log("huhu")
+  }
+
+  closeDetails() {
+    this.detailsOpen = false;
+    this.detailsFlight = null;
+  }
 
 
 

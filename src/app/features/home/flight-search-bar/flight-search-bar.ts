@@ -35,6 +35,11 @@ adults = 1;
 children = 0;
 infants = 0;
 travelClass = 'السياحية';
+errorFrom = false;
+errorTo = false;
+errorDep = false;
+errorRet = false;
+
 @Input() initialFrom: any = null;
 @Input() initialTo: any = null;
 
@@ -59,7 +64,6 @@ loading = false;
 
 constructor(private flightService: FlightsService, private router: Router,  private currencyService: CurrencyService
 ) {
-    // ✅ عند أول تحميل: لو مفيش حاجة متخزنة، نخليها "ذهاب وعودة"
     const savedType = sessionStorage.getItem('selectedTripType');
     this.selectedTripType = savedType ? savedType : 'ذهاب وعودة';
   }
@@ -148,11 +152,32 @@ onPassengersConfirmed(data: any) {
 
 
 searchFlights() {
-   this.loading = true;
 
-  setTimeout(() => {
-    this.loading = false;
-  }, 8000);
+  this.errorFrom = false;
+  this.errorTo = false;
+  this.errorDep = false;
+  this.errorRet = false;
+
+  if (!this.selectedFrom) {
+    this.errorFrom = true;
+  }
+
+  if (!this.selectedTo) {
+    this.errorTo = true;
+  }
+
+  if (!this.depDate) {
+    this.errorDep = true;
+  }
+
+  if (this.selectedTripType === 'ذهاب وعودة' && !this.retDate) {
+    this.errorRet = true;
+  }
+
+  if (this.errorFrom || this.errorTo || this.errorDep || this.errorRet) {
+    return;
+  }
+   this.loading = true;
 
  
   const req = {
@@ -171,13 +196,27 @@ currency: this.currencyService.currencyByCountry[this.currencyIso]
 
   };
 
-  console.log('🔍 بحث عن الرحلات:', req);
 
 this.flightService.searchFlights(req).subscribe({
   next: (res) => {
     const departures = res?.data?.departures ?? [];
-    const returns    = res?.data?.returns ?? [];
+    const returns = res?.data?.returns ?? [];
 
+     if (this.selectedTripType === 'ذهاب فقط') {
+        if (!departures.length) {
+          this.loading = false;
+          this.router.navigate(['/no-results']);
+          return;
+        }
+      }
+
+      if (this.selectedTripType === 'ذهاب وعودة') {
+        if (!departures.length && !returns.length) {
+          this.loading = false;
+          this.router.navigate(['/no-results']);
+          return;
+        }
+      }
     sessionStorage.setItem('departures', JSON.stringify(departures));
     sessionStorage.setItem('returns', JSON.stringify(returns));
     sessionStorage.setItem('selectedFrom', JSON.stringify(this.selectedFrom ?? null));
@@ -191,14 +230,12 @@ sessionStorage.setItem('infants', this.infants.toString());
 sessionStorage.setItem('travelClass', this.travelClass);
 sessionStorage.setItem('includeBaggage',this.includeBaggage?'1':'0');
 
-   setTimeout(() => {   // علشان يلحق يشوف الأنيميشن
-        this.loading = false;
-        this.router.navigate(['/search'], { state: { departures, returns } });
-      }, 8000);
+    this.loading = false;
     this.router.navigate(['/search'], { state: { departures, returns } });
   },
   error: (err) => {
-   
+     this.loading = false;
+      this.router.navigate(['/no-results']);
   },
 });
 }

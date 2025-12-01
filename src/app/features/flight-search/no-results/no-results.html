@@ -1,0 +1,56 @@
+<div class="flex flex-col items-center justify-center w-full
+            mt-24 sm:mt-32 md:mt-40 lg:mt-48
+            px-4">
+
+  <app-flight-search-bar ></app-flight-search-bar>
+
+<div class="mt-12 mb-20 sm:mb-32 md:mb-40 flex flex-col items-center justify-center text-center max-w-2xl">
+
+    <i class="fa-solid fa-magnifying-glass text-blue-600 text-6xl sm:text-7xl mb-6"></i>
+
+    <!-- Title -->
+    <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-3">
+      لا توجد رحلات متاحة لهذا البحث
+    </h2>
+
+    <!-- Description -->
+    <p class="text-gray-500 text-base sm:text-lg md:text-xl leading-relaxed mb-6">
+      لم نتمكن من العثور على رحلات تطابق معايير البحث الخاصة بك
+    </p>
+
+    <!-- Button -->
+  <button
+  class="bg-[#1A73E8] hover:bg-[#1666cf] text-white
+         w-[260px] sm:w-[300px]
+         h-[62px] sm:h-[70px]
+         rounded-[32px]
+         text-xl sm:text-2xl font-semibold
+         shadow-[0_8px_20px_rgba(26,115,232,0.35)]
+         transition duration-200"
+  (click)="editSearch()">
+  تعديل البحث
+</button>
+
+
+    <div class="flex items-center justify-center gap-4 sm:gap-6 md:gap-10 mt-6">
+
+      <!-- WhatsApp -->
+      <a href="https://wa.me/201234567890"
+         class="flex items-center gap-2 text-green-600
+                text-lg sm:text-xl font-semibold">
+        <i class="fa-brands fa-whatsapp text-2xl"></i>
+      </a>
+
+      <!-- Message -->
+      <p class="text-gray-600 text-sm sm:text-base">
+        إذا استمرت المشكلة لا تتردد في التواصل معنا
+      </p>
+
+    </div>   
+
+ 
+
+  </div>
+
+</div>
+
