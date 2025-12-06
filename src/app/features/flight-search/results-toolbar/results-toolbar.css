@@ -1,0 +1,300 @@
+.toolbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  padding: 18px 28px;
+  border-radius: 20px;
+
+  background: #ffffff;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+
+  height: 92px;  /* زي Figma */
+}
+
+.toolbar-wrapper {
+  max-width: 1470px;  
+  margin: 0 auto;     
+  padding: 0 20px;     
+}
+
+
+/* SORT BOX */
+.sort-wrapper {
+  width: 150px;
+  position: relative;  
+}
+
+.custom-select {
+  width: 180px;
+  padding: 12px 16px;
+  border: 1px solid #d7dbe7;
+  background: #f7f9ff;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+/* DROPDOWN */
+.dropdown-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 100%;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+  padding: 6px 0;
+  z-index: 9999;
+}
+
+.dropdown-item {
+  padding: 12px 16px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.dropdown-item:hover {
+  background: #eef3ff;
+}
+
+.dropdown-item.active {
+  background: #e9f0ff;
+  font-weight: 600;
+}
+
+.airlines-strip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  gap: 14px;
+  overflow-x: auto;
+  white-space: nowrap;     /* أهم سطر → يمنع النزول تحت */
+  flex-wrap: nowrap;       /* يمنع اللف */
+}
+
+.airline-card {
+  flex: 0 0 auto;          /* يمنع الكارد من التمدد */
+}
+.airlines-strip {
+  overflow-x: auto;
+  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer / Edge */
+}
+
+.airlines-strip::-webkit-scrollbar {
+  display: none;             /* Chrome / Safari / Edge */
+}
+
+
+/* NAV ARROWS */
+.nav-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #edf2ff;
+  border: none;
+  cursor: pointer;
+  margin-inline-start: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow {
+  font-size: 22px;
+  color: #0d6efd;
+  font-weight: bold;
+  transform: translateY(-2px);
+}
+
+
+/* ==== SMALLER AIRLINE TAB STYLE ==== */
+
+.airline-card {
+  min-width: 150px;       /* كان 190 → صغّرته */
+  height: 62px;           /* كان 70 → صغّرته */
+  padding: 8px 12px;      /* قللت البادينج */
+
+  background: #fff;
+  border-radius: 14px;    /* أصغر */
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;              /* كان 14 → صغر */
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* LOGO */
+.airline-logo {
+  height: 32px;          /* كان 40 → صغر */
+  width: auto;
+  object-fit: contain;
+    border-radius: 4px;    /* أصغر */
+
+}
+
+/* PRICE */
+.price-text {
+  font-size: 15px;       /* كان 18 → صغر */
+  font-weight: 700;
+  color: #1F2937;
+}
+
+/* Active state */
+.airline-card.active {
+  background: #0D6EFD;
+  border-color: #0D6EFD;
+}
+
+.airline-card.active .price-text {
+  color: white;
+}
+
+.airline-card.active img {
+  filter: brightness(0) invert(1);
+}
+
+
+
+
+
+
+
+
+/* LOGO */
+.airline-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* PRICE */
+.price-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1F2937;
+}
+
+
+
+
+/* FILTER + CALENDAR BUTTONS */
+.toolbar-btn {
+  padding: 10px 18px;
+  border-radius: 14px;
+  border: 1px solid #d7dbe7;
+  background: #f8f9fd;
+  cursor: pointer;
+  font-size: 15px;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.toolbar-btn:hover {
+  background: #eef2ff;
+}
+
+.filters-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.filter-icon {
+  font-size: 17px;
+  color: #000;
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .toolbar-container {
+    gap: 14px;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .toolbar-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    padding: 16px;
+    height: auto;  /* مهم جداً */
+  }
+
+  /* Sorting + Filters → ياخدوا عرض الشاشة */
+  .custom-select,
+  .filters-btn,
+  .dropdown-btn {
+    width: 100%;
+  }
+
+  /* إخفاء الأسهم */
+  .nav-btn {
+    display: none !important;
+  }
+
+  /* الشريط نفسه ياخد مساحة مريحة */
+  .airlines-strip {
+    width: 100%;
+    gap: 10px;           /* أقل */
+    padding-bottom: 4px;
+  }
+
+  /* الكروت تصغر والمحتوى يتوسّط */
+  .airline-card {
+    min-width: 120px;
+    height: 60px;
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .airline-logo {
+    height: 26px;
+  }
+
+  .price-text {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .toolbar-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .airline-card {
+    min-width: 110px;  
+    height: 55px;
+  }
+
+  .airline-logo {
+    height: 24px;
+  }
+
+  .price-text {
+    font-size: 13px;
+  }
+}
+

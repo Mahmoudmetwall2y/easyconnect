@@ -21,6 +21,17 @@
     [includeBaggage]="includeBaggage"
   ></app-flight-search-bar>
 
+
+  <app-results-toolbar
+  [airlines]="toolbarAirlines"
+  [selectedSort]="toolbarSort"
+  (sortChanged)="onSortChanged($event)"
+  (airlineSelected)="onToolbarAirlineSelected($event)"
+  (openFilters)="openFiltersModal()"
+  (openCalendar)="openCalendarModal()"
+></app-results-toolbar>
+
+
   <section dir="rtl"
     class="
       bg-gray-50
@@ -655,6 +666,18 @@
 
     </div>
   </section>
+<app-price-calendar-modal
+  *ngIf="calendarOpen"
+  [departDate]="selectedDepartureDate"
+  [returnDate]="selectedReturnDate"
+  [currency]="groupedFlights[0]?.currency"
+  [departDays]="departDays"
+  [returnDays]="returnDays"
+  (closed)="calendarOpen = false"
+  (dateSelected)="onCalendarCellSelected($event)">
+</app-price-calendar-modal>
+
+
 </div>
 
 
@@ -666,3 +689,5 @@
   [adults]="adults"
   (closed)="closeDetails()">
 </app-flight-details-modal>
+
+

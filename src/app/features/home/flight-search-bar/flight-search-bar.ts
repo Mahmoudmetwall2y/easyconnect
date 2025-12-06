@@ -190,7 +190,7 @@ searchFlights() {
     infants: this.infants,
     travelClass: this.travelClass,
     includeBaggage: this.includeBaggage,
-//directOnly: this.directOnly,
+directOnly: this.directOnly,
 
 currency: this.currencyService.currencyByCountry[this.currencyIso]
 
@@ -231,6 +231,7 @@ sessionStorage.setItem('travelClass', this.travelClass);
 sessionStorage.setItem('includeBaggage',this.includeBaggage?'1':'0');
 
     this.loading = false;
+console.log("RESULT", departures);
 
     this.router.navigate(['/search'], { state: { departures, returns } });
   },

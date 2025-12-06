@@ -6,11 +6,14 @@ import { FlightDetailsModal } from '../flight-search/flight-details-modal/flight
 import { TranslationService } from '../../shared/data/translation.service';
 import { LocationSelector } from '../flight-search/location-selector/location-selector';
 import { PassengerSelector } from '../home/passenger-selector/passenger-selector';
+import { AirlineSummary, ResultsToolbar } from '../flight-search/results-toolbar/results-toolbar';
+import { getAirlineLogo } from '../../shared/data/airline-logos';
+import { PriceCalendarModal } from '../flight-search/price-calendar-modal/price-calendar-modal';
 
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [CommonModule, FlightSearchBar, FlightDetailsModal],
+  imports: [CommonModule, FlightSearchBar, FlightDetailsModal,ResultsToolbar,PriceCalendarModal],
   templateUrl: './search-results.html',
   styleUrls: ['./search-results.css'],
 })
@@ -35,6 +38,17 @@ export class SearchResults implements OnInit {
   detailsOpen = false;
   detailsFlight: any = null;
   detailsSegment: 'dep' | 'ret' = 'dep';
+
+
+  toolbarAirlines: AirlineSummary[] = [];
+  toolbarSort: string = 'الموصى به';
+
+calendarOpen = false;
+calendarDays: any[] = [];
+
+departDays: any[] = [];
+returnDays: any[] = [];
+
 
 
   constructor(private router: Router, public t: TranslationService) {
@@ -76,6 +90,16 @@ export class SearchResults implements OnInit {
       this.groupedFlights = this.groupedFlights.filter(f => f.returnDepartureAt);
     }
 
+    // ✔ إعداد بيانات التول بار
+this.toolbarAirlines = this.groupedFlights.map(f => ({
+  code: f.airline,
+  name: f.airline,
+  logoUrl: getAirlineLogo(f.airline), 
+  price: f.price,
+  currency: f.currency,
+  isSelected: false
+}));
+
     console.log(" Clean grouped flights:", this.groupedFlights);
   }
 
@@ -97,7 +121,8 @@ export class SearchResults implements OnInit {
     if (tripType === 'ذهاب فقط') {
       return departures.map(d => ({
         airline: d.airline,
-        airlineLogo: d.airlineLogo,
+       airlineLogo: getAirlineLogo(d.airline),
+
 
         origin: d.origin,
         destination: d.destination,
@@ -119,10 +144,13 @@ export class SearchResults implements OnInit {
 
         baseDeparturePrice: d.price,
         baseReturnPrice: 0,
+variations: departures
+  .filter(xx => xx.airline === d.airline)
+  .map(v => ({
+    ...v,
+    airlineLogo: getAirlineLogo(v.airline)
+  })),
 
-        variations: departures
-          .filter(xx => xx.airline === d.airline)
-          .map(v => ({ ...v })),
 
         returnVariations: [],
 
@@ -162,7 +190,7 @@ export class SearchResults implements OnInit {
 
         // ----------- MAIN DISPLAY DATA -----------
         airline: dep.airline,
-        airlineLogo: dep.airlineLogo,
+        airlineLogo:  getAirlineLogo(dep.airline),
 
         origin: dep.origin,
         destination: dep.destination,
@@ -196,7 +224,7 @@ export class SearchResults implements OnInit {
             origin: d.origin,
             destination: d.destination,
             airline: d.airline,
-            airlineLogo: d.airlineLogo,
+            airlineLogo: getAirlineLogo(d.airline),
             currency: d.currency,
             price: d.price
           })),
@@ -210,7 +238,7 @@ export class SearchResults implements OnInit {
           origin: r.origin,
           destination: r.destination,
           airline: r.airline,
-          airlineLogo: r.airlineLogo,
+          airlineLogo:  getAirlineLogo(r.airline),
           currency: r.currency,
           price: r.price
         })),
@@ -236,7 +264,7 @@ export class SearchResults implements OnInit {
       if (!grouped[f.airline]) {
         grouped[f.airline] = {
           airline: f.airline,
-          airlineLogo: f.airlineLogo,
+          airlineLogo:  getAirlineLogo(f.airline),
           price: f.price,
 
           ...f,
@@ -252,7 +280,10 @@ export class SearchResults implements OnInit {
       // Keep Cheapest
       if (f.price < grouped[f.airline].price) {
         grouped[f.airline].price = f.price;
-        Object.assign(grouped[f.airline], f);
+       const oldLogo = grouped[f.airline].airlineLogo;
+Object.assign(grouped[f.airline], f);
+grouped[f.airline].airlineLogo = oldLogo; // نحافظ على اللوجو الصح
+
       }
     }
 
@@ -313,6 +344,154 @@ export class SearchResults implements OnInit {
     this.detailsOpen = false;
     this.detailsFlight = null;
   }
+  // ---------------------------------------------------------------------
+//  TOOLBAR EVENTS
+// ---------------------------------------------------------------------
+
+onSortChanged(sort: string) {
+  this.toolbarSort = sort;
+
+  switch (sort) {
+
+    case 'الموصى به':
+      this.groupedFlights.sort((a, b) => {
+        const scoreA = a.price + (parseInt(a.duration.replace(/\D/g, '')) || 0);
+        const scoreB = b.price + (parseInt(b.duration.replace(/\D/g, '')) || 0);
+        return scoreA - scoreB;
+      });
+      break;
+
+    case 'الأقل سعرًا':
+      this.groupedFlights.sort((a, b) => a.price - b.price);
+      break;
+
+    case 'الأقصر زمنًا':
+      this.groupedFlights.sort((a, b) => {
+        const dA = parseInt(a.duration.replace(/\D/g, '')) || 0;
+        const dB = parseInt(b.duration.replace(/\D/g, '')) || 0;
+        return dA - dB;
+      });
+      break;
+
+    case 'مغادره (اقرب وقت)':
+      this.groupedFlights.sort((a, b) =>
+        new Date(a.departureAt).getTime() - new Date(b.departureAt).getTime()
+      );
+      break;
+
+    case 'مغادره (ابعد وقت)':
+      this.groupedFlights.sort((a, b) =>
+        new Date(b.departureAt).getTime() - new Date(a.departureAt).getTime()
+      );
+      break;
+
+    case 'العوده (الابكر)':
+      this.groupedFlights.sort((a, b) =>
+        new Date(a.returnDepartureAt).getTime() - new Date(b.returnDepartureAt).getTime()
+      );
+      break;
+
+    case 'العوده (الاخير)':
+      this.groupedFlights.sort((a, b) =>
+        new Date(b.returnDepartureAt).getTime() - new Date(a.returnDepartureAt).getTime()
+      );
+      break;
+  }
+
+  this.groupedFlights = [...this.groupedFlights];
+}
+
+
+
+
+onToolbarAirlineSelected(airline: any) {
+  console.log("Airline selected:", airline);
+
+  // لو عايزة تعملي Scroll لرحلات الشركة
+  const idx = this.groupedFlights.findIndex(f => f.airline === airline.code);
+  if (idx >= 0) {
+    const el = document.getElementById("flight-" + idx);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+
+openFiltersModal() {
+  console.log("Open filters modal");
+  // هنا لاحقًا هنفتح modal الفلاتر
+}
+
+onCalendarDateSelected(day: any) {
+  this.selectedDepartureDate = day.date;
+  this.calendarOpen = false;
+}
+
+onReturnCalendarDateSelected(day: any) {
+  this.selectedReturnDate = day.date;
+  this.calendarOpen = false;
+}
+openCalendarModal() {
+  this.calendarOpen = true;
+
+  this.departDays = this.generateWeekDays(
+    this.selectedDepartureDate,
+    'dep'
+  );
+
+  this.returnDays = this.generateWeekDays(
+    this.selectedReturnDate,
+    'ret'
+  );
+}
+
+
+generateWeekDays(date: string | Date | null, type: 'dep' | 'ret') {
+  if (!date) return [];
+
+  const base = new Date(date);
+
+  // نجهّز مصفوفة الأسبوع
+  const days = Array.from({ length: 7 }).map((_, i) => {
+    const dt = new Date(base.getTime() + i * 86400000);
+    return {
+      date: dt,
+      price: null
+    };
+  });
+
+  // نملأ الأسعار من groupedFlights
+  for (const f of this.groupedFlights) {
+
+    // سعر اليوم حسب نوع الرحلة
+    const day =
+      type === 'dep'
+        ? f.departureAt.split('T')[0]
+        : f.returnDepartureAt.split('T')[0];
+
+    const price =
+      type === 'dep'
+        ? f.baseDeparturePrice
+        : f.baseReturnPrice;
+
+    for (const d of days) {
+      const dStr = d.date.toISOString().split('T')[0];
+      if (dStr === day) {
+        if (d.price === null || price < d.price) {
+          d.price = price; // أرخص سعر في اليوم
+        }
+      }
+    }
+  }
+
+  return days;
+}
+
+onCalendarCellSelected(ev: { depart: any; ret: any }) {
+  this.selectedDepartureDate = ev.depart.date;
+  this.selectedReturnDate    = ev.ret.date;
+  this.calendarOpen = false;
+}
+
 
 
 

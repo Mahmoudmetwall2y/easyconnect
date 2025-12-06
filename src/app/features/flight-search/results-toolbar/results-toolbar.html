@@ -1,0 +1,68 @@
+<div class="toolbar-wrapper">
+  <div class="toolbar-container">
+
+<div class="sort-wrapper">
+  
+  <div class="custom-select" (click)="toggleDropdown()">
+    
+    <i class="fa-solid fa-chevron-down"></i>
+    <span>{{ selectedSort }}</span>
+  </div>
+
+  <div class="dropdown-panel" *ngIf="openSort">
+      <div 
+        class="dropdown-item" 
+        *ngFor="let opt of sortOptions"
+        [class.active]="opt === selectedSort"
+        (click)="onSortChange(opt)">
+        {{ opt }}
+      </div>
+  </div>
+
+</div>
+
+
+
+
+  <button class="nav-btn" (click)="scrollLeft()">
+    <span class="arrow">‹</span>
+  </button>
+
+<div class="airlines-strip" #strip>
+
+  <div class="airline-card"
+       *ngFor="let a of airlines"
+       [class.active]="a.isSelected"
+       (click)="onAirlineClick(a)">
+
+      <img class="airline-logo" [src]="a.logoUrl" />
+
+      <div class="price-text">
+        {{ a.currency }} {{ a.price }}
+      </div>
+
+  </div>
+
+</div>
+
+
+  <button class="nav-btn" (click)="scrollRight()">
+    <span class="arrow">›</span>
+  </button>
+
+<button class="toolbar-btn filters-btn" (click)="onOpenFilters()">
+  <i class="fa-solid fa-chevron-down arrow-left"></i>
+  <span class="text">الفلاتر</span>
+  <i class="fa-solid fa-filter filter-icon"></i>
+</button>
+
+
+<button class="toolbar-btn dropdown-btn" (click)="onOpenCalendar()">
+  <i class="fa-solid fa-chevron-down arrow-left"></i>
+  <span class="text">عرض تقويم الأسعار</span>
+  
+</button>
+
+
+</div>
+</div>

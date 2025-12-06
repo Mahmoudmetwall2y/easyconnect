@@ -1,0 +1,104 @@
+<div class="backdrop" (click)="close()"></div>
+
+<div class="calendar-modal" dir="rtl" (click)="$event.stopPropagation()">
+  
+  <!-- ========== HEADER ========== -->
+  <div class="calendar-header">
+
+    <!-- يسار -->
+    <div class="header-left">
+      <div class="header-sub">
+        رحلة العودة المختارة
+        <span *ngIf="returnAsDate">
+          {{ returnAsDate | date: 'd MMM' : '' : 'ar-EG' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- المنتصف -->
+    <div class="header-title">
+      <h2>تقويم الأسعار</h2>
+      <div class="header-sub">
+        رحلة الذهاب المختارة
+        <span *ngIf="departAsDate">
+          {{ departAsDate | date: 'd MMM' : '' : 'ar-EG' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- يمين -->
+    <button class="close-btn" (click)="close()">×</button>
+
+  </div>
+
+  <!-- ========== MATRIX ========== -->
+  <div class="matrix-wrapper">
+
+    <div class="matrix">
+
+      <div class="corner"></div>
+
+      <!-- عناوين الذهاب -->
+      <div
+        class="dep-header"
+        *ngFor="let d of normalizedDepart; let c = index"
+        [class.cheapest-col-header]="isCheapestColumn(c)"
+      >
+        <div class="dep-date">
+          {{ d.date | date: 'd MMM' : '' : 'ar-EG' }}
+        </div>
+        <div class="dep-weekday">
+          {{ d.date | date: 'EEEE' : '' : 'ar-EG' }}
+        </div>
+      </div>
+
+      <!-- صفوف العودة + الخلايا -->
+      <ng-container *ngFor="let ret of normalizedReturn; let r = index">
+
+        <!-- عنوان صف العودة -->
+        <div
+          class="ret-header"
+          [class.cheapest-row-header]="isCheapestRow(r)"
+        >
+          <div class="ret-date">
+            {{ ret.date | date: 'd MMM' : '' : 'ar-EG' }}
+          </div>
+          <div class="ret-weekday">
+            {{ ret.date | date: 'EEEE' : '' : 'ar-EG' }}
+          </div>
+        </div>
+
+        <!-- خلايا الأسعار -->
+        <div
+          class="cell"
+          *ngFor="let dep of normalizedDepart; let c = index"
+          [class.cheapest-col]="isCheapestColumn(c)"
+          [class.cheapest-row]="isCheapestRow(r)"
+          [class.selected]="isSelected(r, c)"
+          (click)="onCellClick(r, c)"
+        >
+          <ng-container *ngIf="matrix[r][c]?.price != null; else searchTpl">
+            <div class="price">
+              {{ currency }} {{ matrix[r][c].price }}
+            </div>
+
+            <div *ngIf="isCheapestCell(r, c)" class="cheapest-label">
+              الأرخص
+            </div>
+          </ng-container>
+        </div>
+
+      </ng-container>
+
+    </div>
+
+  </div>
+
+  <!-- SEARCH TEMPLATE -->
+  <ng-template #searchTpl>
+    <div class="search-cell">
+      بحث <i class="fa-solid fa-search"></i>
+    </div>
+  </ng-template>
+
+</div>
