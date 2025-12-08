@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, OnInit } from '@angular/core';
+import { Component, input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FlightSearchBar } from "../home/flight-search-bar/flight-search-bar";
 import { FlightDetailsModal } from '../flight-search/flight-details-modal/flight-details-modal';
@@ -9,11 +9,19 @@ import { PassengerSelector } from '../home/passenger-selector/passenger-selector
 import { AirlineSummary, ResultsToolbar } from '../flight-search/results-toolbar/results-toolbar';
 import { getAirlineLogo } from '../../shared/data/airline-logos';
 import { PriceCalendarModal } from '../flight-search/price-calendar-modal/price-calendar-modal';
+import { FiltersSidebar, FiltersState, StopOption } from '../flight-search/filters-sidebar/filters-sidebar';
+import { FlightsService } from '../../core/services/flights.service';
+interface AirportFilterItem {
+  code: string;
+  name: string;
+  price: number;
+  currency: string;
+}
 
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [CommonModule, FlightSearchBar, FlightDetailsModal,ResultsToolbar,PriceCalendarModal],
+  imports: [CommonModule, FlightSearchBar, FlightDetailsModal,ResultsToolbar,PriceCalendarModal,FiltersSidebar],
   templateUrl: './search-results.html',
   styleUrls: ['./search-results.css'],
 })
@@ -48,10 +56,35 @@ calendarDays: any[] = [];
 
 departDays: any[] = [];
 returnDays: any[] = [];
+ stopOptions: StopOption[] = [];
+@ViewChild(FiltersSidebar) sidebar!: FiltersSidebar;
+
+filtersOpen = false;
+filtersState: FiltersState = {
+  stops: [],
+  airlines: [],
+  departTime: [0, 24],
+  arrivalTime: [0, 24],
+  departureAirports: [],
+  arrivalAirports: [],
+  baggage:[]
+};
+departureAirportsList: {
+  code: string;
+  name: string;
+  price: number;
+  currency: string;
+}[] = [];
+
+arrivalAirportsList: {
+  code: string;
+  name: string;
+  price: number;
+  currency: string;
+}[] = [];
 
 
-
-  constructor(private router: Router, public t: TranslationService) {
+  constructor(private router: Router, public t: TranslationService, private flightservice:FlightsService) {
     this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعودة';
 
     const nav = this.router.getCurrentNavigation();
@@ -84,23 +117,27 @@ returnDays: any[] = [];
 
     // Group per airline
     this.groupedFlights = this.groupByAirline(grouped);
+    this.originalFlights = [...this.groupedFlights];
 
+this.buildAirportFilters();
     // Only valid if round trip
     if (sessionStorage.getItem('selectedTripType') === 'ذهاب وعودة') {
       this.groupedFlights = this.groupedFlights.filter(f => f.returnDepartureAt);
     }
 
-    // ✔ إعداد بيانات التول بار
+    //  إعداد بيانات التول بار
 this.toolbarAirlines = this.groupedFlights.map(f => ({
   code: f.airline,
-  name: f.airline,
-  logoUrl: getAirlineLogo(f.airline), 
+  name: this.t.translateAirline(f.airline),
+  logo: getAirlineLogo(f.airline),
   price: f.price,
-  currency: f.currency,
-  isSelected: false
+  currency: f.currency
 }));
 
-    console.log(" Clean grouped flights:", this.groupedFlights);
+this.buildStopOptions();
+
+
+    console.log(" Clean grlogoUrlouped flights:", this.groupedFlights);
   }
 
   ngOnInit() {
@@ -109,7 +146,7 @@ this.toolbarAirlines = this.groupedFlights.map(f => ({
 
 
   // ---------------------------------------------------------------------
-  // 🔵 CLEAN GROUPING OF FLIGHTS (DEPARTURES + RETURNS)
+  //  CLEAN GROUPING OF FLIGHTS (DEPARTURES + RETURNS)
   // ---------------------------------------------------------------------
   private groupFlights(departures: any[], returns: any[]) {
     if (!departures?.length) return [];
@@ -253,7 +290,7 @@ variations: departures
   }
 
   // ---------------------------------------------------------------------
-  // 🔵 GROUP BY AIRLINE (CLEAN, NO DUPLICATES)
+  //  GROUP BY AIRLINE (CLEAN, NO DUPLICATES)
   // ---------------------------------------------------------------------
   private groupByAirline(flights: any[]) {
 
@@ -416,10 +453,7 @@ onToolbarAirlineSelected(airline: any) {
 }
 
 
-openFiltersModal() {
-  console.log("Open filters modal");
-  // هنا لاحقًا هنفتح modal الفلاتر
-}
+
 
 onCalendarDateSelected(day: any) {
   this.selectedDepartureDate = day.date;
@@ -491,6 +525,175 @@ onCalendarCellSelected(ev: { depart: any; ret: any }) {
   this.selectedReturnDate    = ev.ret.date;
   this.calendarOpen = false;
 }
+
+onOpenFiltersFromToolbar() {
+  this.filtersOpen = true;
+
+setTimeout(() => {
+  if (this.sidebar) {
+    this.sidebar.setBaggagePrices(this.groupedFlights);
+  }
+});
+
+}
+
+
+applyFiltersToFlights() {
+  // نبدأ دائمًا من النسخة الأصلية وليس من groupedFlights
+  let filtered = [...this.originalFlights];
+
+  const f = this.filtersState;
+
+  // فلترة محطات التوقف
+  if (f.stops.length > 0) {
+    filtered = filtered.filter(x => f.stops.includes(x.stops));
+  }
+
+  // فلترة شركات الطيران
+  if (f.airlines.length > 0) {
+    filtered = filtered.filter(x => f.airlines.includes(x.airline));
+  }
+if (f.baggage?.length) {
+  filtered = filtered.filter(flight => {
+
+    const hasBags = flight.departureBags > 0 || flight.returnBags > 0;
+
+    if (f.baggage.includes('with') && hasBags) return true;
+    if (f.baggage.includes('without') && !hasBags) return true;
+
+    return false;
+  });
+}
+
+  // فلترة وقت المغادرة
+  filtered = filtered.filter(x => {
+    const hour = new Date(x.departureAt).getHours();
+    return hour >= f.departTime[0] && hour <= f.departTime[1];
+  });
+
+  // فلترة وقت الوصول
+  filtered = filtered.filter(x => {
+    const hour = new Date(x.arrivalAt).getHours();
+    return hour >= f.arrivalTime[0] && hour <= f.arrivalTime[1];
+  });
+
+  // فلترة المطارات
+  if (f.departureAirports.length > 0) {
+    filtered = filtered.filter(x => f.departureAirports.includes(x.origin));
+  }
+
+  if (f.arrivalAirports.length > 0) {
+    filtered = filtered.filter(x => f.arrivalAirports.includes(x.destination));
+  }
+
+  this.groupedFlights = [...filtered];
+}
+
+
+onApplyFilters(newState: FiltersState) {
+  this.filtersState = newState;
+  this.filtersOpen = false;
+
+  //  هنا تعمل فلترة حقيقية للرحلات
+  this.applyFiltersToFlights();
+}
+private buildStopOptions() {
+  if (!this.originalFlights.length) {
+    this.stopOptions = [];
+    return;
+  }
+
+  const currency = this.originalFlights[0].currency || 'KWD';
+
+  const buckets = [
+    { value: 0, label: 'مباشر' },
+    { value: 1, label: 'توقف واحد' },
+    { value: 2, label: ' توقف +2 ' }
+  ];
+
+  this.stopOptions = buckets.map(b => {
+    const flights = this.originalFlights.filter(f => {
+      if (b.value === 2) return f.stops >= 2;
+      return f.stops === b.value;
+    });
+
+    const count = flights.length;
+
+    const minPrice = count
+      ? Math.min(...flights.map(f => f.price))
+      : 0;
+
+    return {
+      value: b.value,
+      label: b.label,
+      count,
+      price: minPrice,
+      currency
+    };
+  });
+}
+async buildAirportFilters() {
+
+  const fromCode = this.selectedFrom?.iataCode;
+  const toCode   = this.selectedTo?.iataCode;
+
+  console.log("Airport From =", fromCode);
+  console.log("Airport To   =", toCode);
+
+  if (!fromCode || !toCode) return;
+
+  // نجيب الاسم بالعربي من TranslationService
+  const fromName = this.t.translateAirport(fromCode) || fromCode;
+  const toName   = this.t.translateAirport(toCode) || toCode;
+
+  const currency = this.originalFlights[0]?.currency ?? 'SAR';
+
+  // مطار المغادرة الوحيد
+  this.departureAirportsList = [{
+    code: fromCode,
+    name: fromName,
+    price: Math.min(
+      ...(this.originalFlights
+        .filter(f => f.origin === fromCode)
+        .map(f => f.price)),
+      Infinity
+    ),
+    currency
+  }];
+
+  // مطار الوصول الوحيد
+  this.arrivalAirportsList = [{
+    code: toCode,
+    name: toName,
+    price: Math.min(
+      ...(this.originalFlights
+        .filter(f => f.destination === toCode)
+        .map(f => f.price)),
+      Infinity
+    ),
+    currency
+  }];
+
+  console.log("From Airport =", this.departureAirportsList);
+  console.log("To Airport   =", this.arrivalAirportsList);
+}
+
+
+onLogoError(event: any) {
+  event.target.src = 'assets/d2.jpg';
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

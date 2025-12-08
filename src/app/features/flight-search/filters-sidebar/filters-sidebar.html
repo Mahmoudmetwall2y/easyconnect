@@ -1,0 +1,166 @@
+<div class="backdrop" (click)="close()"></div>
+
+<div class="panel" dir="rtl">
+
+  <!-- HEADER -->
+  <div class="header" ir="rtl">
+    <div class="title">
+      <span>الفلاتر</span>
+    </div>
+
+    <button class="close-btn" (click)="close()">✕</button>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- ------------ Stops Section ------------- -->
+  <section class="section" dir="ltr">
+  <div class="section-title" dir="rtl">محطات التوقف</div>
+
+  <div class="stop-row" *ngFor="let s of stopOptions" (click)="toggleStop(s.value)">
+    <div class="stop-price">
+      {{ s.price }} {{ s.currency }}
+    </div>
+
+    <div class="stop-info">
+      <span>{{ s.label }} ({{ s.count }})</span>
+<input type="checkbox"
+       [checked]="localState.stops.includes(s.value)"
+       (change)="toggleStop(s.value)"
+       (click)="$event.stopPropagation()">
+
+
+    </div>
+  </div>
+</section>
+
+
+    <!-- ------------ Airlines Section ------------- -->
+<section class="section airlines-section" dir="ltr">
+  <div class="section-title" dir="rtl">خطوط الطيران</div>
+
+  <div class="airline-row"
+       *ngFor="let a of airlinesList"
+       (click)="toggleAirline(a.code)">
+
+    <!-- السعر والعملة (عمود لوحده) -->
+    <div class="airline-price">
+      {{ a.price }} {{ a.currency }}
+    </div>
+
+    <!-- عمود الاسم + اللوجو + الـ checkbox -->
+    <div class="airline-info">
+      <span class="airline-name">{{ a.name }}</span>
+
+      <img class="airline-logo"
+           [src]="a.logo"
+           alt="logo">
+
+     <input type="checkbox"
+   [checked]="localState.airlines.includes(a.code)"
+   (change)="toggleAirline(a.code)"
+   (click)="$event.stopPropagation()">
+
+    </div>
+
+  </div>
+</section>
+<section class="section" dir="ltr">
+  <div class="section-title" dir="rtl">الأمتعة</div>
+
+  <div class="row" (click)="toggleBaggage('with')">
+    <span>شاملة أمتعة السفر</span>
+    <input type="checkbox"
+       [checked]="localState.baggage.includes('with')"
+       (click)="$event.stopPropagation()">
+  </div>
+
+  <div class="row" (click)="toggleBaggage('without')">
+    <span>بدون أمتعة السفر</span>
+    <input type="checkbox"
+       [checked]="localState.baggage.includes('without')"
+       (click)="$event.stopPropagation()">
+  </div>
+</section>
+
+
+    <!-- ------------ Time Range Section ------------- -->
+    <section class="section">
+      <div class="section-title" dir="rtl">وقت المغادرة</div>
+
+      <input type="range" min="0" max="24" [(ngModel)]="localState.departTime[0]" />
+      <input type="range" min="0" max="24" [(ngModel)]="localState.departTime[1]" />
+
+      <div class="time-display">
+        {{ localState.departTime[0] }}:00 - {{ localState.departTime[1] }}:00
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title" dir="rtl">وقت الوصول</div>
+
+      <input type="range" min="0" max="24" [(ngModel)]="localState.arrivalTime[0]" />
+      <input type="range" min="0" max="24" [(ngModel)]="localState.arrivalTime[1]" />
+
+      <div class="time-display">
+        {{ localState.arrivalTime[0] }}:00 - {{ localState.arrivalTime[1] }}:00
+      </div>
+    </section>
+
+    <!-- ------------ Departure Airports ------------- -->
+   <section class="section" dir="ltr">
+  <div class="section-title" dir="rtl">مطارات المغادرة</div>
+
+ <div class="airport-row"
+     *ngFor="let ap of departureAirportsList"
+     (click)="toggleDepAirport(ap.code)">
+
+  <div class="airport-price">
+    {{ ap.price }} {{ ap.currency }}
+  </div>
+
+  <div class="airport-info">
+    <span>{{ ap.name }} ({{ ap.code }})</span>
+    <input type="checkbox"
+           [checked]="localState.departureAirports.includes(ap.code)"
+           (click)="$event.stopPropagation()">
+  </div>
+
+</div>
+
+</section>
+
+
+    <!-- ------------ Arrival Airports ------------- -->
+   <section class="section" dir="ltr">
+  <div class="section-title" dir="rtl">مطارات الوصول</div>
+
+  <div class="airport-row"
+       *ngFor="let ap of arrivalAirportsList"
+       (click)="toggleArrAirport(ap.code)">
+
+    <div class="airport-price">
+      {{ ap.price }} {{ ap.currency }}
+    </div>
+
+    <div class="airport-info">
+      <span>{{ ap.name }} ({{ ap.code }})</span>
+
+      <input type="checkbox"
+             [checked]="localState.arrivalAirports.includes(ap.code)"
+             (click)="$event.stopPropagation()">
+    </div>
+
+  </div>
+</section>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <button class="btn clear" (click)="clear()">مسح</button>
+    <button class="btn apply" (click)="applyFilters()">بحث</button>
+  </div>
+
+</div>

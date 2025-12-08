@@ -7,14 +7,14 @@ import { PriceCalendarModal } from '../price-calendar-modal/price-calendar-modal
 export interface AirlineSummary {
   code: string;          
   name: string;          
-  logoUrl?: string;      
+  logo?: string;      
   price: number;        
   currency: string;      
   isSelected?: boolean; 
 }
 @Component({
   selector: 'app-results-toolbar',
-  imports: [CommonModule,FormsModule,PriceCalendarModal],
+  imports: [CommonModule,FormsModule],
   templateUrl: './results-toolbar.html',
   styleUrl: './results-toolbar.css'
 })
@@ -66,7 +66,7 @@ selectOption(opt: string) {
   
  
 onAirlineClick(a: AirlineSummary) {
-  a.logoUrl = getAirlineLogo(a.code);
+  a.logo = getAirlineLogo(a.code);
   this.airlines.forEach(x => x.isSelected = x === a);
   this.airlineSelected.emit(a);
 }

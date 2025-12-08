@@ -142,16 +142,16 @@
 
 /* LOGO */
 .airline-logo {
-  height: 32px;          /* كان 40 → صغر */
+  height: 32px;         
   width: auto;
   object-fit: contain;
-    border-radius: 4px;    /* أصغر */
+    border-radius: 4px;  
 
 }
 
 /* PRICE */
 .price-text {
-  font-size: 15px;       /* كان 18 → صغر */
+  font-size: 15px;       
   font-weight: 700;
   color: #1F2937;
 }
