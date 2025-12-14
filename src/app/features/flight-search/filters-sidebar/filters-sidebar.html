@@ -53,9 +53,11 @@
     <div class="airline-info">
       <span class="airline-name">{{ a.name }}</span>
 
-      <img class="airline-logo"
-           [src]="a.logo"
-           alt="logo">
+<img class="airline-logo"
+     [src]="a.logo || 'assets/d2.jpg'"
+     (error)="onLogoError($event)"
+     alt="logo">
+
 
      <input type="checkbox"
    [checked]="localState.airlines.includes(a.code)"

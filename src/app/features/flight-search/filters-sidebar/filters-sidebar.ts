@@ -77,7 +77,9 @@ currency: string = 'KWD';
   ngOnInit() {
     this.localState = JSON.parse(JSON.stringify(this.state));
   }
-
+onLogoError(event: any) {
+  event.target.src = 'assets/d2.jpg';
+}
   close() {
     this.closed.emit();
   }
@@ -162,6 +164,7 @@ setBaggagePrices(flights: any[]) {
 
   this.currency = flights.length ? flights[0].currency : 'KWD';
 }
+
 
 
 }
