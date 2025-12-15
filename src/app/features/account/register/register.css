@@ -1,9 +1,6 @@
-:host {
-  overflow: hidden;
-}
-html, body {
-  overflow: hidden !important;
-}
+
+
+
 @keyframes float {
   0% {
     transform: translateY(-50%) translateX(0);
@@ -36,4 +33,13 @@ button:hover {
   background: #ccc;
   border-radius: 4px;
 }
+@media (min-width: 1024px) {
+  :host {
+    display: block;
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+
 

@@ -32,12 +32,12 @@ export const AIRLINE_DOMAINS: Record<string, string> = {
 
 };
 export function getAirlineLogo(code: string): string {
-  const domain = AIRLINE_DOMAINS[code?.toUpperCase()];
+  //const domain = AIRLINE_DOMAINS[code?.toUpperCase()];
 
-  if (!domain) {
+ // if (!domain) {
     return 'assets/d2.jpg';  // fallback الحقيقي
-  }
+  //}
 
-  const url = `https://logo.clearbit.com/${domain}`;
-  return url;
+ // const url = `https://logo.clearbit.com/${domain}`;
+ // return url;
 }

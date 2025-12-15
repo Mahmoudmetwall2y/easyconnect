@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { getAirlineLogo } from '../../../shared/data/airline-logos';
 import { PriceCalendarModal } from '../price-calendar-modal/price-calendar-modal';
@@ -18,7 +18,7 @@ export interface AirlineSummary {
   templateUrl: './results-toolbar.html',
   styleUrl: './results-toolbar.css'
 })
-export class ResultsToolbar {
+export class ResultsToolbar implements OnChanges {
 
    @ViewChild('strip') strip!: ElementRef;
     //  1) خيارات الفرز في الدروب داون
@@ -49,6 +49,14 @@ openSort = false;
 
 toggleDropdown() {
   this.openSort = !this.openSort;
+}
+ngOnChanges() {
+  if (this.airlines) {
+    this.airlines = this.airlines.map(a => ({
+      ...a,
+      logo: getAirlineLogo(a.code)
+    }));
+  }
 }
 
 onSortChange(value: string) {

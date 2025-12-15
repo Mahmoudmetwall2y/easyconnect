@@ -112,6 +112,8 @@ arrivalAirportsList: {
     this.travelClass = sessionStorage.getItem('travelClass') || 'السياحية';
     this.includeBaggage = sessionStorage.getItem('includeBaggage') === '1';
 
+console.log("DEPARTURES", departures);
+console.log("RETURNS", returns);
 
     const grouped = this.groupFlights(departures, returns);
 
@@ -148,146 +150,104 @@ this.buildStopOptions();
   // ---------------------------------------------------------------------
   //  CLEAN GROUPING OF FLIGHTS (DEPARTURES + RETURNS)
   // ---------------------------------------------------------------------
-  private groupFlights(departures: any[], returns: any[]) {
-    if (!departures?.length) return [];
-    const tripType = sessionStorage.getItem('selectedTripType');
+private groupFlights(departures: any[], returns: any[]) {
+  if (!departures?.length) return [];
 
-    // -----------------------------------------------------------
-    // ⭐ لو الرحلة "ذهاب فقط" → رجّع رحلات الذهاب كما هي
-    // -----------------------------------------------------------
-    if (tripType === 'ذهاب فقط') {
-      return departures.map(d => ({
-        airline: d.airline,
-       airlineLogo: getAirlineLogo(d.airline),
+  const tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعودة';
 
-
-        origin: d.origin,
-        destination: d.destination,
-
-        departureAt: d.departureAt,
-        arrivalAt: d.arrivalAt,
-        duration: d.duration,
-        stops: d.stops,
-        currency: d.currency,
-        price: d.price,
-        includedBags: d.includedBags ?? 0,
-
-
-        // مفيش عودة
-        returnDepartureAt: null,
-        returnArrivalAt: null,
-        returnDuration: null,
-        returnStops: null,
-
-        baseDeparturePrice: d.price,
-        baseReturnPrice: 0,
-variations: departures
-  .filter(xx => xx.airline === d.airline)
-  .map(v => ({
-    ...v,
-    airlineLogo: getAirlineLogo(v.airline)
-  })),
-
-
-        returnVariations: [],
-
-        isDepartureExpanded: false,
-        isReturnExpanded: false,
-
-      }));
-    }
-
-    const depDay = new Date(sessionStorage.getItem('depDate')!).toDateString();
-    const retDay = new Date(sessionStorage.getItem('retDate')!).toDateString();
-
-    const depSameDay = departures.filter(d =>
-      new Date(d.departureAt).toDateString() === depDay
-    );
-
-    const retSameDay = returns.filter(r =>
-      new Date(r.departureAt).toDateString() === retDay
-    );
-
-    const results: any[] = [];
-
-    for (const dep of depSameDay) {
-
-      const matchingReturns = retSameDay.filter(r =>
-        r.airline === dep.airline &&
-        r.origin === dep.destination &&
-        r.destination === dep.origin &&
-        new Date(r.departureAt) > new Date(dep.arrivalAt)
-      );
-
-      if (matchingReturns.length === 0) continue;
-
-      const bestReturn = matchingReturns.sort((a, b) => a.price - b.price)[0];
-
-      results.push({
-
-        // ----------- MAIN DISPLAY DATA -----------
-        airline: dep.airline,
-        airlineLogo:  getAirlineLogo(dep.airline),
-
-        origin: dep.origin,
-        destination: dep.destination,
-
-        departureAt: dep.departureAt,
-        arrivalAt: dep.arrivalAt,
-        duration: dep.duration,
-        stops: dep.stops,
-        currency: dep.currency,
-        price: dep.price + bestReturn.price,
-        baseDeparturePrice: dep.price,
-        baseReturnPrice: bestReturn.price,
-        departureBags: dep.includedBags ?? 0,
-        // ----------- RETURN DISPLAY DATA ---------
-        returnDepartureAt: bestReturn.departureAt,
-        returnArrivalAt: bestReturn.arrivalAt,
-        returnDuration: bestReturn.duration,
-        returnStops: bestReturn.stops,
-        returnOrigin: bestReturn.origin,
-        returnDestination: bestReturn.destination,
-        returnBags: bestReturn.includedBags ?? 0,
-
-        // ----------- DEPARTURE VARIATIONS (Only Dep) -----------
-        variations: depSameDay
-          .filter(xx => xx.airline === dep.airline)
-          .map(d => ({
-            departureAt: d.departureAt,
-            arrivalAt: d.arrivalAt,
-            duration: d.duration,
-            stops: d.stops,
-            origin: d.origin,
-            destination: d.destination,
-            airline: d.airline,
-            airlineLogo: getAirlineLogo(d.airline),
-            currency: d.currency,
-            price: d.price
-          })),
-
-        // ----------- RETURN VARIATIONS (Only Return) -----------
-        returnVariations: matchingReturns.map(r => ({
-          departureAt: r.departureAt,
-          arrivalAt: r.arrivalAt,
-          duration: r.duration,
-          stops: r.stops,
-          origin: r.origin,
-          destination: r.destination,
-          airline: r.airline,
-          airlineLogo:  getAirlineLogo(r.airline),
-          currency: r.currency,
-          price: r.price
-        })),
-
-        isDepartureExpanded: false,
-        isReturnExpanded: false
-      });
-
-    }
-
-    return results;
+  // ---------------------------
+  // 🔵 1) لو ذهاب فقط → رجّع الذهاب كما هي
+  // ---------------------------
+  if (tripType === 'ذهاب فقط') {
+    return departures.map(d => ({
+      ...d,
+      airlineLogo: getAirlineLogo(d.airline),
+      returnDepartureAt: null,
+      returnArrivalAt: null,
+      baseDeparturePrice: d.price,
+      baseReturnPrice: 0,
+      returnVariations: [],
+      variations: departures
+        .filter(x => x.airline === d.airline)
+        .map(v => ({ ...v, airlineLogo: getAirlineLogo(v.airline) })),
+      isDepartureExpanded: false,
+      isReturnExpanded: false
+    }));
   }
+
+  // ---------------------------
+  // 🔵 2) لو ذهاب وعودة → لازم returns موجودة
+  // ---------------------------
+  if (!returns || returns.length === 0) return [];
+
+  const depDate = new Date(sessionStorage.getItem('depDate')!).toDateString();
+  const retDate = new Date(sessionStorage.getItem('retDate')!).toDateString();
+
+  const depSameDay = departures.filter(
+    d => new Date(d.departureAt).toDateString() === depDate
+  );
+
+  const retSameDay = returns.filter(
+    r => new Date(r.departureAt).toDateString() === retDate
+  );
+
+  const results: any[] = [];
+
+  // ---------------------------
+  // 🔵 3) الربط بدون شروط إضافية
+  // ---------------------------
+  for (const dep of depSameDay) {
+    const matchingReturns = retSameDay.filter(
+      ret =>
+        ret.origin === dep.destination &&   // reverse direction
+        ret.destination === dep.origin &&   // reverse direction
+        ret.airline === dep.airline         // same airline
+    );
+
+    if (matchingReturns.length === 0) continue; // اختفى لو مفيش رجوع
+
+    const bestReturn = matchingReturns[0]; // أول واحد (أو أرخص لو عايزة)
+    
+    results.push({
+      airline: dep.airline,
+      airlineLogo: getAirlineLogo(dep.airline),
+
+      origin: dep.origin,
+      destination: dep.destination,
+
+      departureAt: dep.departureAt,
+      arrivalAt: dep.arrivalAt,
+      duration: dep.duration,
+      stops: dep.stops,
+      currency: dep.currency,
+      price: dep.price + bestReturn.price,
+
+      baseDeparturePrice: dep.price,
+      baseReturnPrice: bestReturn.price,
+
+      returnDepartureAt: bestReturn.departureAt,
+      returnArrivalAt: bestReturn.arrivalAt,
+      returnDuration: bestReturn.duration,
+      returnStops: bestReturn.stops,
+      returnOrigin: bestReturn.origin,
+      returnDestination: bestReturn.destination,
+
+      variations: depSameDay
+        .filter(x => x.airline === dep.airline)
+        .map(x => ({ ...x, airlineLogo: getAirlineLogo(x.airline) })),
+
+      returnVariations: matchingReturns.map(r => ({
+        ...r, airlineLogo: getAirlineLogo(r.airline)
+      })),
+
+      isDepartureExpanded: false,
+      isReturnExpanded: false
+    });
+  }
+
+  return results;
+}
+
 
   // ---------------------------------------------------------------------
   //  GROUP BY AIRLINE (CLEAN, NO DUPLICATES)
@@ -594,9 +554,22 @@ onApplyFilters(newState: FiltersState) {
   this.filtersState = newState;
   this.filtersOpen = false;
 
-  //  هنا تعمل فلترة حقيقية للرحلات
+  // Apply filters
   this.applyFiltersToFlights();
+
+  // لو بعد الفلترة لم يبق أي رحلة → نذهب لصفحة No Results
+  if (this.groupedFlights.length === 0) {
+    this.router.navigate(['/no-results'], {
+      queryParams: {
+        from: this.selectedFrom?.iataCode,
+        to: this.selectedTo?.iataCode,
+        dep: this.selectedDepartureDate,
+        ret: this.selectedReturnDate
+      }
+    });
+  }
 }
+
 private buildStopOptions() {
   if (!this.originalFlights.length) {
     this.stopOptions = [];

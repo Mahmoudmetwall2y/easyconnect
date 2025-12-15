@@ -51,11 +51,11 @@ getAirportFullInfo(code: string) {
     'EY': 'طيران الاتحاد',
     'G9': 'العربية للطيران',
     'FZ': 'فلاي دبي',
-    'J9': 'طيران جازيرا',
+      'J9': 'طيران الجزيرة',           
     'XY': 'طيران ناس',
     'NP': 'الطيران الوطنية',
+  'MS': 'مصر للطيران',             
 
-    'MS': 'مصر للطيران',
     'TU': 'الخطوط التونسية',
     'AT': 'الخطوط الملكية المغربية',
     'AH': 'الخطوط الجوية الجزائرية',
@@ -86,6 +86,7 @@ getAirportFullInfo(code: string) {
     'SQ': 'Singapore Airlines',
     'NH': 'ANA',
     'JL': 'JAL',
+
     'KE': 'Korean Air',
     'CA': 'Air China',
     'MH': 'Malaysia Airlines',
@@ -97,6 +98,7 @@ getAirportFullInfo(code: string) {
   'EI': 'Aer Lingus (إير لينجوس)',
    'A3': 'الخطوط الجوية اليونانية',
   'ET': ' الخطوط الجوية الإثيوبية',
+
   };
 
 //   private airports: Record<string, string> = {
