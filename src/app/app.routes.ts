@@ -8,32 +8,49 @@ import { NoResults } from './features/flight-search/no-results/no-results';
 import { ErrorScreen } from './features/flight-search/error-screen/error-screen';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
 import { PublicLayout } from './layouts/public-layout/public-layout';
+import { Login } from './features/account/login/login';
+import { AuthGuard } from './core/guards/auth.guard';
+import { Account } from './features/account/account';
 
 export const routes: Routes = [
 
-   {
+  // AUTH PAGES
+  {
     path: 'auth',
     component: AuthLayout,
     children: [
       { path: 'register', component: RegisterComponent },
-      // لو عندك login بعدين هضيفه هنا
+      { path: 'login', component: Login }
     ]
   },
+
+  // PUBLIC PAGES
   {
     path: '',
     component: PublicLayout,
     children: [
       { path: 'home', component: HomeHeader },
-      { path: 'booking', component: Booking },
       { path: 'hotels', component: Hotels },
       { path: 'search', component: SearchResults },
       { path: 'error', component: ErrorScreen },
       { path: 'no-results', component: NoResults },
-      { path: '', redirectTo: 'home', pathMatch: 'full' }
+
+      {
+        path: 'booking',
+        component: Booking,
+        canActivate: [AuthGuard]
+      },
+
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+         {
+  path: 'account',
+  component: Account,
+  canActivate: [AuthGuard]
+},
     ]
   },
+ 
 
-  // Fallback
-  { path: '**', redirectTo: '/auth/register' }
-
+  // FALLBACK
+  { path: '**', redirectTo: '/home' }
 ];

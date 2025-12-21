@@ -1,0 +1,115 @@
+<div
+  dir="rtl"
+  class="bg-white rounded-2xl shadow-md p-4 flex flex-col gap-3 w-full">
+
+  <!-- بيانات الحساب -->
+  <button
+    (click)="select('profile')"
+    [ngClass]="active === 'profile'
+      ? 'bg-blue-600 text-white border-blue-600'
+      : 'bg-white text-gray-500 border-gray-200'"
+    class="h-12 px-4 rounded-xl border flex items-center justify-between transition">
+
+    <span>بيانات الحساب</span>
+
+    <!-- user icon -->
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+      viewBox="0 0 24 24">
+      <circle cx="12" cy="7" r="4"/>
+      <path d="M4 21c0-4 16-4 16 0"/>
+    </svg>
+  </button>
+
+  <!-- الحجوزات -->
+  <button
+    (click)="select('bookings')"
+    [ngClass]="active === 'bookings'
+      ? 'bg-blue-600 text-white border-blue-600'
+      : 'bg-white text-gray-500 border-gray-200'"
+    class="h-12 px-4 rounded-xl border flex items-center justify-between transition">
+
+    <span>الحجوزات</span>
+
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+      viewBox="0 0 24 24">
+      <rect x="3" y="4" width="18" height="17" rx="2"/>
+      <line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+  </button>
+
+  <!-- المفضلة -->
+  <button
+    (click)="select('favorites')"
+    [ngClass]="active === 'favorites'
+      ? 'bg-blue-600 text-white border-blue-600'
+      : 'bg-white text-gray-500 border-gray-200'"
+    class="h-12 px-4 rounded-xl border flex items-center justify-between transition">
+
+    <span>المفضلة</span>
+
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+      viewBox="0 0 24 24">
+      <path
+        d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1
+           a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1
+           a5.5 5.5 0 000-7.8z"/>
+    </svg>
+  </button>
+
+  <!-- طرق الدفع -->
+  <button
+    (click)="select('payments')"
+    [ngClass]="active === 'payments'
+      ? 'bg-blue-600 text-white border-blue-600'
+      : 'bg-white text-gray-500 border-gray-200'"
+    class="h-12 px-4 rounded-xl border flex items-center justify-between transition">
+
+    <span>طرق الدفع</span>
+
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+      viewBox="0 0 24 24">
+      <rect x="2" y="6" width="20" height="12" rx="2"/>
+      <line x1="2" y1="11" x2="22" y2="11"/>
+    </svg>
+  </button>
+
+  <!-- الإعدادات -->
+  <button
+    (click)="select('settings')"
+    [ngClass]="active === 'settings'
+      ? 'bg-blue-600 text-white border-blue-600'
+      : 'bg-white text-gray-500 border-gray-200'"
+    class="h-12 px-4 rounded-xl border flex items-center justify-between transition">
+
+    <span>الإعدادات</span>
+
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+      viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M2 12h3M19 12h3M12 2v3M12 19v3"/>
+    </svg>
+  </button>
+
+  <!-- تسجيل الخروج -->
+  <button
+    (click)="logout.emit()"
+    class="h-12 px-4 rounded-xl border border-red-400 text-red-500
+           flex items-center justify-between hover:bg-red-50 transition">
+
+    <span>تسجيل الخروج</span>
+
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+      viewBox="0 0 24 24">
+      <path d="M9 18l6-6-6-6"/>
+      <line x1="15" y1="12" x2="3" y2="12"/>
+    </svg>
+  </button>
+
+  <!-- حذف الحساب -->
+  <button
+    (click)="deleteAccount.emit()"
+    class="h-12 rounded-xl bg-red-600 text-white hover:bg-red-700 transition">
+    حذف حسابي
+  </button>
+
+</div>

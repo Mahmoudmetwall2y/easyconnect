@@ -1,5 +1,5 @@
 <div
-  class="h-screen flex flex-col md:flex-row overflow-hidden"
+  class="min-h-screen flex flex-col md:flex-row"
   style="background: linear-gradient(90deg, #3F6390 0%, #0E325F 100%);"
 >
 
@@ -27,7 +27,7 @@
   <!-- Right section -->
   <div class="w-full md:w-1/2 flex items-center justify-center px-4 sm:px-8 md:px-16 py-4 md:py-10">
     <div class="w-full max-w-md rounded-2xl p-6 sm:p-8 md:p-10 text-right"
-         style="margin-bottom: -20px;">
+         style="margin-bottom: 0px;">
 
       <!-- Logo -->
       <div class="flex items-center justify-end" style="margin-bottom: -20px;">
@@ -217,7 +217,7 @@
         <!-- Footer -->
         <p class="text-center text-sm text-white/70 mt-3">
           هل لديك حساب؟
-          <a routerLink="/account/login" class="text-[#8EC9FF] hover:underline">تسجيل الدخول</a>
+          <a [routerLink]="['/auth/login']" type="button"  class="text-[#8EC9FF] hover:underline">تسجيل الدخول</a>
         </p>
 
       </form>

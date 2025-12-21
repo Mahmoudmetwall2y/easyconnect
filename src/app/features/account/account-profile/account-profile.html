@@ -1,0 +1,34 @@
+<div class="bg-white rounded-2xl shadow p-8" dir="rtl">
+
+  <div class="flex items-center gap-6">
+    <img src="assets/avatar.png" class="w-24 h-24 rounded-full" />
+
+    <div>
+      <div class="text-2xl font-bold">اهلا {{ fullName }}!</div>
+      <div class="text-gray-500">{{ fullName }}</div>
+    </div>
+  </div>
+
+  <div class="mt-8 space-y-4">
+
+    <div>
+      <label class="block text-gray-500 mb-1">الاسم</label>
+      <input [(ngModel)]="fullName" class="w-full h-12 border rounded-xl px-4" />
+    </div>
+
+    <div>
+      <label class="block text-gray-500 mb-1">رقم الهاتف</label>
+      <input [(ngModel)]="phone" class="w-full h-12 border rounded-xl px-4" />
+    </div>
+
+    <div>
+      <label class="block text-gray-500 mb-1">البريد الإلكتروني</label>
+      <input [value]="email" disabled class="w-full h-12 border rounded-xl px-4 bg-gray-100" />
+    </div>
+
+    <button class="mt-4 h-12 px-6 bg-blue-600 text-white rounded-xl">
+      حفظ التغييرات
+    </button>
+
+  </div>
+</div>

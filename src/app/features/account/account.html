@@ -1,1 +1,31 @@
-<p>account works!</p>
+<div class="min-h-screen bg-[#f6f8fb] pt-24">
+  <div class="max-w-[1300px] mx-auto px-6">
+    <div class="grid grid-cols-12 gap-6">
+
+      <!-- Content -->
+      <div class="col-span-12 lg:col-span-9">
+        <app-account-profile
+          *ngIf="activeTab() === 'profile'">
+        </app-account-profile>
+
+        <div
+          *ngIf="activeTab() !== 'profile'"
+          class="bg-white rounded-2xl shadow p-8 text-gray-600">
+          القسم تحت الإنشاء
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-span-12 lg:col-span-3">
+      <app-account-sidebar
+  [active]="activeTab()"
+  (tabChange)="setTab($event)"
+  (logout)="logout()"
+  (deleteAccount)="deleteAccount()">
+</app-account-sidebar>
+
+      </div>
+
+    </div>
+  </div>
+</div>

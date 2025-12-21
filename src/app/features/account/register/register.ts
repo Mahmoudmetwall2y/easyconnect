@@ -3,11 +3,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { COUNTRY_CODES, CountryCode } from '../../../shared/data/country-codes';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,RouterModule],
   templateUrl: './register.html',
   styleUrls: ['./register.css']
 })

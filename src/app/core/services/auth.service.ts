@@ -10,12 +10,21 @@ export interface ApiResponse<T> {
   data?: T;
   errors?: string[];
 }
+export interface LoginResponseDto {
+  token: string;
+  user: UserResponseDto;
+}
+
 
 export interface RegisterDto {
   fullName?: string | null;
   email?: string | null;
  phone?: string | null;      // بصيغة E.164 (+2010...)
   password: string;
+}
+export interface LoginDto {
+ phone: string | null;      
+ password: string;
 }
 
 export interface UserResponseDto {
@@ -36,6 +45,32 @@ export class AuthService {
       dto
     );
   }
+  login(dto: LoginDto): Observable<ApiResponse<LoginResponseDto>> {
+  return this.http.post<ApiResponse<LoginResponseDto>>(
+    `${this.baseUrl}/login`,
+    dto
+  );
+}
+
+  getuser() {
+    return this.http.get<ApiResponse<UserResponseDto>>(
+      `${this.baseUrl}/getuser`
+    );
+  }
+
+  updateUser(dto: { fullName: string; phone: string }) {
+    return this.http.put<ApiResponse<UserResponseDto>>(
+      `${this.baseUrl}/update`,
+      dto
+    );
+  }
+
+  deleteUser() {
+    return this.http.delete<ApiResponse<any>>(
+      `${this.baseUrl}/delete`
+    );
+  }
+
 }
 
 
