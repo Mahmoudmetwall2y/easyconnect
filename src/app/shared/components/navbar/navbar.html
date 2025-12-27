@@ -109,34 +109,14 @@
 </button>
 
 
-<!-- لو عامل Login -->
-<div *ngIf="isLoggedIn()" class="relative group">
-  <button
-    class="flex items-center gap-2 bg-white text-gray-800 px-3 py-1 rounded-md font-semibold">
-    {{ user()?.fullName }}
-    <svg class="w-4 h-4" fill="none" stroke="currentColor"
-      viewBox="0 0 24 24" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round"
-        d="M19 9l-7 7-7-7" />
-    </svg>
-  </button>
+<button
+  *ngIf="isLoggedIn()"
+  (click)="goToAccount()"
+  class="flex items-center gap-2 bg-white text-gray-800 px-3 py-1 rounded-md font-semibold"
+>
+  {{ user()?.fullName }}
+</button>
 
-  <!-- Dropdown -->
-  <div
-    class="absolute right-0 hidden group-hover:block bg-white text-gray-700 mt-2 rounded-md shadow-lg w-40 py-2">
-    <a routerLink="/profile" class="block px-4 py-2 hover:bg-gray-100">
-      الملف الشخصي
-    </a>
-    <a routerLink="/bookings" class="block px-4 py-2 hover:bg-gray-100">
-      حجوزاتي
-    </a>
-    <a
-      (click)="logout()"
-      class="block px-4 py-2 hover:bg-gray-100 text-red-600 cursor-pointer">
-      تسجيل الخروج
-    </a>
-  </div>
-</div>
 
     </div>
   </div>

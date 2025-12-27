@@ -1,0 +1,123 @@
+<div dir="rtl" class="bg-white rounded-2xl shadow p-8">
+
+  <h2 class="text-xl font-bold text-blue-600 mb-6 flex items-center gap-2">
+  <i class="fa-solid fa-gear text-blue-600"></i>
+
+    الإعدادات
+  </h2>
+
+  <div class="space-y-6">
+
+        <!-- تواصل معنا -->
+    <button
+      class="w-full flex items-center justify-between text-gray-700 hover:text-blue-600 transition">
+
+      <span> <i class="fa-solid fa-headset text-gray-400"></i>
+      تواصل معنا</span>
+      <span>›</span>
+    </button>
+
+    <!-- من نحن -->
+    <button
+     (click)="openAbout.emit()"
+      class="w-full flex items-center justify-between text-gray-700 hover:text-blue-600 transition">
+      <span>
+      <i class="fa-solid fa-circle-info text-gray-400"></i>
+     من نحن</span>
+      <span>›</span>
+    </button>
+
+       <!-- سياسة الخصوصية -->
+    <button
+    (click)="openPrivacy.emit()"
+      class="w-full flex items-center justify-between text-gray-700 hover:text-blue-600 transition">
+      <span>
+      <i class="fa-solid fa-file-lines text-gray-400"></i>
+      سياسة الخصوصية</span>
+      <span>›</span>
+    </button>
+
+  
+    <!-- شروط الاستخدام -->
+    <button
+     (click)="openTerms.emit()"
+      class="w-full flex items-center justify-between text-gray-700 hover:text-blue-600 transition">
+      <span>
+       <i class="fa-solid fa-file-contract text-gray-400"></i>
+      شروط الاستخدام (Terms & Conditions)</span>
+      <span>›</span>
+    </button>
+
+    <!-- اللغة -->
+    <div class="flex items-center justify-between  ">
+      <div class="flex items-center gap-2 text-gray-700">
+        <i class="fa-solid fa-globe text-gray-400"></i>
+ تغيير اللغة
+      </div>
+      <span class="text-blue-600 font-medium">
+        العربية
+      </span>
+    </div>
+
+<!-- تغيير العملة -->
+<div class="relative">
+
+  <!-- السطر الرئيسي -->
+  <div
+    class="flex items-center justify-between cursor-pointer"
+    (click)="toggleCurrency()">
+
+    <div class="flex items-center gap-2 text-gray-700">
+      <i class="fa-solid fa-money-bill-transfer text-gray-400"></i>
+      تغيير العملة
+    </div>
+
+    <div class="flex items-center gap-2 text-blue-600 font-medium">
+      <img
+        *ngIf="selectedCurrency"
+        [src]="selectedCurrency.flag"
+        class="w-4 h-4 rounded-sm" />
+
+      {{ selectedCurrency?.iso || 'اختر العملة' }}
+    </div>
+  </div>
+
+  <!-- Dropdown -->
+  <div
+    *ngIf="openCurrency"
+    class="absolute left-0 mt-3 w-full bg-white
+           rounded-xl shadow-xl z-50 p-3 max-h-[260px] overflow-y-auto">
+
+    <div
+      *ngFor="let c of currencies"
+      (click)="setCurrency(c)"
+      class="flex items-center gap-3 p-2 rounded-lg
+             hover:bg-gray-100 cursor-pointer">
+            <img [src]="c.flag" class="w-5 h-3 rounded-sm" />
+
+      <span class="font-semibold">{{ c.iso }}</span>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+    <!-- المنطقة الزمنية -->
+    <div class="flex items-center justify-between  ">
+      <div class="flex items-center gap-2 text-gray-700">
+        <i class="fa-regular fa-clock text-gray-400"></i>
+ المنطقة الزمنية
+      </div>
+      <span class="text-blue-600 font-medium">
+    {{ timezone }}
+      </span>
+    </div>
+
+ 
+
+
+  </div>
+
+</div>

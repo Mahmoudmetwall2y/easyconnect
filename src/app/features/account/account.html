@@ -8,24 +8,279 @@
           *ngIf="activeTab() === 'profile'">
         </app-account-profile>
 
-        <div
-          *ngIf="activeTab() !== 'profile'"
-          class="bg-white rounded-2xl shadow p-8 text-gray-600">
-          القسم تحت الإنشاء
-        </div>
+  <app-account-settings
+  *ngIf="activeTab() === 'settings'"
+  (openPrivacy)="openPrivacy()"
+    (openTerms)="openTerms()"
+     (openAbout)="openAbout()">
+
+</app-account-settings>
+
+
+<div
+  *ngIf="activeTab() !== 'profile' && activeTab() !== 'settings'"
+  class="bg-white rounded-2xl shadow p-8 text-gray-600">
+  القسم تحت الإنشاء
+</div>
+
       </div>
 
       <!-- Sidebar -->
       <div class="col-span-12 lg:col-span-3">
-      <app-account-sidebar
+   <app-account-sidebar
   [active]="activeTab()"
   (tabChange)="setTab($event)"
-  (logout)="logout()"
-  (deleteAccount)="deleteAccount()">
+  (logout)="openLogoutConfirm()"
+  (deleteAccount)="openDeleteConfirm()">
 </app-account-sidebar>
+
 
       </div>
 
     </div>
   </div>
 </div>
+<!-- Confirm Modal -->
+<div
+  *ngIf="confirmAction()"
+  class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+  <div dir="rtl" class="bg-white rounded-2xl w-[420px] p-6 text-center">
+
+    <h3 class="text-lg font-bold mb-2">
+      {{ confirmAction() === 'logout' ? 'تسجيل الخروج' : 'حذف الحساب' }}
+    </h3>
+
+    <p class="text-gray-500 mb-6">
+      هل أنتِ متأكدة من
+      {{ confirmAction() === 'logout' ? 'تسجيل الخروج؟' : 'حذف الحساب نهائيًا؟' }}
+    </p>
+
+    <div class="flex gap-3">
+      <button
+        (click)="cancel()"
+        class="flex-1 h-11 rounded-xl border border-gray-300 text-gray-600">
+        إلغاء
+      </button>
+
+      <button
+        (click)="confirm()"
+        [ngClass]="confirmAction() === 'delete'
+          ? 'bg-red-600 hover:bg-red-700'
+          : 'bg-blue-600 hover:bg-blue-700'"
+        class="flex-1 h-11 rounded-xl text-white transition">
+        تأكيد
+      </button>
+    </div>
+
+  </div>
+</div>
+<div
+  *ngIf="showPrivacy()"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]">
+
+  <!-- Modal Box -->
+  <div
+    dir="rtl"
+    class="bg-white rounded-2xl w-[720px] max-h-[85vh]
+           flex flex-col shadow-2xl">
+
+    <!-- Header -->
+    <div class="px-6 py-4 border-b text-center font-semibold text-lg">
+      سياسة الخصوصية
+    </div>
+
+    <!-- Content -->
+    <div
+      class="px-6 py-4 overflow-y-auto
+             text-[15px] text-gray-800
+             leading-[1.6] space-y-3">
+
+      <p class="text-gray-700">
+        نلتزم بحماية خصوصية مستخدمينا وضمان سرية بياناتهم. باستخدامك للتطبيق،
+        فإنك توافق على سياسة الخصوصية الموضحة أدناه.
+      </p>
+
+      <h4 class="font-semibold text-[16px] mt-4">
+        1. المعلومات التي نقوم بجمعها
+      </h4>
+      <ul class="list-disc pr-6 space-y-2">
+        <li>بيانات شخصية: الاسم، رقم الهاتف، البريد الإلكتروني.</li>
+        <li>بيانات الحجز: تفاصيل الرحلات والفنادق.</li>
+        <li>بيانات الدفع: لا نقوم بتخزين بيانات البطاقة.</li>
+        <li>بيانات تقنية: نوع الجهاز، IP، الموقع الجغرافي (بإذن).</li>
+      </ul>
+
+      <h4 class="font-semibold text-[16px] mt-4">
+        2. كيفية استخدام المعلومات
+      </h4>
+      <ul class="list-disc pr-6 space-y-2">
+        <li>إتمام عمليات الحجز.</li>
+        <li>إرسال تأكيدات وتنبيهات.</li>
+        <li>تحسين تجربة المستخدم.</li>
+        <li>إرسال عروض (بموافقتك).</li>
+      </ul>
+
+      <h4 class="font-semibold text-[16px] mt-4">
+        3. مشاركة المعلومات
+      </h4>
+      <ul class="list-disc pr-6 space-y-2">
+        <li>قد نشارك البيانات مع شركات الطيران والفنادق.</li>
+        <li>لا نقوم ببيع بياناتك لأي طرف ثالث.</li>
+        <li>قد نكشف البيانات إذا طُلب قانونيًا.</li>
+      </ul>
+
+      <h4 class="font-semibold text-[16px] mt-4">
+        4. حماية البيانات
+      </h4>
+      <p>
+        نستخدم بروتوكولات أمان متقدمة مثل SSL لتشفير البيانات أثناء النقل.
+      </p>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="p-4 border-t">
+      <button
+        (click)="closePrivacy()"
+        class="w-full h-11 bg-blue-600 text-white rounded-xl
+               hover:bg-blue-700 transition">
+        إغلاق
+      </button>
+    </div>
+
+  </div>
+</div>
+<!-- Terms & Conditions Modal -->
+<div
+  *ngIf="showTerms()"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]">
+
+  <div
+    dir="rtl"
+    class="bg-white rounded-2xl w-[720px] max-h-[85vh]
+           flex flex-col shadow-2xl">
+
+    <!-- Header -->
+    <div class="px-6 py-4 border-b text-center font-semibold text-lg">
+      شروط الاستخدام (Terms & Conditions)
+    </div>
+
+    <!-- Content -->
+    <div
+      class="px-6 py-4 overflow-y-auto
+             text-[15px] text-gray-800
+             leading-[1.6] space-y-3">
+
+      <p class="text-gray-700">
+        يرجى قراءة هذه الشروط بعناية قبل استخدام تطبيق <strong>Easy Travel</strong>.
+        باستخدامك للتطبيق، فإنك توافق على الالتزام بهذه الشروط والأحكام.
+        إذا لم توافق على أي من هذه الشروط، يرجى التوقف عن استخدام التطبيق.
+      </p>
+
+      <h4 class="font-semibold text-[16px] mt-4">1. التعريفات</h4>
+      <ul class="list-disc pr-6 space-y-2">
+        <li><strong>التطبيق:</strong> منصة حجز تذاكر الطيران والفنادق.</li>
+        <li><strong>المستخدم:</strong> أي شخص يستخدم التطبيق.</li>
+        <li><strong>الخدمات:</strong> خدمات الحجز المعروضة عبر التطبيق.</li>
+      </ul>
+
+      <h4 class="font-semibold text-[16px] mt-4">2. قبول الشروط</h4>
+      <p>
+        باستخدامك للتطبيق، فإنك تقر بأنك قرأت وفهمت ووافقت على جميع الشروط
+        والأحكام المذكورة في هذه الوثيقة.
+      </p>
+
+      <h4 class="font-semibold text-[16px] mt-4">3. الخدمات المقدمة</h4>
+      <ul class="list-disc pr-6 space-y-2">
+        <li>يوفر التطبيق منصة لعرض وحجز خدمات الطيران والفنادق.</li>
+        <li>نحن نعمل كوسيط بين المستخدم ومزودي الخدمة.</li>
+        <li>لسنا مالكين أو مشغلين للخدمات المعروضة.</li>
+      </ul>
+
+      <h4 class="font-semibold text-[16px] mt-4">4. شروط الحجز والدفع</h4>
+      <ul class="list-disc pr-6 space-y-2">
+        <li>يجب إدخال بيانات صحيحة أثناء الحجز.</li>
+        <li>الأسعار قابلة للتغيير حسب مزود الخدمة.</li>
+        <li>الدفع يتم عبر وسائل دفع آمنة ومعتمدة.</li>
+        <li>قد تفرض رسوم إضافية من قبل مزود الخدمة.</li>
+      </ul>
+
+      <h4 class="font-semibold text-[16px] mt-4">5. الإلغاء والاسترداد</h4>
+      <p>
+        تخضع عمليات الإلغاء أو التعديل أو الاسترداد
+        لشروط وسياسات مزود الخدمة (شركة الطيران أو الفندق).
+      </p>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="p-4 border-t">
+      <button
+        (click)="closeTerms()"
+        class="w-full h-11 bg-blue-600 text-white rounded-xl
+               hover:bg-blue-700 transition">
+        إغلاق
+      </button>
+    </div>
+
+  </div>
+</div>
+<!-- About Us Modal -->
+<div
+  *ngIf="showAbout()"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]">
+
+  <div
+    dir="rtl"
+    class="bg-white rounded-2xl w-[720px] max-h-[80vh]
+           flex flex-col shadow-2xl">
+
+    <!-- Header -->
+    <div class="px-6 py-4 border-b text-center font-semibold text-lg">
+      من نحن
+    </div>
+
+    <!-- Content -->
+    <div
+      class="px-6 py-4 overflow-y-auto
+             text-[15px] text-gray-800
+             leading-[1.6] space-y-4">
+
+      <p class="text-gray-700">
+        <strong>Easy Travel</strong> هو منصة متكاملة لحجز تذاكر الطيران
+        والفنادق بسهولة وأمان، نوفر لك إمكانية البحث والمقارنة بين أفضل
+        العروض من مختلف شركات الطيران والفنادق حول العالم، وحجز رحلتك في دقائق.
+      </p>
+
+      <h4 class="font-semibold text-[16px] mt-4">
+        نهدف إلى تبسيط تجربة السفر من خلال:
+      </h4>
+
+      <ul class="list-disc pr-6 space-y-2 text-gray-700">
+        <li>واجهة استخدام سهلة وبسيطة.</li>
+        <li>أسعار تنافسية وعروض حصرية.</li>
+        <li>دعم فني متواصل لمساعدتك قبل وأثناء وبعد الحجز.</li>
+        <li>
+          مع <strong>Easy Travel</strong>، السفر أصبح أسهل، أسرع، وأكثر أمانًا.
+        </li>
+      </ul>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="p-4 border-t">
+      <button
+        (click)="closeAbout()"
+        class="w-full h-11 bg-blue-600 text-white rounded-xl
+               hover:bg-blue-700 transition">
+        إغلاق
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+
+

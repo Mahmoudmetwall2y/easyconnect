@@ -1,3 +1,4 @@
+
 <div
   class="min-h-screen flex flex-col md:flex-row"
   style="background: linear-gradient(90deg, #3F6390 0%, #0E325F 100%);"
@@ -28,7 +29,10 @@
   <div class="w-full md:w-1/2 flex items-center justify-center px-4 sm:px-8 md:px-16 py-4 md:py-10">
     <div class="w-full max-w-md rounded-2xl p-6 sm:p-8 md:p-10 text-right"
          style="margin-bottom: 0px;">
-
+<div *ngIf="fromEmail || fromPhone"
+     class="mb-4 p-3 rounded-lg bg-blue-500/20 text-blue-100 text-sm text-center">
+  👋 كمل تسجيلك عشان تقدر تستفيد من كل المزايا
+</div>
       <!-- Logo -->
       <div class="flex items-center justify-end" style="margin-bottom: -20px;">
         <img src="/assets/logo.png" alt="Logo" class="w-16 h-16" />

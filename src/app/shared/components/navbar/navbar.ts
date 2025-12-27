@@ -18,17 +18,28 @@ export class Navbar {
 
 
   currencies: CountryCode[] = COUNTRY_CODES;
-    constructor(private currencyService: CurrencyService,private router:Router) {
+
+  constructor(private currencyService: CurrencyService,private router:Router) {
   const saved = localStorage.getItem('currency');
   if (saved) this.selectedCurrency = JSON.parse(saved);
 }
 
 
     ngOnInit() {
+
+   const stored = this.currencyService.getCurrency();
+    if (stored) this.selectedCurrency = stored;
+
+    this.currencyService.currency$.subscribe(c => {
+      if (c) {
+        this.selectedCurrency = c;
+      }
+    });
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       this.user.set(JSON.parse(storedUser));
     }
+
   }
 
   isLoggedIn = computed(() => !!this.user());
@@ -43,6 +54,9 @@ export class Navbar {
   goToLogin() {
     this.router.navigate(['/auth/login']);
   }
+goToAccount() {
+  this.router.navigate(['/account']);
+}
 
 
 
@@ -68,12 +82,7 @@ export class Navbar {
 
   selectedCurrency: CountryCode = COUNTRY_CODES.find(c => c.iso === 'EG')!;
 
-  // constructor() {
-  //   const saved = localStorage.getItem('currency');
-  //   if (saved) {
-  //     this.selectedCurrency = JSON.parse(saved);
-  //   }
-  // }
+
 
   toggleCurrency() {
     this.openCurrency = !this.openCurrency;

@@ -13,31 +13,45 @@ export class AccountProfile {
   fullName = '';
   phone = '';
   email = '';
+hasEmail = false;
+editEmail = false;
+
+
 
   loading = false;
 
   constructor(private account: AuthService) {}
 
-  ngOnInit() {
-    this.account.getuser().subscribe(res => {
-      if (res.succeeded && res.data) {
-        this.fullName = res.data.fullName ?? '';
-        this.phone = res.data.phone;
-        this.email = res.data.email ?? '';
-      }
-    });
-  }
 
-  save() {
-    this.loading = true;
+ngOnInit() {
+  this.account.getuser().subscribe(res => {
+    if (res.succeeded && res.data) {
+      this.fullName = res.data.fullName ?? '';
+      this.phone = res.data.phone;
+      this.email = res.data.email ?? '';
+      this.hasEmail = !!res.data.email;
+    }
+  });
+}
 
-    this.account.updateUser({
-      fullName: this.fullName,
-      phone: this.phone
-    }).subscribe({
-      next: () => this.loading = false,
-      error: () => this.loading = false
-    });
-  }
+
+save() {
+  this.loading = true;
+
+  this.account.updateUser({
+    fullName: this.fullName,
+    phone: this.phone,
+    email: this.email
+  }).subscribe({
+    next: () => {
+      this.editEmail = false;
+      this.loading = false;
+    },
+    error: () => this.loading = false
+  });
+}
+
+
+
 }
 

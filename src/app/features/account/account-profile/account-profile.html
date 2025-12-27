@@ -1,7 +1,8 @@
 <div class="bg-white rounded-2xl shadow p-8" dir="rtl">
 
   <div class="flex items-center gap-6">
-    <img src="assets/avatar.png" class="w-24 h-24 rounded-full" />
+    <img src="assets/avatar.avif" class="w-24 h-24 rounded-full" />
+
 
     <div>
       <div class="text-2xl font-bold">اهلا {{ fullName }}!</div>
@@ -20,13 +21,33 @@
       <label class="block text-gray-500 mb-1">رقم الهاتف</label>
       <input [(ngModel)]="phone" class="w-full h-12 border rounded-xl px-4" />
     </div>
+<div>
+  <label class="block text-gray-500 mb-1">البريد الإلكتروني</label>
 
-    <div>
-      <label class="block text-gray-500 mb-1">البريد الإلكتروني</label>
-      <input [value]="email" disabled class="w-full h-12 border rounded-xl px-4 bg-gray-100" />
-    </div>
+  <input
+    *ngIf="!editEmail"
+    [value]="email"
+    disabled
+    class="w-full h-12 border rounded-xl px-4 bg-gray-100"
+  />
 
-    <button class="mt-4 h-12 px-6 bg-blue-600 text-white rounded-xl">
+  <input
+    *ngIf="editEmail"
+    [(ngModel)]="email"
+    type="email"
+    class="w-full h-12 border rounded-xl px-4"
+  />
+
+  <button
+    type="button"
+    class="mt-2 text-blue-600 text-sm"
+    (click)="editEmail = !editEmail">
+    {{ editEmail ? 'إلغاء' : 'تغيير البريد الإلكتروني' }}
+  </button>
+</div>
+
+
+    <button class="mt-4 h-12 px-6 bg-blue-600 text-white rounded-xl" (click)="save()">
       حفظ التغييرات
     </button>
 

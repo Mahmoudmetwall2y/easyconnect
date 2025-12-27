@@ -39,8 +39,9 @@ export class AuthService {
   private http = inject(HttpClient);
   private baseUrl = `${environment.apiBaseUrl}/Users`;
 
-  register(dto: RegisterDto): Observable<ApiResponse<UserResponseDto>> {
-    return this.http.post<ApiResponse<UserResponseDto>>(
+register(dto: RegisterDto): Observable<ApiResponse<LoginResponseDto>>
+   {
+    return this.http.post<ApiResponse<LoginResponseDto>>(
       `${this.baseUrl}/register`,
       dto
     );
@@ -58,7 +59,7 @@ export class AuthService {
     );
   }
 
-  updateUser(dto: { fullName: string; phone: string }) {
+  updateUser(dto: { fullName: string; phone: string;email?:string }) {
     return this.http.put<ApiResponse<UserResponseDto>>(
       `${this.baseUrl}/update`,
       dto

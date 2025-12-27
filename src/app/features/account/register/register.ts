@@ -1,9 +1,9 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { COUNTRY_CODES, CountryCode } from '../../../shared/data/country-codes';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -12,9 +12,12 @@ import { RouterModule } from '@angular/router';
   templateUrl: './register.html',
   styleUrls: ['./register.css']
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
+  private route = inject(ActivatedRoute);
+   private router = inject(Router);
+
 
   countryCodes = COUNTRY_CODES;
 
@@ -30,6 +33,38 @@ export class RegisterComponent {
 
   showPassword = false;
   showConfirm = false;
+  fromEmail = false;
+fromPhone = false;
+
+
+ngOnInit(): void {
+  this.route.queryParams.subscribe(params => {
+
+    if (params['fullName']) {
+      this.form.patchValue({ fullName: params['fullName'] });
+    }
+
+    if (params['email']) {
+      this.form.patchValue({ email: params['email'] });
+      this.fromEmail = true;
+    }
+
+    if (params['phone']) {
+      const phone: string = params['phone'];
+      const dial = phone.match(/^\+\d+/)?.[0] ?? '+965';
+      const local = phone.replace(dial, '');
+
+      this.form.patchValue({
+        countryDial: dial,
+        phoneLocal: local
+      });
+
+      this.fromPhone = true;
+    }
+  });
+}
+
+
 
   togglePassword() {
     this.showPassword = !this.showPassword;
@@ -70,61 +105,73 @@ export class RegisterComponent {
     return dial + local;
   });
 
-  // SUBMIT FORM
-  submit(): void {
-    this.apiError.set(null);
-    this.apiSuccess.set(null);
+// SUBMIT FORM
+submit(): void {
+  this.apiError.set(null);
+  this.apiSuccess.set(null);
 
-    // VALIDATE ALL
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.apiError.set('الرجاء التأكد من تعبئة الحقول المطلوبة بشكل صحيح.');
-      return;
-    }
-
-    // PASSWORD MATCH CHECK
-    const password = this.form.value.password;
-    const confirmPassword = this.form.value.confirmPassword;
-
-    if (password !== confirmPassword) {
-      this.apiError.set("كلمة المرور غير متطابقة");
-      this.form.get('confirmPassword')?.setErrors({ mismatch: true });
-      return;
-    }
-
-    this.loading.set(true);
-
-    const dto = {
-      fullName: this.form.value.fullName?.trim() || null,
-      email: this.form.value.email?.trim() || null,
-      phone: this.e164Phone(),
-      password: (this.form.value.password ?? '').toString()
-    };
-
-    this.auth.register(dto).subscribe({
-      next: (res) => {
-        this.loading.set(false);
-
-        if (res.succeeded) {
-          this.apiSuccess.set('تم تسجيل المستخدم بنجاح');
-          this.form.reset({ countryDial: this.selectedCountry.dial });
-        } else {
-          this.apiError.set(res.message || 'Registration failed.');
-        }
-      },
-
-      error: (err) => {
-        this.loading.set(false);
-
-        const msg =
-          err?.error?.message ||
-          err?.error ||
-          (err.status === 409 ? 'البريد أو الهاتف مستخدم بالفعل.' : 'خطأ في الخادم.');
-
-        this.apiError.set(msg);
-      }
-    });
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    this.apiError.set('الرجاء التأكد من تعبئة الحقول المطلوبة بشكل صحيح.');
+    return;
   }
+
+  const password = this.form.value.password;
+  const confirmPassword = this.form.value.confirmPassword;
+
+  if (password !== confirmPassword) {
+    this.apiError.set('كلمة المرور غير متطابقة');
+    this.form.get('confirmPassword')?.setErrors({ mismatch: true });
+    return;
+  }
+
+  this.loading.set(true);
+
+  const dto = {
+    fullName: this.form.value.fullName?.trim() || null,
+    email: this.form.value.email?.trim() || null,
+    phone: this.e164Phone(),
+    password: password!
+  };
+
+  this.auth.register(dto).subscribe({
+    next: (res) => {
+      this.loading.set(false);
+      console.log("res",res.data);
+
+      if (!res.succeeded || !res.data) {
+        this.apiError.set(res.message || 'فشل إنشاء الحساب');
+        return;
+      }
+
+      // ✅ Auto login
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+
+      // ✅ Toast
+      this.apiSuccess.set('تم إنشاء حسابك بنجاح');
+
+      // ✅ Redirect
+      setTimeout(() => {
+        this.router.navigate(['/']);
+      }, 800);
+    },
+
+    error: (err) => {
+      this.loading.set(false);
+
+      const msg =
+        err?.error?.message ||
+        (err.status === 409
+          ? 'البريد أو الهاتف مستخدم بالفعل'
+          : 'حدث خطأ في الخادم');
+
+      this.apiError.set(msg);
+    }
+  });
+}
+
+
 
   // CHECK CONTROL INVALID
   controlInvalid(name: string): boolean {
