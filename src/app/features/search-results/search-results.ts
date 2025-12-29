@@ -155,12 +155,14 @@ private groupFlights(departures: any[], returns: any[]) {
 
   const tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعودة';
 
-  // ---------------------------
-  // 🔵 1) لو ذهاب فقط → رجّع الذهاب كما هي
-  // ---------------------------
-  if (tripType === 'ذهاب فقط') {
-    return departures.map(d => ({
+if (tripType === 'ذهاب فقط') {
+  return departures.map(d => {
+
+     const offerId = d.offerId ?? d.OfferId;
+
+    return {
       ...d,
+       offerId,
       airlineLogo: getAirlineLogo(d.airline),
       returnDepartureAt: null,
       returnArrivalAt: null,
@@ -171,13 +173,13 @@ private groupFlights(departures: any[], returns: any[]) {
         .filter(x => x.airline === d.airline)
         .map(v => ({ ...v, airlineLogo: getAirlineLogo(v.airline) })),
       isDepartureExpanded: false,
-      isReturnExpanded: false
-    }));
-  }
+      isReturnExpanded: false,
+    };
+  });
+}
 
-  // ---------------------------
-  // 🔵 2) لو ذهاب وعودة → لازم returns موجودة
-  // ---------------------------
+
+
   if (!returns || returns.length === 0) return [];
 
   const depDate = new Date(sessionStorage.getItem('depDate')!).toDateString();
@@ -193,9 +195,6 @@ private groupFlights(departures: any[], returns: any[]) {
 
   const results: any[] = [];
 
-  // ---------------------------
-  // 🔵 3) الربط بدون شروط إضافية
-  // ---------------------------
   for (const dep of depSameDay) {
     const matchingReturns = retSameDay.filter(
       ret =>
@@ -209,6 +208,7 @@ private groupFlights(departures: any[], returns: any[]) {
     const bestReturn = matchingReturns[0]; // أول واحد (أو أرخص لو عايزة)
     
     results.push({
+      offerId: dep.offerId,
       airline: dep.airline,
       airlineLogo: getAirlineLogo(dep.airline),
 
@@ -244,6 +244,7 @@ private groupFlights(departures: any[], returns: any[]) {
       isReturnExpanded: false
     });
   }
+  console.log("res88",results)
 
   return results;
 }
@@ -252,40 +253,43 @@ private groupFlights(departures: any[], returns: any[]) {
   // ---------------------------------------------------------------------
   //  GROUP BY AIRLINE (CLEAN, NO DUPLICATES)
   // ---------------------------------------------------------------------
-  private groupByAirline(flights: any[]) {
+ private groupByAirline(flights: any[]) {
+  const grouped: any = {};
 
-    const grouped: any = {};
+  for (const f of flights) {
 
-    for (const f of flights) {
+    if (!grouped[f.airline]) {
+      grouped[f.airline] = {
+        ...f,
+        airline: f.airline,
+        airlineLogo: getAirlineLogo(f.airline),
 
-      if (!grouped[f.airline]) {
-        grouped[f.airline] = {
-          airline: f.airline,
-          airlineLogo:  getAirlineLogo(f.airline),
-          price: f.price,
+        offerId: f.offerId,
 
-          ...f,
+        variations: [...(f.variations || [])],
+        returnVariations: [...(f.returnVariations || [])],
 
-          variations: [...f.variations],
-          returnVariations: [...f.returnVariations],
-
-          isDepartureExpanded: false,
-          isReturnExpanded: false
-        };
-      }
-
-      // Keep Cheapest
-      if (f.price < grouped[f.airline].price) {
-        grouped[f.airline].price = f.price;
-       const oldLogo = grouped[f.airline].airlineLogo;
-Object.assign(grouped[f.airline], f);
-grouped[f.airline].airlineLogo = oldLogo; // نحافظ على اللوجو الصح
-
-      }
+        isDepartureExpanded: false,
+        isReturnExpanded: false
+      };
+      continue;
     }
 
-    return Object.values(grouped);
+    // Keep Cheapest
+    if (f.price < grouped[f.airline].price) {
+      const savedOfferId = grouped[f.airline].offerId;
+      const savedLogo = grouped[f.airline].airlineLogo;
+
+      Object.assign(grouped[f.airline], f);
+
+      grouped[f.airline].offerId = savedOfferId;
+      grouped[f.airline].airlineLogo = savedLogo;
+    }
   }
+
+  return Object.values(grouped);
+}
+
 
   // ---------------------------------------------------------------------
   // UI ACTIONS
@@ -319,6 +323,7 @@ grouped[f.airline].airlineLogo = oldLogo; // نحافظ على اللوجو ال
     f.baseDeparturePrice = option.price;
 
     f.price = f.baseDeparturePrice + f.baseReturnPrice;
+    f.offerId = option.offerId;
   }
 
   applyNewReturn(f: any, option: any) {
@@ -327,6 +332,7 @@ grouped[f.airline].airlineLogo = oldLogo; // نحافظ على اللوجو ال
     f.baseReturnPrice = option.price;
 
     f.price = f.baseDeparturePrice + f.baseReturnPrice;
+     f.offerId = option.offerId;
   }
 
 
@@ -650,11 +656,40 @@ async buildAirportFilters() {
   console.log("From Airport =", this.departureAirportsList);
   console.log("To Airport   =", this.arrivalAirportsList);
 }
-
-
 onLogoError(event: any) {
   event.target.src = 'assets/d2.jpg';
 }
+onBookNow(flight: any) {
+
+
+   console.log('FULL FLIGHT:', flight);
+  console.log('offerId:', flight.offerId, typeof flight.offerId);
+  console.log('id:', flight.id, typeof flight.id);
+   const offerId =
+  flight.selectedDeparture?.offerId ??
+  flight.offerId;
+
+
+
+  if (!offerId || typeof offerId !== 'string') {
+    alert('❌ OfferId غير صالح');
+    return;
+  }
+
+  this.flightservice.confirmPrice(offerId).subscribe({
+    next: (res) => {
+      sessionStorage.setItem('confirmedPrice', JSON.stringify(res.data));
+      sessionStorage.setItem('selectedFlight', JSON.stringify(flight));
+      this.router.navigate(['/booking']);
+    },
+    error: (err) => {
+      console.error(err);
+      alert('⚠️ السعر تغير أو الرحلة لم تعد متاحة');
+    }
+  });
+}
+
+
 
 
 

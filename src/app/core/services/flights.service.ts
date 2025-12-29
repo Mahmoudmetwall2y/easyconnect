@@ -83,6 +83,13 @@ getAirportInfo(iata: string) {
 loadAirportsByKeyword(keyword: string) {
   return this.http.get<ApiResponse<any[]>>(`${this.baseUrl}/locations?keyword=${keyword}`);
 }
+confirmPrice(offerId: string) {
+  return this.http.post<ApiResponse<any>>(
+    `${this.baseUrl}/price-confirm`,
+    { offerId }
+  );
+}
+
 
 
 }

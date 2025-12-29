@@ -414,7 +414,8 @@
             </p>
           </div>
 
-          <button
+          <button (click)="onBookNow(f)"
+           [disabled]="!f.offerId"
             class="
               mt-4 lg:mt-6
               bg-blue-600 hover:bg-blue-700
