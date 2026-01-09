@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from './auth.service';
+import {PricingResponseDto} from '../../core/models/pricing-response.model'
+
 
 export interface PopularAirport {
   city: string;
@@ -11,6 +13,7 @@ export interface PopularAirport {
   country: string;
   flagUrl: string;
 }
+
 
 export interface LocationResult {
   iataCode: string;
@@ -83,12 +86,23 @@ getAirportInfo(iata: string) {
 loadAirportsByKeyword(keyword: string) {
   return this.http.get<ApiResponse<any[]>>(`${this.baseUrl}/locations?keyword=${keyword}`);
 }
-confirmPrice(offerId: string) {
-  return this.http.post<ApiResponse<any>>(
+confirmPrice(payload: {
+  departureOfferId: string;
+  returnOfferId?: string | null;
+  isRoundTrip: boolean;
+}) {
+  return this.http.post<ApiResponse<PricingResponseDto>>(
     `${this.baseUrl}/price-confirm`,
-    { offerId }
+    payload
   );
 }
+
+
+
+
+
+
+
 
 
 

@@ -11,6 +11,9 @@ import { getAirlineLogo } from '../../shared/data/airline-logos';
 import { PriceCalendarModal } from '../flight-search/price-calendar-modal/price-calendar-modal';
 import { FiltersSidebar, FiltersState, StopOption } from '../flight-search/filters-sidebar/filters-sidebar';
 import { FlightsService } from '../../core/services/flights.service';
+import Swal from 'sweetalert2';
+import { ApiResponse,PricingResponseDto } from '../../core/models/pricing-response.model';
+
 interface AirportFilterItem {
   code: string;
   name: string;
@@ -211,7 +214,8 @@ if (tripType === 'ذهاب فقط') {
       offerId: dep.offerId,
       airline: dep.airline,
       airlineLogo: getAirlineLogo(dep.airline),
-
+ selectedReturn: bestReturn,
+   selectedDeparture: dep,
       origin: dep.origin,
       destination: dep.destination,
 
@@ -660,35 +664,58 @@ onLogoError(event: any) {
   event.target.src = 'assets/d2.jpg';
 }
 onBookNow(flight: any) {
+const payload = {
+  departureOfferId: flight.offerId, 
+  returnOfferId: null,            
+  isRoundTrip: !!flight.returnDepartureAt,
+  currency: sessionStorage.getItem('currencyIso')
+};
 
 
-   console.log('FULL FLIGHT:', flight);
-  console.log('offerId:', flight.offerId, typeof flight.offerId);
-  console.log('id:', flight.id, typeof flight.id);
-   const offerId =
-  flight.selectedDeparture?.offerId ??
-  flight.offerId;
+  console.log('payload', payload);
 
+  Swal.fire({
+    title: 'جارٍ تأكيد السعر...',
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading()
+  });
 
+  this.flightservice.confirmPrice(payload).subscribe({
+  next: (res: ApiResponse<PricingResponseDto>) => {
 
-  if (!offerId || typeof offerId !== 'string') {
-    alert('❌ OfferId غير صالح');
-    return;
-  }
+      console.log("resss",res)
+      Swal.close();
 
-  this.flightservice.confirmPrice(offerId).subscribe({
-    next: (res) => {
-      sessionStorage.setItem('confirmedPrice', JSON.stringify(res.data));
-      sessionStorage.setItem('selectedFlight', JSON.stringify(flight));
-      this.router.navigate(['/booking']);
+      sessionStorage.setItem(
+        'confirmedPrice',
+        JSON.stringify(res.data)
+      );
+
+      sessionStorage.setItem(
+        'selectedFlight',
+        JSON.stringify(flight)
+      );
+
+      Swal.fire({
+        icon: 'success',
+        title: 'تم تأكيد السعر',
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        this.router.navigate(['/booking']);
+      });
     },
-    error: (err) => {
-      console.error(err);
-      alert('⚠️ السعر تغير أو الرحلة لم تعد متاحة');
+
+    error: () => {
+      Swal.close();
+      Swal.fire({
+        icon: 'warning',
+        title: 'السعر تغيّر',
+        text: 'الرحلة لم تعد متاحة بنفس السعر، برجاء إعادة البحث'
+      });
     }
   });
 }
-
 
 
 

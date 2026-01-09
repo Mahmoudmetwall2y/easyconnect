@@ -1,0 +1,87 @@
+.price-card {
+  width: 320px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.1);
+    flex-shrink: 0;   
+}
+.booking-container {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+.service-card img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+.trip-title,.m{
+    font-weight: bold;
+    color: black;
+}
+
+
+.baggage-strip {
+  background: linear-gradient(90deg,#cfe6ff,#e9f2ff);
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.price-details .row,
+.extras .row {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  margin: 16px 0;
+}
+
+.pay-btn {
+  width: 100%;
+  background: #0d6efd;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.payments {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.trip-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.1);
+}
+
+.flight-header {
+  display: flex;
+  justify-content: space-between;
+  color: #0d6efd;
+ 
+}
+
+
+
+
+

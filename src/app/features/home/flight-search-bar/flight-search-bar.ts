@@ -201,7 +201,7 @@ this.flightService.searchFlights(req).subscribe({
   next: (res) => {
     const departures = res?.data?.departures ?? [];
     const returns = res?.data?.returns ?? [];
-
+console.log("resresres",res);
      if (this.selectedTripType === 'ذهاب فقط') {
         if (!departures.length) {
           this.loading = false;
@@ -250,7 +250,7 @@ private formatDate(date: Date | null): string {
   const month = (d.getMonth() + 1).toString().padStart(2, '0');
   const day = d.getDate().toString().padStart(2, '0');
   const year = d.getFullYear();
-  return `${year}-${month}-${day}`; // ✅ النتيجة: 2025-11-03
+  return `${year}-${month}-${day}`;
 }
 
 

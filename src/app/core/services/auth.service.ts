@@ -10,6 +10,7 @@ export interface ApiResponse<T> {
   data?: T;
   errors?: string[];
 }
+
 export interface LoginResponseDto {
   token: string;
   user: UserResponseDto;
