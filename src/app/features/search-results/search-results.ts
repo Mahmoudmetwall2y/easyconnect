@@ -13,6 +13,8 @@ import { FiltersSidebar, FiltersState, StopOption } from '../flight-search/filte
 import { FlightsService } from '../../core/services/flights.service';
 import Swal from 'sweetalert2';
 import { ApiResponse,PricingResponseDto } from '../../core/models/pricing-response.model';
+import { CurrencyService } from '../../core/services/currency-service';
+
 
 interface AirportFilterItem {
   code: string;
@@ -87,7 +89,7 @@ arrivalAirportsList: {
 }[] = [];
 
 
-  constructor(private router: Router, public t: TranslationService, private flightservice:FlightsService) {
+  constructor(private router: Router, public t: TranslationService, private flightservice:FlightsService,  private currencyService: CurrencyService ) {
     this.tripType = sessionStorage.getItem('selectedTripType') || 'ذهاب وعودة';
 
     const nav = this.router.getCurrentNavigation();
@@ -147,6 +149,7 @@ this.buildStopOptions();
 
   ngOnInit() {
   }
+
 
 
 
@@ -224,10 +227,12 @@ if (tripType === 'ذهاب فقط') {
       duration: dep.duration,
       stops: dep.stops,
       currency: dep.currency,
-      price: dep.price + bestReturn.price,
+price: dep.price ,
 
       baseDeparturePrice: dep.price,
       baseReturnPrice: bestReturn.price,
+      
+ // displayPrice: dep.price,
 
       returnDepartureAt: bestReturn.departureAt,
       returnArrivalAt: bestReturn.arrivalAt,
@@ -321,23 +326,35 @@ if (tripType === 'ذهاب فقط') {
 
 
 
-  applyNewDeparture(f: any, option: any) {
-    f.selectedDeparture = option;
+applyNewDeparture(f: any, option: any) {
+  f.selectedDeparture = option;
 
-    f.baseDeparturePrice = option.price;
+  f.departureAt = option.departureAt;
+  f.arrivalAt   = option.arrivalAt;
+  f.duration    = option.duration;
+  f.stops       = option.stops;
+  f.origin      = option.origin;
+  f.destination = option.destination;
 
-    f.price = f.baseDeparturePrice + f.baseReturnPrice;
-    f.offerId = option.offerId;
-  }
+  f.baseDeparturePrice = option.price;
+  f.price = option.price;
 
-  applyNewReturn(f: any, option: any) {
-    f.selectedReturn = option;
+  f.offerId = option.offerId;
+}
 
-    f.baseReturnPrice = option.price;
 
-    f.price = f.baseDeparturePrice + f.baseReturnPrice;
-     f.offerId = option.offerId;
-  }
+applyNewReturn(f: any, option: any) {
+  f.selectedReturn = option;
+
+  f.returnDepartureAt = option.departureAt;
+  f.returnArrivalAt   = option.arrivalAt;
+  f.returnDuration    = option.duration;
+  f.returnStops       = option.stops;
+
+  f.baseReturnPrice = option.price;
+}
+
+
 
 
   openDetails(f: any, seg: 'dep' | 'ret') {
@@ -664,13 +681,27 @@ onLogoError(event: any) {
   event.target.src = 'assets/d2.jpg';
 }
 onBookNow(flight: any) {
-const payload = {
-  departureOfferId: flight.offerId, 
-  returnOfferId: null,            
-  isRoundTrip: !!flight.returnDepartureAt,
-  currency: sessionStorage.getItem('currencyIso')
-};
+  const currency = this.currencyService.getCurrency()?.iso || 'USD';
 
+  if (this.tripType === 'ذهاب وعودة') {
+    if (!flight.selectedDeparture || !flight.selectedReturn) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'الرحلة غير مكتملة',
+        text: 'برجاء اختيار رحلة الذهاب والعودة قبل المتابعة'
+      });
+      return;
+    }
+  }
+
+  const payload = {
+    departureOfferId: flight.selectedDeparture.offerId,
+    returnOfferId: this.tripType === 'ذهاب وعودة'
+      ? flight.selectedReturn.offerId
+      : null,
+    isRoundTrip: this.tripType === 'ذهاب وعودة',
+   currency: currency 
+  };
 
   console.log('payload', payload);
 

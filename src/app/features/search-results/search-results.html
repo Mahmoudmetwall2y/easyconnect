@@ -313,7 +313,7 @@
   <div class="flex flex-row-reverse items-center text-right gap-x-3 md:w-auto">
     <div class="flex flex-col items-end" dir="rtl">
       <p class="text-base sm:text-lg font-bold text-gray-900">
-        {{ t.formatTime(f.returnDepartureAt) }}
+      {{ t.formatTime(f.returnDepartureAt) }}
       </p>
       <!-- مطار المغادرة -->
       <p dir="ltr" class="text-xs sm:text-sm text-gray-500 mt-1 unicode-bidi-normal">
@@ -416,6 +416,11 @@
             <p class="text-xl sm:text-2xl font-semibold text-gray-500">
               {{ f.currency }}
             </p>
+            <p class="text-muted text-sm">
+ السعر للمغادرة – يتم تأكيد السعر النهائي قبل الحجز
+
+</p>
+
           </div>
 
           <button (click)="onBookNow(f)"
@@ -628,7 +633,7 @@
 <!-- الوصول يمين (KWI في العودة) -->
 <div class="flex flex-col items-end text-right min-w-[100px]">
   <p class="text-base sm:text-lg font-bold text-gray-900">
-    {{ t.formatTime(option.arrivalAt) }}
+    {{ t.formatTime(option.departureAt) }}
   </p>
   <p class="text-xs sm:text-sm text-gray-500">
     ({{ f.destination }}) {{ t.translateAirport(f.destination) }}
@@ -664,7 +669,7 @@
   <!-- المغادرة شمال (CAI في العودة) -->
 <div class="flex flex-col items-start text-right min-w-[100px]">
   <p class="text-base sm:text-lg font-bold text-gray-900">
-    {{ t.formatTime(option.departureAt) }}
+    {{ t.formatTime(option.arrivalAt) }}
   </p>
   <p class="text-xs sm:text-sm text-gray-500">
     ({{ f.origin }}) {{ t.translateAirport(f.origin) }}

@@ -61,12 +61,6 @@
   </span>
 </div>
 
-<div *ngIf="confirmedPrice?.return" class="flex justify-between">
-  <span>سعر العودة</span>
-  <span>
-    {{ returnFare | number:'1.2-2' }} {{ currency }}
-  </span>
-</div>
 
 
 
@@ -138,7 +132,7 @@
 
   <!-- Pay button -->
 <button
-  (click)="goToPayment()"
+  (click)="goToPassengers()"
   class="w-full bg-blue-600 hover:bg-blue-700
          text-white text-lg font-semibold
          py-3 rounded-xl transition">
@@ -377,3 +371,4 @@
 </section>
 
 </div>
+

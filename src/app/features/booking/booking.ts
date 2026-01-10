@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { TranslationService } from '../../shared/data/translation.service';
+import { PassengerForm } from './passenger-form/passenger-form';
+
 
 @Component({
   selector: 'app-booking',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PassengerForm],
   templateUrl: './booking.html',
   styleUrl: './booking.css'
 })
@@ -76,9 +78,6 @@ export class Booking implements OnInit {
   onLogoError(event: any) {
     event.target.src = '/assets/d2.jpg';
   }
-  goToPayment() {
-  // المرحلة الجاية: passengers / payment
-}
 
 
   // =====================
@@ -90,23 +89,25 @@ export class Booking implements OnInit {
   }
 
 get outboundFare(): number {
-  return this.confirmedPrice?.departure?.total
-    ?? this.confirmedPrice?.total
-    ?? 0;
+  return this.confirmedPrice?.departure?.total ?? 0;
 }
 
 get returnFare(): number {
   return this.confirmedPrice?.return?.total ?? 0;
 }
 
+get taxes(): number {
+  return this.confirmedPrice?.taxes ?? 0;
+}
 
-  get taxes(): number {
-    return this.confirmedPrice?.taxes ?? 0;
+get totalPrice(): number {
+  if (this.isRoundTrip) {
+    return this.outboundFare + this.returnFare + this.taxes;
   }
+  return this.outboundFare + this.taxes;
+}
 
-  get totalPrice(): number {
-    return this.confirmedPrice?.total ?? 0;
-  }
+
 
   get extras(): any[] {
     return this.confirmedPrice?.extras || [];
@@ -133,6 +134,9 @@ get returnFare(): number {
 
 
 
+goToPassengers() {
+  this.router.navigate(['/passengers']);
+}
 
 
   // =====================
@@ -148,4 +152,9 @@ get routeTitle(): string {
   if (!this.flight) return '';
   return `الرحلة من ${this.flight.origin} إلى ${this.flight.destination} ${this.tripType}`;
 }
+
+onPassengersChange(updatedPassengers: any[]) {
+  this.passengers = updatedPassengers;
+}
+
 }

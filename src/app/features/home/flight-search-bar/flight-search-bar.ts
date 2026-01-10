@@ -153,6 +153,11 @@ onPassengersConfirmed(data: any) {
 
 searchFlights() {
 
+  sessionStorage.removeItem('departures');
+sessionStorage.removeItem('returns');
+sessionStorage.removeItem('selectedFlight');
+sessionStorage.removeItem('confirmedPrice');
+
   this.errorFrom = false;
   this.errorTo = false;
   this.errorDep = false;

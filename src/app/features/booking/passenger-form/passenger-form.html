@@ -1,0 +1,49 @@
+<div class="overlay">
+  <div class="modal">
+
+    <div class="header">
+      <h3>passenger details</h3>
+      <a class="skip">تخطي</a>
+    </div>
+
+    <div *ngFor="let p of passengers; let i = index" class="card">
+
+      <div class="title">
+        Passenger {{ i + 1 }} <span>(adult)</span>
+      </div>
+
+      <div class="gender">
+        <button [class.active]="p.gender==='male'" (click)="p.gender='male'">
+          Male
+        </button>
+        <button [class.active]="p.gender==='female'" (click)="p.gender='female'">
+          Female
+        </button>
+      </div>
+
+      <input placeholder="First name" [(ngModel)]="p.firstName">
+      <input placeholder="Last name" [(ngModel)]="p.lastName">
+
+      <div class="dob">
+        <input placeholder="DD" [(ngModel)]="p.day">
+        <input placeholder="MM" [(ngModel)]="p.month">
+        <input placeholder="YYYY" [(ngModel)]="p.year">
+      </div>
+
+      <button class="save">حفظ</button>
+    </div>
+
+    <button class="add" (click)="addPassenger()">إضافة مسافرين</button>
+
+    <div class="note">
+      • يرجى إدخال الاسم مطابقًا لجواز السفر  
+      <br>
+      • يجب أن يكون الجواز ساري حتى نهاية الرحلة
+    </div>
+
+    <button class="continue" (click)="continueToPayment()">
+      المتابعة للدفع
+    </button>
+
+  </div>
+</div>

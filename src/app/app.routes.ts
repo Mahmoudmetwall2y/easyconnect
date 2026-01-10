@@ -11,6 +11,7 @@ import { PublicLayout } from './layouts/public-layout/public-layout';
 import { Login } from './features/account/login/login';
 import { AuthGuard } from './core/guards/auth.guard';
 import { Account } from './features/account/account';
+import { PassengerForm } from './features/booking/passenger-form/passenger-form';
 
 export const routes: Routes = [
 
@@ -39,6 +40,11 @@ export const routes: Routes = [
         path: 'booking',
         component: Booking,
         canActivate: [AuthGuard]
+      },
+        {
+        path: 'passengers',
+        component: PassengerForm,
+       
       },
 
       { path: '', redirectTo: 'home', pathMatch: 'full' },
