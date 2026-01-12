@@ -1,49 +1,130 @@
-<div class="overlay">
-  <div class="modal">
+<!-- PAGE WRAPPER -->
+<div class="bg-gray-100 flex justify-center items-start py-10">
 
-    <div class="header">
-      <h3>passenger details</h3>
-      <a class="skip">تخطي</a>
-    </div>
+  <!-- CARD -->
+  <div class="bg-white w-[600px] max-w-[95%] rounded-xl shadow-lg overflow-hidden">
 
-    <div *ngFor="let p of passengers; let i = index" class="card">
+    <!-- Top blue line -->
+    <div class="h-1.5 bg-blue-600"></div>
 
-      <div class="title">
-        Passenger {{ i + 1 }} <span>(adult)</span>
+    <!-- Header -->
+    <div class="flex items-center justify-between px-5 py-4">
+      <div class="flex items-center gap-2">
+        <span
+          class="w-7 h-7 flex items-center justify-center rounded-full border text-gray-600 text-sm">
+          👤
+        </span>
+        <h3 class="text-lg font-semibold">passenger details</h3>
       </div>
 
-      <div class="gender">
-        <button [class.active]="p.gender==='male'" (click)="p.gender='male'">
-          Male
+      <button class="text-blue-600 text-sm font-medium hover:underline">
+        تخطي
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="grid grid-cols-[1.2fr_0.8fr] gap-6 px-6 pb-6">
+
+      <!-- LEFT FORM -->
+      <div>
+
+        <p class="text-gray-700 text-sm mb-3">
+          Passenger 1 <span class="text-gray-400">(adult)</span>
+        </p>
+
+        <!-- Gender -->
+      <div class="flex gap-4 mb-5">
+
+  <!-- Male -->
+  <button
+    type="button"
+    (click)="passengers[0].gender = 'male'"
+    [ngClass]="passengers[0].gender === 'male'
+      ? 'border-blue-600 text-blue-600 bg-blue-50'
+      : 'border-gray-300 text-gray-400'"
+    class="px-6 py-2 border rounded-lg font-medium transition">
+    Male
+  </button>
+
+  <!-- Female -->
+  <button
+    type="button"
+    (click)="passengers[0].gender = 'female'"
+    [ngClass]="passengers[0].gender === 'female'
+      ? 'border-blue-600 text-blue-600 bg-blue-50'
+      : 'border-gray-300 text-gray-400'"
+    class="px-6 py-2 border rounded-lg font-medium transition">
+    Female
+  </button>
+
+</div>
+
+
+        <!-- Names -->
+        <div class="space-y-3 mb-4">
+          <input
+            class="w-full border rounded-md px-3 py-2 bg-gray-100 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="First name" />
+
+          <input
+            class="w-full border rounded-md px-3 py-2 bg-gray-100 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Last name" />
+        </div>
+
+        <!-- DOB -->
+        <div class="mb-5">
+          <div class="flex justify-between mb-1 text-xs">
+            <span class="text-gray-700">Date of birth</span>
+            <span class="text-gray-700">تاريخ الميلاد</span>
+          </div>
+
+          <div class="flex gap-2">
+            <input
+              class="w-16 border rounded-md px-2 py-1.5 text-center text-sm outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="DD" />
+            <input
+              class="w-24 border rounded-md px-2 py-1.5 text-center text-sm outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="April" />
+            <input
+              class="w-24 border rounded-md px-2 py-1.5 text-center text-sm outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="1980" />
+          </div>
+        </div>
+
+        <!-- Save -->
+        <button
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-md text-sm font-semibold mb-3 transition">
+          حفظ
         </button>
-        <button [class.active]="p.gender==='female'" (click)="p.gender='female'">
-          Female
+
+        <!-- Add passenger -->
+        <button
+          class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 py-2.5 rounded-md text-sm font-semibold transition">
+          إضافة مسافرين
         </button>
+
       </div>
 
-      <input placeholder="First name" [(ngModel)]="p.firstName">
-      <input placeholder="Last name" [(ngModel)]="p.lastName">
-
-      <div class="dob">
-        <input placeholder="DD" [(ngModel)]="p.day">
-        <input placeholder="MM" [(ngModel)]="p.month">
-        <input placeholder="YYYY" [(ngModel)]="p.year">
+      <!-- RIGHT IMAGE -->
+      <div class="flex justify-center items-center">
+        <img
+          src="/assets/images/passport.png"
+          alt="passport"
+          class="w-[160px] rounded-lg shadow" />
       </div>
 
-      <button class="save">حفظ</button>
     </div>
 
-    <button class="add" (click)="addPassenger()">إضافة مسافرين</button>
-
-    <div class="note">
-      • يرجى إدخال الاسم مطابقًا لجواز السفر  
-      <br>
-      • يجب أن يكون الجواز ساري حتى نهاية الرحلة
+    <!-- Notes -->
+    <div class="bg-yellow-100 text-blue-700 text-xs px-6 py-3 space-y-1.5" dir="rtl">
+      <p>
+        يرجى إدخال الاسم مطابقًا لجواز السفر، إذا كان الاسم غير صحيح قد لا تتمكن
+        من الصعود إلى رحلتك وسيتم فرض رسوم الإلغاء •
+      </p>
+      <p>
+        يرجى التأكد من أن وثيقة السفر الخاصة بالمسافر صالحة حتى تاريخ انتهاء الرحلة •
+      </p>
     </div>
-
-    <button class="continue" (click)="continueToPayment()">
-      المتابعة للدفع
-    </button>
 
   </div>
 </div>
