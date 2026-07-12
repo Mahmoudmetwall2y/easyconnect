@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Easy Travel Frontend — Deployment Readiness Report</title>
+  <style>
+    :root { --ink:#172033; --muted:#667085; --line:#e4e7ec; --bg:#f7f9fc; --card:#fff; --red:#b42318; --red-bg:#fef3f2; --amber:#b54708; --amber-bg:#fffaeb; --blue:#175cd3; --blue-bg:#eff8ff; --green:#027a48; }
+    * { box-sizing: border-box; }
+    body { margin:0; color:var(--ink); background:var(--bg); font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    main { max-width:980px; margin:0 auto; padding:48px 24px 80px; }
+    header, section { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px; margin-bottom:20px; box-shadow:0 4px 18px rgba(16,24,40,.04); }
+    h1 { margin:0 0 8px; font-size:32px; line-height:1.2; }
+    h2 { margin:0 0 18px; font-size:22px; }
+    h3 { margin:0 0 8px; font-size:18px; }
+    p { margin:8px 0; }
+    ul, ol { margin:10px 0; padding-left:24px; }
+    code { padding:2px 6px; border-radius:5px; background:#f2f4f7; font:13px ui-monospace,SFMono-Regular,Consolas,monospace; }
+    pre { overflow:auto; padding:14px; border-radius:9px; background:#101828; color:#f2f4f7; font-size:13px; }
+    .meta { color:var(--muted); }
+    .summary { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:22px; }
+    .stat { padding:16px; border:1px solid var(--line); border-radius:10px; text-align:center; }
+    .stat strong { display:block; font-size:25px; }
+    .issue { border-left:5px solid var(--line); padding:18px 20px; margin:16px 0; border-radius:8px; background:#fafafa; }
+    .critical { border-color:var(--red); background:var(--red-bg); }
+    .warning { border-color:var(--amber); background:var(--amber-bg); }
+    .info { border-color:var(--blue); background:var(--blue-bg); }
+    .badge { display:inline-block; margin-bottom:8px; padding:3px 9px; border-radius:999px; font-size:12px; font-weight:700; text-transform:uppercase; }
+    .badge.critical { color:var(--red); background:#fee4e2; }
+    .badge.warning { color:var(--amber); background:#fef0c7; }
+    .badge.info { color:var(--blue); background:#d1e9ff; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:11px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:#f9fafb; }
+    .checklist li { margin:8px 0; }
+    footer { color:var(--muted); text-align:center; font-size:13px; }
+    @media (max-width:700px) { main{padding:20px 12px} header,section{padding:20px}.summary{grid-template-columns:1fr} }
+    @media print { body{background:#fff} main{max-width:none;padding:0} header,section{box-shadow:none;break-inside:avoid} }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Easy Travel Frontend</h1>
+    <p class="meta">Deployment readiness report for Vercel or Netlify</p>
+    <p>The project is an Angular 20.3 single-page application. It can be hosted on either platform after the critical API configuration and SPA routing issues below are resolved.</p>
+    <div class="summary">
+      <div class="stat"><strong>2</strong>Critical blockers</div>
+      <div class="stat"><strong>3</strong>Warnings</div>
+      <div class="stat"><strong>461</strong>Source files reviewed</div>
+    </div>
+  </header>
+
+  <section>
+    <h2>Critical deployment blockers</h2>
+
+    <article class="issue critical">
+      <span class="badge critical">Critical</span>
+      <h3>1. The deployed application will call localhost</h3>
+      <p><strong>Evidence:</strong> Both <code>src/environments/environment.ts</code> and <code>src/environments/environment.prod.ts</code> contain:</p>
+      <pre>apiBaseUrl: 'http://localhost:32769/api'</pre>
+      <p><strong>Impact:</strong> In production, <code>localhost</code> means the visitor's own computer. Authentication, flight search, user accounts, leads, and other API calls will fail.</p>
+      <p><strong>Required fix:</strong> Deploy the backend publicly and configure the production frontend with its public API URL, for example <code>https://api.example.com/api</code>. Do not commit secrets to Angular environment files; frontend values are visible to users.</p>
+    </article>
+
+    <article class="issue critical">
+      <span class="badge critical">Critical</span>
+      <h3>2. HTTP API requests will be blocked from an HTTPS site</h3>
+      <p><strong>Evidence:</strong> The configured API URL starts with <code>http://</code>. Vercel and Netlify serve production sites over HTTPS.</p>
+      <p><strong>Impact:</strong> Modern browsers block active mixed content, so API calls will fail even if the IP address or hostname is reachable.</p>
+      <p><strong>Required fix:</strong> Give the backend a valid TLS certificate and expose it through an <code>https://</code> URL. Also configure backend CORS to allow the final frontend domain and preview domains as appropriate.</p>
+    </article>
+  </section>
+
+  <section>
+    <h2>Configuration warnings</h2>
+
+    <article class="issue warning">
+      <span class="badge warning">Warning</span>
+      <h3>3. Client-side routes need an SPA fallback</h3>
+      <p>The application has routes such as <code>/search</code>, <code>/booking</code>, <code>/passengers</code>, <code>/account</code>, and <code>/auth/login</code>.</p>
+      <p><strong>Impact:</strong> Opening or refreshing these URLs directly can return a platform 404 unless all paths are rewritten to <code>/index.html</code>.</p>
+      <p><strong>Required fix:</strong> Add a Vercel rewrite in <code>vercel.json</code> or a Netlify rewrite in <code>netlify.toml</code>/<code>_redirects</code>.</p>
+    </article>
+
+    <article class="issue warning">
+      <span class="badge warning">Warning</span>
+      <h3>4. Production environment configuration is incorrect</h3>
+      <p><code>environment.prod.ts</code> sets <code>production: false</code> and is currently identical to the development environment. The Angular build configuration also has no explicit <code>fileReplacements</code> entry.</p>
+      <p><strong>Required fix:</strong> Set the production flag correctly and configure a reliable production API URL strategy. Confirm which environment file Angular 20 uses during the production build.</p>
+    </article>
+
+    <article class="issue warning">
+      <span class="badge warning">Warning</span>
+      <h3>5. Production bundle budgets may fail the build</h3>
+      <p>The production limits are <code>1MB</code> for the initial bundle and <code>8kB</code> for any component stylesheet.</p>
+      <p><strong>Impact:</strong> If compiled output exceeds either maximum, <code>npm run build</code> will fail and stop deployment.</p>
+      <p><strong>Required fix:</strong> Run a clean production build locally or in CI. Optimize oversized bundles/styles instead of increasing budgets unless the larger size is intentional and reviewed.</p>
+    </article>
+  </section>
+
+  <section>
+    <h2>Quality and performance notes</h2>
+    <table>
+      <thead><tr><th>Finding</th><th>Recommended action</th></tr></thead>
+      <tbody>
+        <tr><td><code>slider2.png</code> is approximately 3 MB.</td><td>Convert to WebP/AVIF, resize to its rendered dimensions, and compress it.</td></tr>
+        <tr><td><code>bg-image.jpg</code> is approximately 2.55 MB.</td><td>Compress it and provide responsive image variants where useful.</td></tr>
+        <tr><td><code>src/assets/images/Downloads - Shortcut.lnk</code> is a Windows shortcut.</td><td>Remove it from source control; it is unrelated to the web application.</td></tr>
+        <tr><td>No <code>.nvmrc</code>, <code>.node-version</code>, or package <code>engines</code> entry exists.</td><td>Pin a Node.js version compatible with Angular 20 to make local and cloud builds reproducible.</td></tr>
+        <tr><td>No Vercel or Netlify configuration exists.</td><td>Add configuration for the chosen platform, including build command, publish directory, and SPA rewrite.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Recommended deployment settings</h2>
+    <table>
+      <tbody>
+        <tr><th>Project/base directory</th><td><code>easy-travel-front</code> if importing the parent repository; otherwise repository root</td></tr>
+        <tr><th>Install command</th><td><code>npm ci</code></td></tr>
+        <tr><th>Build command</th><td><code>npm run build</code></td></tr>
+        <tr><th>Expected publish directory</th><td><code>dist/easy-travel/browser</code> — confirm after a successful production build</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Developer completion checklist</h2>
+    <ol class="checklist">
+      <li>Deploy the backend at a public HTTPS URL.</li>
+      <li>Update the production API base URL and set <code>production: true</code>.</li>
+      <li>Configure backend CORS for the production and permitted preview domains.</li>
+      <li>Add an SPA rewrite so every application route serves <code>index.html</code>.</li>
+      <li>Pin a supported Node.js version.</li>
+      <li>Run <code>npm ci</code> followed by <code>npm run build</code> and resolve all compilation or budget errors.</li>
+      <li>Test login, registration, account, search, booking, passengers, direct route refreshes, and API error handling on a preview deployment.</li>
+      <li>Optimize the two largest images and remove the Windows shortcut file.</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>
