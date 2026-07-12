@@ -8,7 +8,15 @@
     <div>
       <h3 class="font-semibold text-lg mb-4 border-b border-white/20 inline-block pb-1">الشركات</h3>
       <ul class="space-y-2 text-sm opacity-90">
-        <li><a href="#" class="hover:text-yellow-300 transition">من نحن</a></li>
+      <li>
+  <button
+    type="button"
+    (click)="openModal('about')"
+    class="hover:text-yellow-300 transition"
+  >
+    من نحن
+  </button>
+</li>
         <li><a href="#" class="hover:text-yellow-300 transition">كيف نعمل</a></li>
         <li><a href="#" class="hover:text-yellow-300 transition">الوظائف</a></li>
       </ul>
@@ -19,9 +27,33 @@
       <h3 class="font-semibold text-lg mb-4 border-b border-white/20 inline-block pb-1">الدعم</h3>
       <ul class="space-y-2 text-sm opacity-90">
         <li><a href="#" class="hover:text-yellow-300 transition">مركز المساعدة</a></li>
-        <li><a href="#" class="hover:text-yellow-300 transition">اتصل بنا</a></li>
-        <li><a href="#" class="hover:text-yellow-300 transition">سياسة الخصوصية</a></li>
-        <li><a href="#" class="hover:text-yellow-300 transition">شروط الخدمة</a></li>
+       <li>
+  <button
+    type="button"
+    (click)="openModal('contact')"
+    class="hover:text-yellow-300 transition"
+  >
+    اتصل بنا
+  </button>
+</li>
+        <li>
+  <button
+    type="button"
+    (click)="openModal('privacy')"
+    class="hover:text-yellow-300 transition"
+  >
+    سياسة الخصوصية
+  </button>
+</li>
+       <li>
+  <button
+    type="button"
+    (click)="openModal('terms')"
+    class="hover:text-yellow-300 transition"
+  >
+    شروط الخدمة
+  </button>
+</li>
       </ul>
     </div>
 
@@ -69,3 +101,435 @@
 </div>
 
 </footer>
+
+
+
+ <div
+  *ngIf="activeModal"
+  class="fixed inset-0 z-[99999] bg-black/80
+         flex items-center justify-center p-3 sm:p-6"
+  (click)="closeFromOverlay($event)"
+>
+  <div
+    class="relative w-full max-w-[1100px]
+           max-h-[90vh] bg-white rounded-2xl
+           overflow-hidden shadow-2xl"
+    dir="rtl"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- رأس النافذة -->
+    <div
+      class="relative min-h-[105px]
+             bg-gradient-to-l
+             from-[#0f4f98] via-[#2b6fc0] to-[#76acef]
+             px-6 sm:px-10 py-5
+             flex items-center justify-between"
+    >
+
+      <!-- العنوان جهة اليمين -->
+      <div class="text-right">
+
+        <h2 class="text-white text-2xl sm:text-3xl font-bold">
+          <ng-container [ngSwitch]="activeModal">
+            <span *ngSwitchCase="'about'">من نحن</span>
+            <span *ngSwitchCase="'contact'">تواصل معنا</span>
+            <span *ngSwitchCase="'privacy'">سياسة الخصوصية</span>
+            <span *ngSwitchCase="'terms'">
+              شروط الاستخدام
+              <span class="text-lg sm:text-xl">
+                (Terms &amp; Conditions)
+              </span>
+            </span>
+          </ng-container>
+        </h2>
+
+        <p class="text-white/75 text-sm sm:text-base mt-2">
+          <ng-container [ngSwitch]="activeModal">
+
+            <span *ngSwitchCase="'about'"></span>
+
+            <span *ngSwitchCase="'contact'">
+              تواصل وعيش تجربة السفر معنا!
+            </span>
+
+            <span *ngSwitchCase="'privacy'">
+              خصوصيتك وبياناتك أمانة عندنا، إليك أهم النقاط بشكل مختصر وواضح.
+            </span>
+
+            <span *ngSwitchCase="'terms'">
+              أهم النقاط التي يلزم معرفتها قبل استخدام المنصة، ببساطة ووضوح.
+            </span>
+
+          </ng-container>
+        </p>
+
+      </div>
+
+      <!-- زر الإغلاق جهة الشمال -->
+      <button
+        type="button"
+        (click)="closeModal()"
+        class="shrink-0 w-11 h-11 sm:w-12 sm:h-12
+               rounded-full bg-white/15 hover:bg-white/25
+               text-white text-3xl
+               flex items-center justify-center transition"
+        aria-label="إغلاق"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <!-- جسم النافذة -->
+    <div
+      class="max-h-[calc(90vh-105px)]
+             overflow-y-auto
+             px-5 sm:px-8 py-6
+             text-gray-800 text-base sm:text-lg
+             leading-8"
+    >
+      <!-- من نحن -->
+   <section
+  *ngIf="activeModal === 'about'"
+  class="max-w-[950px] mx-auto py-4 sm:py-8"
+>
+  <p class="text-base sm:text-xl leading-9 text-right">
+    إيزي كونكت هو منصة متكاملة لحجز تذاكر الطيران والفنادق بسهولة وأمان،
+    نوفر لك إمكانية البحث والمقارنة بين أفضل العروض من مختلف شركات الطيران
+    والفنادق حول العالم، وحجز رحلتك في دقائق.
+  </p>
+
+  <h3 class="font-bold text-xl sm:text-2xl mt-8 mb-4 text-right">
+    نهدف إلى تبسيط تجربة السفر من خلال:
+  </h3>
+
+  <ul class="list-disc pr-7 space-y-2 text-base sm:text-xl leading-8">
+    <li>واجهة استخدام سهلة وبسيطة.</li>
+    <li>أسعار تنافسية وعروض حصرية.</li>
+    <li>دعم فني متواصل لمساعدتك قبل وأثناء وبعد الحجز.</li>
+    <li>مع إيزي كونكت، السفر أصبح أسهل، أسرع، وأكثر أمانًا.</li>
+  </ul>
+</section>
+
+      <!-- تواصل معنا -->
+  <section *ngIf="activeModal === 'contact'">
+
+  <!-- أزرار التواصل -->
+  <div
+    class="flex flex-col sm:flex-row
+           justify-center items-center
+           gap-4 mb-6"
+  >
+    <!-- WhatsApp -->
+    <a
+      href="https://wa.me/201012923242"
+      target="_blank"
+      class="w-full sm:w-[240px] h-[54px]
+             rounded-lg bg-[#25D366]
+             text-white flex items-center
+             justify-center gap-3
+             text-lg font-semibold
+             hover:bg-[#1ebe5d] transition"
+    >
+      <i class="fa-brands fa-whatsapp text-2xl"></i>
+      <span>الواتساب</span>
+    </a>
+
+    <!-- Email -->
+    <a
+      href="mailto:info@easyconnect.com"
+      class="w-full sm:w-[240px] h-[54px]
+             border-2 border-blue-500
+             rounded-lg flex items-center
+             justify-center gap-3
+             text-lg font-semibold
+             hover:bg-blue-50 transition"
+    >
+      <i class="fa-solid fa-envelope text-blue-600 text-2xl"></i>
+      <span>الإيميل</span>
+    </a>
+  </div>
+
+  <!-- الفورم -->
+  <div
+    class="max-w-[820px] mx-auto
+           rounded-2xl overflow-hidden
+           bg-gradient-to-l
+           from-[#d9e2ef]
+           via-[#8ea7cb]
+           to-[#21428e]"
+  >
+    <form
+      class="p-5 sm:p-7"
+      (submit)="$event.preventDefault()"
+    >
+
+      <h2
+        class="text-white text-3xl
+               sm:text-4xl font-light
+               mb-6 text-right"
+      >
+        تواصل مع
+        <span class="text-[#4d9cff] font-semibold">
+          فريقنا
+        </span>
+      </h2>
+
+      <!-- الاسم -->
+      <div class="mb-4">
+        <label class="block text-white text-lg mb-2">
+          الاسم
+        </label>
+
+        <input
+          type="text"
+          placeholder="الاسم بالكامل"
+          class="w-full h-12 rounded-lg
+                 px-4 text-base text-gray-800
+                 outline-none bg-white
+                 focus:ring-2 focus:ring-blue-400"
+        />
+      </div>
+
+      <!-- رقم الهاتف -->
+      <div class="mb-4">
+        <label class="block text-white text-lg mb-2">
+          رقم الهاتف
+        </label>
+
+        <input
+          type="tel"
+          placeholder="05xxxxxxxx"
+          class="w-full h-12 rounded-lg
+                 px-4 text-base text-gray-800
+                 outline-none bg-white
+                 focus:ring-2 focus:ring-blue-400"
+        />
+      </div>
+
+      <!-- البريد الإلكتروني -->
+      <div class="mb-4">
+        <label class="block text-white text-lg mb-2">
+          البريد الإلكتروني
+        </label>
+
+        <input
+          type="email"
+          placeholder="name@example.com"
+          class="w-full h-12 rounded-lg
+                 px-4 text-base text-gray-800
+                 outline-none bg-white
+                 focus:ring-2 focus:ring-blue-400"
+        />
+      </div>
+
+      <!-- الرسالة -->
+      <div class="mb-5">
+        <label class="block text-white text-lg mb-2">
+          رسالتك
+        </label>
+
+        <textarea
+          rows="4"
+          placeholder="اكتب رسالتك هنا..."
+          class="w-full rounded-lg
+                 p-4 text-base text-gray-800
+                 resize-none outline-none bg-white
+                 focus:ring-2 focus:ring-blue-400"
+        ></textarea>
+      </div>
+
+      <button
+        type="submit"
+        class="w-full h-12
+               bg-[#1F73E8]
+               hover:bg-[#165fc0]
+               rounded-lg text-white
+               text-lg font-semibold
+               transition"
+      >
+        إرسال
+      </button>
+
+    </form>
+  </div>
+
+</section>
+      <!-- سياسة الخصوصية -->
+      <section *ngIf="activeModal === 'privacy'">
+
+  <p class="text-center text-base sm:text-lg leading-10 mb-8">
+    تلتزم إيزي كونكت بحماية خصوصية مستخدمينا وضمان سرية بياناتهم.
+    باستخدامك للتطبيق، فإنك توافق على سياسة الخصوصية الموضحة أدناه.
+  </p>
+
+  <h3 class="font-bold text-2xl mb-4">
+    1. المعلومات التي نقوم بجمعها
+  </h3>
+
+  <p class="mb-4 text-[20px]">
+    عند استخدامك للتطبيق، قد نقوم بجمع المعلومات التالية:
+  </p>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10 mb-8">
+    <li>بيانات شخصية: الاسم، رقم الهاتف، البريد الإلكتروني، تاريخ الميلاد، رقم جواز السفر.</li>
+    <li>بيانات الحجز: تفاصيل الرحلات أو الفنادق التي قمت بحجزها، تواريخ السفر، الوجهات.</li>
+    <li>بيانات الدفع: تفاصيل الدفع الإلكتروني (لا نقوم بتخزين بيانات البطاقة، وإنما تتم معالجة الدفع عبر بوابات دفع آمنة).</li>
+    <li>بيانات تقنية: نوع الجهاز، نظام التشغيل، عنوان الـ IP، بيانات الموقع الجغرافي (إذا منحت الإذن بذلك).</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    2. كيفية استخدامنا للمعلومات
+  </h3>
+
+  <p class="mb-4 text-[20px]">
+    نقوم باستخدام بياناتك للأغراض التالية:
+  </p>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10 mb-8">
+    <li>إتمام وتنفيذ عمليات الحجز.</li>
+    <li>إرسال تأكيدات الحجز والفواتير.</li>
+    <li>التواصل معك بشأن أي تحديثات أو تغييرات على رحلاتك أو إقامتك.</li>
+    <li>إرسال العروض الترويجية (في حال موافقتك على ذلك).</li>
+    <li>تحسين أداء التطبيق وتجربة المستخدم.</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    3. مشاركة المعلومات مع أطراف أخرى
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10 mb-8">
+    <li>قد نشارك بياناتك مع شركات الطيران، الفنادق، ومزودي خدمات الدفع الإلكتروني فقط بهدف إتمام عملية الحجز.</li>
+    <li>لا نقوم ببيع أو تأجير بياناتك لأي طرف ثالث لأغراض تسويقية.</li>
+    <li>قد نكشف عن المعلومات إذا طُلب منا قانونيًا أو لحماية حقوقنا وأمان مستخدمينا.</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    4. حماية البيانات
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10 mb-8">
+    <li>نستخدم بروتوكولات أمان متقدمة (مثل SSL) لتشفير البيانات أثناء النقل.</li>
+    <li>نخزن البيانات على خوادم آمنة مع قيود وصول صارمة.</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    5. حقوقك كمستخدم
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10 mb-8">
+    <li>لك الحق في الوصول إلى بياناتك الشخصية أو تعديلها أو حذفها.</li>
+    <li>يمكنك إلغاء الاشتراك في أي رسائل تسويقية في أي وقت.</li>
+    <li>يمكنك طلب حذف حسابك نهائيًا عبر التواصل معنا.</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    6. ملفات تعريف الارتباط (Cookies)
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10 mb-8">
+    <li>قد نستخدم ملفات تعريف الارتباط لتحسين تجربتك وتخصيص المحتوى لك.</li>
+    <li>يمكنك تعطيل الكوكيز من إعدادات المتصفح، لكن قد يؤثر ذلك على بعض وظائف التطبيق.</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    7. تغييرات على سياسة الخصوصية
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10">
+    <li>نحتفظ بالحق في تعديل هذه السياسة في أي وقت.</li>
+    <li>سيتم إخطارك بأي تغييرات جوهرية قبل أن تصبح سارية.</li>
+  </ul>
+
+</section>
+      <!-- شروط الاستخدام -->
+     <section *ngIf="activeModal === 'terms'">
+
+  <p class="text-center text-base sm:text-lg leading-10 mb-8">
+    يرجى قراءة هذه الشروط بعناية قبل استخدام منصة إيزي كونكت.
+    باستخدامك للتطبيق، فإنك توافق على الالتزام بهذه الشروط والأحكام.
+    إذا لم توافق على أي من هذه الشروط، يرجى التوقف عن استخدام التطبيق.
+  </p>
+
+  <h3 class="font-bold text-2xl mb-4">
+    1. التعريفات
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg
+  leading-10 mb-8">
+    <li>التطبيق: يقصد به تطبيق إيزي كونكت المخصص لحجز تذاكر الطيران والفنادق.</li>
+    <li>المستخدم: أي شخص يقوم بتحميل أو استخدام التطبيق.</li>
+    <li>الخدمات: خدمات حجز تذاكر الطيران والفنادق المعروضة من خلال التطبيق.</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    2. قبول الشروط
+  </h3>
+
+  <p class="text-base sm:text-lg leading-10 mb-8">
+    باستخدامك للتطبيق، فإنك تقر بأنك قرأت وفهمت ووافقت على الالتزام بجميع الشروط
+    والأحكام المذكورة في هذه الوثيقة.
+  </p>
+
+  <h3 class="font-bold text-2xl mb-4">
+    3. الخدمات المقدمة
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg  leading-10 mb-8">
+    <li>يوفر التطبيق منصة لعرض وحجز تذاكر الطيران والفنادق من مزودي خدمات مختلفين.</li>
+    <li>نحن نعمل كوسيط بين المستخدم ومزود الخدمة (شركة الطيران أو الفندق)، ولا نمتلك أو ندير أي من هذه الخدمات مباشرة.</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    4. شروط الحجز والدفع
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10 mb-8">
+    <li>يجب على المستخدم إدخال بيانات صحيحة ودقيقة أثناء الحجز.</li>
+    <li>الأسعار المعروضة قد تتغير بناءً على توافر الخدمة أو سياسات مزود الخدمة.</li>
+    <li>الدفع يتم من خلال وسائل دفع آمنة ومعتمدة.</li>
+    <li>قد يتم فرض رسوم إضافية من قبل مزود الخدمة أو بوابات الدفع، وسيتم عرضها قبل إتمام عملية الدفع.</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    5. سياسة الإلغاء والاسترداد
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10 mb-8">
+    <li>تخضع عمليات الإلغاء أو التعديل لشروط وأحكام مزود الخدمة (شركة الطيران أو الفندق).</li>
+    <li>قد يتم خصم رسوم إلغاء أو تعديل وفقًا لسياسة مزود الخدمة.</li>
+    <li>أي طلب لاسترداد المبلغ يتم تقديمه عبر التطبيق، وسيتم التعامل معه وفقًا لسياسة مزود الخدمة.</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    6. المسؤوليات
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10 mb-8">
+    <li>التطبيق غير مسؤول عن أي تأخير أو إلغاء أو تغيير في مواعيد الرحلات أو الحجز من قبل مزود الخدمة.</li>
+    <li>التطبيق غير مسؤول عن أي أضرار أو خسائر ناتجة عن استخدام الخدمة أو الاعتماد على أي معلومات مقدمة من مزودي الخدمة.</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    7. حقوق الملكية الفكرية
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10 mb-8">
+    <li>جميع حقوق الملكية الفكرية المتعلقة بالتصميم، والمحتوى، والشعارات، والبرمجيات، ملك لتطبيق إيزي كونكت أو مرخصة له.</li>
+    <li>لا يجوز نسخ أو إعادة إنتاج أي جزء من التطبيق بدون إذن كتابي مسبق.</li>
+  </ul>
+
+  <h3 class="font-bold text-2xl mb-4">
+    8. التعديلات على الشروط
+  </h3>
+
+  <ul class="list-disc pr-8 text-base sm:text-lg leading-10">
+    <li>نحتفظ بالحق في تعديل أو تحديث هذه الشروط في أي وقت.</li>
+    <li>سيتم إخطار المستخدمين بأي تغييرات جوهرية، ويعتبر استمرار استخدام التطبيق بعد التعديل موافقة على الشروط المعدلة.</li>
+  </ul>
+
+</section>
+    </div>
+  </div>
+</div>

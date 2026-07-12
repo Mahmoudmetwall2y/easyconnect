@@ -1,70 +1,108 @@
-<section class="bg-[#f6f8fc] py-16 text-center shadow-[0_8px_40px_rgba(0,0,0,0.06)] rounded-3xl ">
+<section
+  class="bg-[#f6f8fc] py-16 text-center
+         shadow-[0_8px_40px_rgba(0,0,0,0.06)]
+         rounded-3xl"
+  dir="rtl"
+>
 
-  <h2 class="text-4xl font-extrabold mb-3 text-gray-900">✈️ سافر بأقل الأسعار</h2>
-  <p class="text-gray-500 mb-12 text-lg">عروض حصرية على رحلات الطيران لفترة محدودة!</p>
+  <h2 class="text-4xl font-extrabold mb-3 text-gray-900">
+    ✈️ سافر بأقل الأسعار
+  </h2>
 
-  <div *ngIf="loading" class="text-gray-400 text-lg">جارِ تحميل العروض...</div>
+  <p class="text-gray-500 mb-12 text-lg">
+    عروض حصرية على رحلات الطيران لفترة محدودة!
+  </p>
 
-  <div *ngIf="!loading" class="relative">
-    <swiper-container
-      slides-per-view="4"
-      space-between="30"
-      loop="true"
-      autoplay-delay="2500"
-      autoplay-disable-on-interaction="false"
-      
-      class="w-[90%] mx-auto pb-12"
-    >
-      <swiper-slide *ngFor="let deal of deals; let i = index">
+  <div class="relative">
+
+  <swiper-container
+  init="false"
+  class="deals-swiper w-[90%] mx-auto pb-14"
+  loop="true"
+  autoplay-delay="2500"
+  autoplay-disable-on-interaction="false"
+  navigation="true"
+  pagination="true"
+>
+
+      <swiper-slide
+        *ngFor="let deal of deals"
+      >
+
         <div
-          class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.08)] overflow-hidden hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all duration-300 flex flex-col w-[280px]  mx-auto"
+          class="deal-card bg-white rounded-3xl
+                 shadow-[0_4px_25px_rgba(0,0,0,0.08)]
+                 overflow-hidden
+                 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)]
+                 transition-all duration-300
+                 flex flex-col w-[280px] mx-auto"
         >
-          <!-- الصورة -->
+
           <img
-            [src]="getImage(i)"
-            alt="Deal"
+            [src]="deal.image"
+            [alt]="
+              getArabicCityName(deal.origin) +
+              ' إلى ' +
+              getArabicCityName(deal.destination)
+            "
             class="w-full h-48 object-cover"
           />
 
-          <!-- المحتوى -->
-          <div class="p-5 flex flex-col justify-between  text-right ">
-            
-            <!-- ✅ الشارة + الوجهة -->
-            <div class="flex items-center justify-between mb-3">
+          <div class="p-5 flex flex-col text-right">
+
+            <div class="flex items-center justify-between gap-2 mb-3">
+
               <span
-                class="bg-[#ffe65a] text-gray-900 text-xs font-semibold py-1 px-3 rounded-full"
+                class="bg-[#ffe65a] text-gray-900
+                       text-xs font-semibold
+                       py-1 px-3 rounded-full whitespace-nowrap"
               >
-                متبقي {{ (i % 5) + 2 }} مقاعد
+                متبقي {{ deal.remainingSeats }} مقاعد
               </span>
 
               <h3 class="font-bold text-base text-gray-900">
-                {{ getArabicCityName(deal.origin) }} – {{ getArabicCityName(deal.destination) }}
+                {{ getArabicCityName(deal.origin) }}
+                –
+                {{ getArabicCityName(deal.destination) }}
               </h3>
+
             </div>
 
-            <p class="text-gray-400 text-xs mb-3">(ذهاب وعودة)</p>
+            <p class="text-gray-400 text-xs mb-3">
+              ({{ deal.tripType }})
+            </p>
 
-            <!-- السعر -->
-          
-<p class="text-blue-500 font-bold  mb-3">
+            <p class="text-blue-500 font-bold mb-3">
 
-  <span dir="ltr" class="text-blue-500 mx-1">
-    {{ deal.price }} {{ deal.currency }}
-  </span>
-    <span>تبدأ من</span>
-</p>
+              <span>تبدأ من</span>
 
-            <p class="text-gray-400 text-xs mb-3">خصم 15% لفترة محدودة</p>
+              <span dir="ltr" class="mx-1">
+                {{ deal.price | number }}
+                {{ deal.currency }}
+              </span>
 
-            <!-- الزر -->
+            </p>
+
+            <p class="text-gray-400 text-xs mb-4">
+              خصم {{ deal.discount }}% لفترة محدودة
+            </p>
+
             <button
-              class="bg-[#0163f2] hover:bg-[#0153d0] text-white font-medium text-sm py-2 rounded-lg shadow-md transition-all duration-300"
+              type="button"
+              class="bg-[#0163f2] hover:bg-[#0153d0]
+                     text-white font-medium text-sm
+                     py-2.5 rounded-lg shadow-md
+                     transition-all duration-300"
             >
               احجز الآن
             </button>
+
           </div>
         </div>
+
       </swiper-slide>
+
     </swiper-container>
+
   </div>
 </section>

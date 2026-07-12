@@ -94,13 +94,12 @@ arrivalAirportsList: {
 
     const nav = this.router.getCurrentNavigation();
 
-    const departures =
-      nav?.extras?.state?.['departures'] ||
-      JSON.parse(sessionStorage.getItem('departures') || '[]');
+   const flights =
+  nav?.extras?.state?.['flights'] ||
+  JSON.parse(sessionStorage.getItem('flights') || '[]');
 
-    const returns =
-      nav?.extras?.state?.['returns'] ||
-      JSON.parse(sessionStorage.getItem('returns') || '[]');
+this.groupedFlights = flights;
+this.originalFlights = [...flights];
      
 
     this.selectedFrom = JSON.parse(sessionStorage.getItem('selectedFrom') || 'null');
@@ -117,14 +116,7 @@ arrivalAirportsList: {
     this.travelClass = sessionStorage.getItem('travelClass') || 'السياحية';
     this.includeBaggage = sessionStorage.getItem('includeBaggage') === '1';
 
-console.log("DEPARTURES", departures);
-console.log("RETURNS", returns);
 
-    const grouped = this.groupFlights(departures, returns);
-
-    // Group per airline
-    this.groupedFlights = this.groupByAirline(grouped);
-    this.originalFlights = [...this.groupedFlights];
 
 this.buildAirportFilters();
     // Only valid if round trip
