@@ -24,13 +24,12 @@
       <ul class="space-y-2 text-sm opacity-90">
 
         <li>
-          <button
-            type="button"
-            (click)="openModal('about')"
-            class="hover:text-yellow-300 transition"
-          >
-            من نحن
-          </button>
+         <a
+  routerLink="/about-us"
+  class="hover:text-yellow-300 transition"
+>
+  من نحن
+</a>
         </li>
 
         <li>
@@ -66,33 +65,21 @@
         </li>
 
         <li>
-          <button
-            type="button"
-            (click)="openModal('contact')"
-            class="hover:text-yellow-300 transition"
-          >
-            اتصل بنا
-          </button>
+       <a routerLink="/contact-us" class="hover:text-yellow-300 transition">
+  اتصل بنا
+</a>
         </li>
 
         <li>
-          <button
-            type="button"
-            (click)="openModal('privacy')"
-            class="hover:text-yellow-300 transition"
-          >
-            سياسة الخصوصية
-          </button>
+        <a routerLink="/privacy-policy" class="hover:text-yellow-300 transition">
+  سياسة الخصوصية
+</a>
         </li>
 
         <li>
-          <button
-            type="button"
-            (click)="openModal('terms')"
-            class="hover:text-yellow-300 transition"
-          >
-            شروط الخدمة
-          </button>
+       <a routerLink="/terms-and-conditions" class="hover:text-yellow-300 transition">
+  شروط الاستخدام
+</a>
         </li>
 
       </ul>
@@ -166,28 +153,39 @@
   >
 
     <!-- بيانات الشركة -->
-    <div class="text-center md:text-right" dir="rtl">
+  
+<!-- بيانات الشركة -->
+<div class="text-center md:text-right" dir="rtl">
 
-      <p class="text-sm md:text-base">
-        جميع الحقوق محفوظة © 2025
-        <span class="font-semibold">
-          إيزي كونكت
-        </span>
-        <span dir="ltr">(Easy Connect)</span>
-      </p>
+  <p class="text-sm md:text-base font-semibold">
+    إيزي كونكت — شركة إيزي كونكت
+    <span dir="ltr">(Easy connect Company)</span>
+  </p>
 
-      <p class="mt-2 text-xs md:text-sm text-white/75">
-        السجل التجاري
-        <span dir="ltr">(Commercial Registration)</span>:
-        <span
-          dir="ltr"
-          class="font-medium text-white/90"
-        >
-          7054797860
-        </span>
-      </p>
+  <p class="mt-2 text-xs md:text-sm">
+    السجل التجاري: 7054797860
+    |
+    الرقم الضريبي: 314904357500003
+  </p>
 
-    </div>
+  <p class="mt-2 text-xs md:text-sm">
+    حي الملز، الرياض 12836، المملكة العربية السعودية
+  </p>
+
+  <p class="mt-2 text-xs md:text-sm">
+    <a href="mailto:info@easyconecct.com"
+       class="hover:text-yellow-300">
+      info@easyconecct.com
+    </a>
+  </p>
+
+  <p class="mt-3 text-xs text-white/80">
+    © 2026 شركة إيزي كونكت (Easy connect Company).
+    جميع الحقوق محفوظة.
+  </p>
+
+</div>
+
 
 <!-- deployment update -->
     <!-- وسائل الدفع -->

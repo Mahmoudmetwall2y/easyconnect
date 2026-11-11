@@ -1,0 +1,23 @@
+<main dir="rtl" class="legal-page">
+  <div class="legal-wrap">
+    <nav class="breadcrumbs" aria-label="مسار الصفحة">
+      <a routerLink="/home">الرئيسية</a><span aria-hidden="true"> / </span><span>{{ page.title }}</span>
+    </nav>
+    <header class="legal-header">
+      <p class="eyebrow">Easy Connect Company</p>
+      <h1>{{ page.title }}</h1>
+      <p *ngIf="page.updated" class="updated">آخر تحديث: {{ page.updated }}</p>
+      <p *ngIf="page.intro" class="intro">{{ page.intro }}</p>
+    </header>
+    <article class="legal-card">
+      <section *ngFor="let section of page.sections" class="legal-section">
+        <h2>{{ section.title }}</h2>
+        <p *ngFor="let paragraph of section.paragraphs">{{ paragraph }}</p>
+        <ul *ngIf="section.items?.length">
+          <li *ngFor="let item of section.items">{{ item }}</li>
+        </ul>
+      </section>
+    </article>
+    <p class="legal-help">للاستفسارات: <a href="mailto:info@easyconecct.com">info@easyconecct.com</a></p>
+  </div>
+</main>

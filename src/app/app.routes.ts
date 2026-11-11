@@ -12,6 +12,7 @@ import { Login } from './features/account/login/login';
 import { AuthGuard } from './core/guards/auth.guard';
 import { Account } from './features/account/account';
 import { PassengerForm } from './features/booking/passenger-form/passenger-form';
+import { LegalPage } from './features/legal-pages/legal-page/legal-page';
 
 export const routes: Routes = [
 
@@ -35,6 +36,10 @@ export const routes: Routes = [
       { path: 'search', component: SearchResults },
       { path: 'error', component: ErrorScreen },
       { path: 'no-results', component: NoResults },
+  { path: 'about-us', component: LegalPage, data: { pageId: 'about-us' } },
+{ path: 'contact-us', component: LegalPage, data: { pageId: 'contact-us' } },
+{ path: 'privacy-policy', component: LegalPage, data: { pageId: 'privacy-policy' } },
+{ path: 'terms-and-conditions', component: LegalPage, data: { pageId: 'terms-and-conditions' } },
 
       {
         path: 'booking',
